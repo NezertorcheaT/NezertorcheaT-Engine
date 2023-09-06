@@ -2,11 +2,11 @@
 
 namespace Console_Engine
 {
-    internal class Program
+    internal static class Program
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hallo World!");
+            Console.WriteLine(GameConfig.GetData().ToString());
             Console.ReadKey();
         }
     }

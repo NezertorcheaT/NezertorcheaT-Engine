@@ -1,0 +1,10 @@
+{
+  "HEIGHT": 15,
+  "WIDTH": 36,
+  "MAP": "main_map",
+  "COLLISION_SUBSTEPS": 1,
+  "RIGIDBODY_SUBSTEPS": 1,
+  "FPS": 15,
+  "FIXED_REPETITIONS": 0.02,
+  "LOG_DRAWCALLS": false
+}
