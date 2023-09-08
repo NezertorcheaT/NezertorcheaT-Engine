@@ -4,7 +4,11 @@ namespace Console_Engine
 {
     public class Hierarchy
     {
-        private List<GameObject> objs;
-        
+        public List<GameObject> Objs { get; }
+
+        public Hierarchy()
+        {
+            Objs = new List<GameObject>();
+        }
     }
 }

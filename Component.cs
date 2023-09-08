@@ -6,12 +6,12 @@
         void Initialise(GameObject gameObject);
     }
 
-    public interface IComponentUpdate
+    public interface IComponentUpdate:IComponentInit
     {
         void Update();
     }
 
-    public interface IComponentStart
+    public interface IComponentStart:IComponentInit
     {
         void Start();
     }
@@ -19,10 +19,6 @@
     public class Component : IComponentInit
     {
         public GameObject gameObject { get; private set; }
-
-        public Component()
-        {
-        }
 
         void IComponentInit.Initialise(GameObject gameObject)
         {
