@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Console_Engine
+namespace Engine
 {
     public static class Logger
     {

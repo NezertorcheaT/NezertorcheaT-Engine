@@ -1,7 +1,7 @@
 {
   "HEIGHT": 15,
   "WIDTH": 36,
-  "MAP": "main_map",
+  "MAP": "main",
   "COLLISION_SUBSTEPS": 1,
   "RIGIDBODY_SUBSTEPS": 1,
   "FPS": 15,

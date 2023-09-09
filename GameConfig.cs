@@ -5,8 +5,9 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
-namespace Console_Engine
+namespace Engine
 {
     public struct GameConfigData
     {
@@ -40,7 +41,10 @@ namespace Console_Engine
     {
         public static GameConfigData GetData()
         {
-            return JsonSerializer.Deserialize<GameConfigData>(File.ReadAllText("config.json"));
+            var jsonString = File.ReadAllText("config.json");
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            JsonNode node = JsonNode.Parse(jsonString)!;
+            return JsonSerializer.Deserialize<GameConfigData>(node);
         }
     }
 }

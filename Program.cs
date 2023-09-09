@@ -1,10 +1,37 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading.Tasks;
+using Engine.Components;
 
-namespace Console_Engine
+namespace Engine
 {
     internal static class Program
     {
+        public static async void DrawCycle(Hierarchy h)
+        {
+            var d = GameConfig.GetData();
+            SymbolMatrix m;
+            
+            while (true)
+            {
+                await Task.Delay((int) (1.0 / (double) d.FPS * 1000.0));
+                
+                Console.SetWindowSize((int) d.WIDTH + 2, (int) d.HEIGHT + 2);
+
+                m = new SymbolMatrix(d.WIDTH, d.HEIGHT);
+
+                foreach (IRenderer obj in GameObject.FindAllTypes<Drawer>(h))
+                {
+                    obj.DrawSymbol(m, (obj as Component).transform.Position,
+                        new Symbol {Character = 'O', Color = ConsoleColor.White});
+                }
+
+                Console.Clear();
+                //Console.Write("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                Console.Write(m.ToString());
+            }
+        }
+
         public static void Main(string[] args)
         {
             Logger.Initialise();
@@ -18,46 +45,33 @@ namespace Console_Engine
 
             try
             {
-                MainDo(args);
+                var d = GameConfig.GetData();
+                var m = new SymbolMatrix(d.WIDTH, d.HEIGHT);
+                var h = Scene.GenerateMap(d.MAP);
+                Logger.Log(d.ToString());
+
+                foreach (IGameObjectStartable obj in h.Objs)
+                {
+                    obj.Start();
+                }
+
+                DrawCycle(h);
+                while (true)
+                {
+                    foreach (IGameObjectUpdatable obj in h.Objs)
+                    {
+                        obj.Update();
+                    }
+                }
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 Logger.Log(e, e.GetType().Name);
             }
 
             Logger.Stop();
-        }
-
-        private static void MainDo(string[] args)
-        {
-            var d = GameConfig.GetData();
-            Logger.Log(d.ToString());
-
-
-            var m = new SymbolMatrix(d.WIDTH, d.HEIGHT);
-            var h = new Hierarchy();
-
-            for (var i = 0; i < 10; i++)
-            {
-                GameObject.Instantiate($"ass{i}", "none", 0, h).transform.LocalPosition =
-                    new Vector2(RandomRange(10), RandomRange(10));
-            }
-
-            foreach (var obj in h.Objs)
-            {
-                var pos = obj.transform.Position;
-                m.Draw(new Symbol {Character = 'S', Color = ConsoleColor.White},
-                    new Size((uint) Math.Round(pos.X), (uint) Math.Round(pos.Y)));
-            }
-
-            Console.WriteLine(m.ToString());
             Console.ReadKey();
-        }
-
-        private static int RandomRange(int max = 100)
-        {
-            var rand = new Random();
-            return rand.Next(max + 1);
         }
     }
 }

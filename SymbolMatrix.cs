@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Console_Engine
+namespace Engine
 {
     public class SymbolMatrix
     {
