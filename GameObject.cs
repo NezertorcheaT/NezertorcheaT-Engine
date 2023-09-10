@@ -89,7 +89,6 @@ namespace Engine
         public static IEnumerable<GameObject> FindAllByTag(string tag, Hierarchy hierarchy)
         {
             var r = hierarchy.Objs.Where(obj => obj.tag == tag);
-            Logger.Log(r.ToArray().Length);
             return r;
         }
 

@@ -5,9 +5,6 @@ namespace Engine
 {
     public interface IRenderer : IComponentInit
     {
-        void DrawSymbol(SymbolMatrix symbolMatrix, Vector2 worldPos, Symbol symbol);
-
-        void DrawSymbol(SymbolMatrix symbolMatrix, Vector2 worldPos, Symbol symbol, Camera? camera, GameConfigData gcd,
-            Vector2 cameraPosition);
+        void OnDraw(SymbolMatrix matrix,GameConfigData? config=null);
     }
 }
