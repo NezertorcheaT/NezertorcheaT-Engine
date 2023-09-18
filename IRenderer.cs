@@ -5,6 +5,6 @@ namespace Engine
 {
     public interface IRenderer : IComponentInit
     {
-        void OnDraw(SymbolMatrix matrix,GameConfigData? config=null);
+        void OnDraw(SymbolMatrix matrix);
     }
 }

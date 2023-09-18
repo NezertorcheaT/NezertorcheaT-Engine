@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Engine.Components;
 
 namespace Engine
 {
@@ -8,21 +7,19 @@ namespace Engine
     {
         public static async void DrawCycle(Hierarchy h)
         {
-            var d = GameConfig.GetData();
             SymbolMatrix m;
 
             while (true)
             {
-                await Task.Delay((int) (1.0 / (double) d.FPS * 1000.0));
-                Console.SetWindowSize((int) d.WIDTH + 2, (int) d.HEIGHT + 2);
-                m = new SymbolMatrix(d.WIDTH, d.HEIGHT);
-                var gcd = GameConfig.GetData();
+                await Task.Delay((int) (1.0 / (double) GameConfig.Data.FPS * 1000.0));
+                Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
+                m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
                 foreach (IRenderer obj in GameObject.FindAllTypes<Drawer>(h))
                 {
                     try
                     {
-                        obj.OnDraw(m, gcd);
+                        obj.OnDraw(m);
                     }
                     catch (Exception e)
                     {
@@ -45,14 +42,13 @@ namespace Engine
                 Logger.Log(sender ?? "null", "closing event sender");
                 Logger.Stop();
             };
-
-            var d = GameConfig.GetData();
-            var m = new SymbolMatrix(d.WIDTH, d.HEIGHT);
+            GameConfig.GetData();
+            var m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
             Hierarchy h;
             try
             {
-                h = Scene.GenerateMap(d.MAP);
+                h = Scene.GenerateMap(GameConfig.Data.MAP);
             }
             catch (Exception e)
             {
@@ -61,7 +57,7 @@ namespace Engine
                 return;
             }
 
-            Logger.Log(d.ToString());
+            Logger.Log(GameConfig.Data.ToString());
 
             foreach (IGameObjectStartable obj in h.Objs)
             {

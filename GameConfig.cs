@@ -39,12 +39,14 @@ namespace Engine
 
     public static class GameConfig
     {
+        public static GameConfigData Data;
         public static GameConfigData GetData()
         {
             var jsonString = File.ReadAllText("config.json");
             var options = new JsonSerializerOptions { WriteIndented = true };
             JsonNode node = JsonNode.Parse(jsonString)!;
-            return JsonSerializer.Deserialize<GameConfigData>(node);
+            Data = JsonSerializer.Deserialize<GameConfigData>(node);
+            return Data;
         }
     }
 }
