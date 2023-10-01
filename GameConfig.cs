@@ -9,6 +9,9 @@ using System.Text.Json.Nodes;
 
 namespace Engine
 {
+    /// <summary>
+    /// Game settings data
+    /// </summary>
     public struct GameConfigData
     {
         public uint HEIGHT{ get; set; }
@@ -37,9 +40,20 @@ namespace Engine
 
     }
 
+    /// <summary>
+    /// Game settings
+    /// </summary>
     public static class GameConfig
     {
+        /// <summary>
+        /// Current game settings
+        /// </summary>
         public static GameConfigData Data;
+        
+        /// <summary>
+        /// Updates current game settings
+        /// </summary>
+        /// <returns></returns>
         public static GameConfigData GetData()
         {
             var jsonString = File.ReadAllText("config.json");
