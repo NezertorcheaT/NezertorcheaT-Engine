@@ -38,9 +38,5 @@ namespace Engine.Components
         public virtual void FixedUpdate()
         {
         }
-
-        protected Behavior(GameObject gameObject) : base(gameObject)
-        {
-        }
     }
 }

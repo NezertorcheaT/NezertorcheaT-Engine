@@ -28,10 +28,5 @@
         {
             this.gameObject = gameObject;
         }
-
-        public Component(GameObject gameObject)
-        {
-            this.gameObject = gameObject;
-        }
     }
 }

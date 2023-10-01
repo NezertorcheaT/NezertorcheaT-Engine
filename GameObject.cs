@@ -28,6 +28,18 @@ namespace Engine
 
         public Hierarchy hierarchy { get; private set; }
 
+        public string HierarchyPath => GetHierarchyPath(par: transform);
+
+        private string GetHierarchyPath(string s = "", Transform par = null)
+        {
+            if (par.Parent != null)
+            {
+                return GetHierarchyPath(par.Parent.gameObject.name + '/' + s, par.Parent);
+            }
+
+            return name + '/' + s;
+        }
+
         public GameObject(string name, string tag, int layer, Hierarchy hierarchy)
         {
             _components = new List<Component>();
@@ -36,7 +48,7 @@ namespace Engine
             this.layer = layer;
             this.hierarchy = hierarchy;
 
-            var tr = new Transform(this);
+            var tr = new Transform();
             tr.LocalPosition = new Vector2(0, 0);
             tr.Parent = null;
             AddComponent(tr);
@@ -53,9 +65,8 @@ namespace Engine
 
         void IGameObjectUpdatable.Update()
         {
-            foreach (var c in _components)
+            foreach (var c in _components.Where(c => c.enabled))
             {
-                if (!c.enabled) continue;
                 (c as IComponentUpdate)?.Update();
             }
         }
@@ -68,16 +79,9 @@ namespace Engine
             }
         }
 
-        public T? GetComponent<T>() where T : Component, IComponentInit
-        {
-            var a = GetAllComponents<T>().ToArray();
-            return a.Length == 0 ? null : a[0] as T;
-        }
+        public T? GetComponent<T>() where T : Component, IComponentInit => GetAllComponents<T>().FirstOrDefault(defaultValue: null) as T;
 
-        public IEnumerable<Component>? GetAllComponents<T>() where T : Component, IComponentInit
-        {
-            return _components.Where(c => c.GetType().FullName == typeof(T).FullName || c.GetType().GetInterfaces().Contains(typeof(T)));
-        }
+        public IEnumerable<Component> GetAllComponents<T>() where T : Component, IComponentInit => _components.Where(c => c.GetType().FullName == typeof(T).FullName || c.GetType().GetInterfaces().Contains(typeof(T)));
 
         public Component AddComponent(Component component)
         {
@@ -86,11 +90,7 @@ namespace Engine
             return component;
         }
 
-        public static IEnumerable<GameObject> FindAllByTag(string tag, Hierarchy hierarchy)
-        {
-            var r = hierarchy.Objs.Where(obj => obj.tag == tag);
-            return r;
-        }
+        public static IEnumerable<GameObject> FindAllByTag(string tag, Hierarchy hierarchy) => hierarchy.Objs.Where(obj => obj.tag == tag);
 
         public static T? FindObjectOfType<T>(Hierarchy hierarchy) where T : Component, IComponentInit
         {
@@ -106,23 +106,8 @@ namespace Engine
             return null;
         }
 
-        public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : Component, IComponentInit
-        {
-            List<Component> l = new List<Component>();
-            foreach (var obj in hierarchy.Objs)
-            {
-                var a = obj.GetAllComponents<T>();
-                if(a!=null)
-                    l=l.Union(obj.GetAllComponents<T>().ToList()).ToList();
-            }
+        public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : Component, IComponentInit => hierarchy.Objs.Aggregate(Array.Empty<Component>() as IEnumerable<Component>, (current, obj) => current.Concat(obj.GetAllComponents<T>()));
 
-            return l.AsEnumerable();
-        }
-
-        public static GameObject? FindObjectByTag(string tag, Hierarchy hierarchy)
-        {
-            var a = FindAllByTag(tag, hierarchy).ToArray();
-            return a.Length == 0 ? null : a[0];
-        }
+        public static GameObject? FindObjectByTag(string tag, Hierarchy hierarchy) => FindAllByTag(tag, hierarchy).FirstOrDefault(defaultValue: null);
     }
 }

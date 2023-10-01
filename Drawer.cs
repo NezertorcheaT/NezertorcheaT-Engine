@@ -21,10 +21,6 @@ namespace Engine
     {
         public char Character = ' ';
 
-        public Drawer(GameObject gameObject) : base(gameObject)
-        {
-        }
-
         public void OnDraw(SymbolMatrix matrix)
         {
             var cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);

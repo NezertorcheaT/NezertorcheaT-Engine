@@ -6,11 +6,15 @@ namespace Engine
 {
     public class Player : Behavior
     {
-        public override void Update()
+        public override void Start()
         {
+            foreach (var v in GameObject.FindAllTypes<Transform>(gameObject.hierarchy))
+            {
+                Logger.Log(v,"ass");
+            }
         }
 
-        public Player(GameObject gameObject) : base(gameObject)
+        public override void Update()
         {
         }
     }

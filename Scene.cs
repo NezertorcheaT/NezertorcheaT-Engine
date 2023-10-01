@@ -23,9 +23,11 @@ namespace Engine
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
+            
             Logger.Log(path);
             Logger.Log(options);
             Logger.Log(hierarchy);
+            
             foreach (var objNode in node.AsArray())
             {
                 var gameObj = new GameObject(objNode["name"].ToString(), objNode["tag"].ToString(),
@@ -46,7 +48,7 @@ namespace Engine
 
                     var comp = (Activator.CreateInstance(
                         ReflectiveEnumerator.GetEnumerableOfType<Component>().FirstOrDefault(component =>
-                            componentNode["name"].ToString() == component.Name), gameObj) as Component);
+                            componentNode["name"].ToString() == component.Name)) as Component);
 
                     if (comp == null) continue;
                     Logger.Log(comp);
