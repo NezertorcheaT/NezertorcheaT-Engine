@@ -29,6 +29,7 @@ namespace Engine
 
                 Console.Clear();
                 Console.Write(m.ToString());
+                //m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
             }
         }
 
