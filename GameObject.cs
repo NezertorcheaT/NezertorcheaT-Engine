@@ -107,7 +107,7 @@ namespace Engine
         public T? GetComponent<T>() where T : Component, IComponentInit =>
             GetAllComponents<T>().FirstOrDefault(defaultValue: null) as T;
 
-        public IEnumerable<Component> GetAllComponents<T>() where T : Component, IComponentInit => _components.Where(
+        public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit => _components.Where(
             c => c.GetType().FullName == typeof(T).FullName || c.GetType().GetInterfaces().Contains(typeof(T)));
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Engine
         /// <param name="hierarchy">Current hierarchy of object</param>
         /// <typeparam name="T">Type inherited from Component</typeparam>
         /// <returns></returns>
-        public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : Component, IComponentInit =>
+        public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : IComponentInit =>
             hierarchy.Objs.Aggregate(Array.Empty<Component>() as IEnumerable<Component>,
                 (current, obj) => current.Concat(obj.GetAllComponents<T>()));
 

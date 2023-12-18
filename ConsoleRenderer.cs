@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Engine.Components;
 
-namespace Engine
+namespace Engine.ConsoleRenderers
 {
     public static class Renderer
     {
@@ -19,18 +19,18 @@ namespace Engine
         }
     }
 
-    public class Drawer : Component, IRenderer
+    public class ConsoleRenderer : Component, IRenderer
     {
         public char Character = ' ';
 
-        public void OnDraw(SymbolMatrix matrix)
+        void IRenderer.OnDraw(SymbolMatrix matrix)
         {
             var cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);
 
             Renderer.DrawSymbol(
                 matrix,
                 transform.Position,
-                new Symbol {Character = Character, Color = ConsoleColor.White},
+                new Symbol {Character = Character, Color = Symbol.ConsoleColor.White},
                 cam
             );
         }

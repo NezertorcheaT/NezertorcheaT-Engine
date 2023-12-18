@@ -5,17 +5,17 @@ namespace Engine
 {
     internal static class Program
     {
-        public static async void DrawCycle(Hierarchy h)
+        private static async void DrawCycle(Hierarchy h)
         {
             SymbolMatrix m;
 
             while (true)
             {
-                await Task.Delay((int) (1.0 / (double) GameConfig.Data.FPS * 1000.0));
+                await Task.Delay((int) (1000 / GameConfig.Data.FPS));
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
                 m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
-                foreach (IRenderer obj in GameObject.FindAllTypes<Drawer>(h))
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(h))
                 {
                     try
                     {
@@ -24,12 +24,14 @@ namespace Engine
                     catch (Exception e)
                     {
                         Logger.Log(e, "drawing error");
+                        continue;
                     }
+                    if(GameConfig.Data.LOG_DRAWCALLS)
+                        Logger.Log($"{obj.gameObject}: {obj}","drawcall");
                 }
 
                 Console.Clear();
                 Console.Write(m.ToString());
-                //m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
             }
         }
 
@@ -43,8 +45,19 @@ namespace Engine
                 Logger.Log(sender ?? "null", "closing event sender");
                 Logger.Stop();
             };
-            GameConfig.GetData();
-            var m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
+
+            try
+            {
+                GameConfig.GetData();
+                var m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Logger.Log(e, "game config error");
+                Logger.Stop();
+                return;
+            }
 
             Hierarchy h;
             try
@@ -55,10 +68,12 @@ namespace Engine
             {
                 Console.WriteLine(e);
                 Logger.Log(e, "scene build error");
+                Logger.Stop();
                 return;
             }
 
             Logger.Log(GameConfig.Data.ToString());
+            Logger.Log(GameConfig.DefaultConfig);
 
             foreach (IGameObjectStartable obj in h.Objs)
             {
@@ -73,7 +88,14 @@ namespace Engine
             }
 
             DrawCycle(h);
+            MainLoop(h);
 
+            Logger.Stop();
+            Console.ReadKey();
+        }
+
+        private static void MainLoop(Hierarchy h)
+        {
             while (true)
             {
                 foreach (IGameObjectUpdatable obj in h.Objs)
@@ -88,9 +110,6 @@ namespace Engine
                     }
                 }
             }
-
-            Logger.Stop();
-            Console.ReadKey();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 
 namespace Engine
 {
@@ -8,11 +9,11 @@ namespace Engine
         /// <summary>
         /// Stopping current logger session
         /// </summary>
-        public static void Stop()
+        public static void Stop(string message="logging over")
         {
             if (!Directory.Exists("logs")) return;
             
-            Log("logging over", "stop");
+            Log(message, "stop");
 
             var s = File.ReadAllText("logs\\.now");
 

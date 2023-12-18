@@ -11,7 +11,7 @@ namespace Engine
         {
             foreach (var v in GameObject.FindAllTypes<Transform>(gameObject.hierarchy))
             {
-                Logger.Log(v, "ass");
+                Logger.Log(v.transform.Position, v.gameObject.name);
             }
         }
 
