@@ -11,7 +11,9 @@ namespace Engine
 
             while (true)
             {
-                await Task.Delay((int) (1000 / GameConfig.Data.FPS));
+                if (GameConfig.Data.FPS > 0)
+                    await Task.Delay((int) (1000 / GameConfig.Data.FPS));
+                
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
                 m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
@@ -26,12 +28,20 @@ namespace Engine
                         Logger.Log(e, "drawing error");
                         continue;
                     }
-                    if(GameConfig.Data.LOG_DRAWCALLS)
-                        Logger.Log($"{obj.gameObject}: {obj}","drawcall");
+
+                    if (GameConfig.Data.LOG_DRAWCALLS)
+                        Logger.Log($"{obj.gameObject}: {obj}, {obj.gameObject.transform.Position}", "drawcall");
                 }
 
-                Console.Clear();
-                Console.Write(m.ToString());
+                try
+                {
+                    Console.SetCursorPosition(0,0);
+                    Console.Write(m.ToString());
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e, "drawing error");
+                }
             }
         }
 

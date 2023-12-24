@@ -6,22 +6,17 @@ namespace Engine.Components
     {
         public Vector2 LocalPosition;
         public Transform? Parent;
-        
+
         public Vector2 Position => GetPosition(LocalPosition, Parent);
 
         private Vector2 GetPosition(Vector2 loc, Transform? par)
         {
             while (true)
             {
-                if (par != null)
-                {
-                    loc = loc + par.LocalPosition;
-                    par = par.Parent;
-                    continue;
-                }
+                if (par == null) return loc;
 
-                return loc;
-                break;
+                loc += par.LocalPosition;
+                par = par.Parent;
             }
         }
     }

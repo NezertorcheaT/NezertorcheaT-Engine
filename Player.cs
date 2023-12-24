@@ -6,15 +6,7 @@ namespace Engine
     public class Player : Behavior
     {
         public float speed;
-
-        public override void Start()
-        {
-            foreach (var v in GameObject.FindAllTypes<Transform>(gameObject.hierarchy))
-            {
-                Logger.Log(v.transform.Position, v.gameObject.name);
-            }
-        }
-
+        
         public override void Update()
         {
             if (Input.GetKey(Input.Keys.Up))
