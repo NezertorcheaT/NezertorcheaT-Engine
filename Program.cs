@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Engine
@@ -13,7 +14,7 @@ namespace Engine
             {
                 if (GameConfig.Data.FPS > 0)
                     await Task.Delay((int) (1000 / GameConfig.Data.FPS));
-                
+
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
                 m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
@@ -35,8 +36,20 @@ namespace Engine
 
                 try
                 {
-                    Console.SetCursorPosition(0,0);
-                    Console.Write(m.ToString());
+                    for (var x = 0; x < GameConfig.Data.WIDTH; x++)
+                    {
+                        for (var y = 0; y < GameConfig.Data.HEIGHT; y++)
+                        {
+                            Console.SetCursorPosition(x, y);
+                            
+                            var c = m.Read(m.IFromPos(x, y));
+                            Console.ForegroundColor = c.Color;
+                            Console.Write(c.Character);
+                        }
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(0, 0);
                 }
                 catch (Exception e)
                 {

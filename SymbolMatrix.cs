@@ -20,31 +20,18 @@ namespace Engine
             }
         }
 
-        public void Draw(Symbol symbol, Vector2 pos)
-        {
-            _matrix[
-                (int) Math.Round(Math.Clamp(pos.X-1, 0, _size.Y)) +
-                (int) _size.Y *
-                (int) Math.Round(Math.Clamp(pos.Y-1, 0, _size.X))
-            ] = symbol;
-        }
+        public int IFromPos(int x, float y) => IFromPos(new Vector2(x, y));
+        public int IFromPos(float x, int y) => IFromPos(new Vector2(x, y));
+        public int IFromPos(float x, float y) => IFromPos(new Vector2(x, y));
+        public int IFromPos(int x, int y) => IFromPos(new Vector2(x, y));
 
-        public override string ToString()
-        {
-            //var s = ConsoleColorsTable.ColorsTable[ConsoleColor.Reset];
-            var s = new StringBuilder();
+        public int IFromPos(Vector2 pos) => (int) Math.Round(Math.Clamp(pos.X - 1, 0, _size.Y)) +
+                                            (int) _size.Y *
+                                            (int) Math.Round(Math.Clamp(pos.Y - 1, 0, _size.X));
 
-            for (var i = 0; i < _matrix.Length; i++)
-            {
-                s.Append(_matrix[i].Character);
-                if ((i + 1) % (int) _size.Y == 0 && i != 0)
-                    s.Append('\n');
-            }
+        public Symbol Read(Vector2 pos) => _matrix[IFromPos(pos)];
+        public Symbol Read(int pos) => _matrix[pos];
 
-            
-            Console.ForegroundColor = ConsoleColor.White;
-        
-            return s.ToString();
-        }
+        public void Draw(Symbol symbol, Vector2 pos) => _matrix[IFromPos(pos)] = symbol;
     }
 }

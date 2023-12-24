@@ -23,7 +23,7 @@ namespace Engine
         public bool LOG_DRAWCALLS { get; set; }
 
         private static readonly string AsString = "NezertorcheatIsGandonAndUebok";
-        
+
         private struct FieldType
         {
             public string Type;

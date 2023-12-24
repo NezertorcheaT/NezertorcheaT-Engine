@@ -7,6 +7,7 @@ namespace Engine.ConsoleRenderers
     public class ConsoleRenderer : Component, IRenderer
     {
         public char Character = ' ';
+        public int Color = 14;
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
         {
@@ -15,7 +16,7 @@ namespace Engine.ConsoleRenderers
             DrawSymbol(
                 matrix,
                 transform.Position,
-                new Symbol {Character = Character, Color = ConsoleColor.White},
+                new Symbol {Character = Character, Color = (ConsoleColor) Color},
                 cam
             );
         }

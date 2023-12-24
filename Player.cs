@@ -6,7 +6,7 @@ namespace Engine
     public class Player : Behavior
     {
         public float speed;
-        
+
         public override void Update()
         {
             if (Input.GetKey(Input.Keys.Up))
