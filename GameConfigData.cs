@@ -18,8 +18,10 @@ namespace Engine
         public string MAP { get; set; }
         public uint COLLISION_SUBSTEPS { get; set; }
         public uint RIGIDBODY_SUBSTEPS { get; set; }
+        public uint DRAW_BUFFER_SIZE { get; set; }
         public uint FPS { get; set; }
         public double FIXED_REPETITIONS { get; set; }
+        public float CONSOLE_LINE_RENDERER_DELAY { get; set; }
         public bool LOG_DRAWCALLS { get; set; }
 
         private static readonly string AsString = "NezertorcheatIsGandonAndUebok";

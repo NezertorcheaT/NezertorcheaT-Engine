@@ -67,22 +67,6 @@ namespace Engine
             transform = tr;
         }
 
-        /// <summary>
-        /// Creates a new GameObject in hierarchy
-        /// </summary>
-        /// <param name="name">Name of GameObject</param>
-        /// <param name="tag">Tag of GameObject</param>
-        /// <param name="layer">Layer of GameObjec</param>
-        /// <param name="hierarchy">Hierarchy to add GameObject</param>
-        /// <returns></returns>
-        public static GameObject Instantiate(Hierarchy hierarchy, string name, string tag = "", int layer = 0)
-        {
-            var gameObject = new GameObject(name, tag, layer, hierarchy);
-            hierarchy.Objs.Add(gameObject);
-            ((IGameObjectStartable) gameObject).Start();
-            return gameObject;
-        }
-
         void IGameObjectUpdatable.Update()
         {
             foreach (var c in _components.Where(c => c.enabled))
@@ -132,6 +116,15 @@ namespace Engine
             hierarchy.Objs.Where(obj => obj.tag == tag);
 
         /// <summary>
+        /// Finds all objects with name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="hierarchy"></param>
+        /// <returns></returns>
+        public static IEnumerable<GameObject> FindAllByName(string name, Hierarchy hierarchy) =>
+            hierarchy.Objs.Where(obj => obj.name == name);
+
+        /// <summary>
         /// Finds first object with Component
         /// </summary>
         /// <param name="hierarchy">Current hierarchy of object</param>
@@ -170,5 +163,14 @@ namespace Engine
         /// <returns></returns>
         public static GameObject? FindObjectByTag(string tag, Hierarchy hierarchy) =>
             FindAllByTag(tag, hierarchy).FirstOrDefault(defaultValue: null);
+
+        /// <summary>
+        /// Finds first object with name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="hierarchy">Current hierarchy of object</param>
+        /// <returns></returns>
+        public static GameObject? FindObjectByName(string name, Hierarchy hierarchy) =>
+            FindAllByName(name, hierarchy).FirstOrDefault(defaultValue: null);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -23,11 +24,13 @@ namespace Engine
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
-            
+
             Logger.Log(path);
             Logger.Log(options);
             Logger.Log(hierarchy);
-            
+
+            List<string[]> parents = new List<string[]>(node.AsArray().Count);
+
             foreach (var objNode in node.AsArray())
             {
                 var gameObj = new GameObject(objNode["name"].ToString(), objNode["tag"].ToString(),
@@ -39,6 +42,12 @@ namespace Engine
                     objNode["components"].AsArray().First()["data"].AsArray().First()["value"].AsArray().Last()
                         .Deserialize<float>()
                 );
+
+                parents.Add(new[]
+                {
+                    gameObj.name,
+                    objNode["components"].AsArray().First()["data"].AsArray()[1]["value"].Deserialize<string>()
+                });
 
                 Logger.Log(gameObj);
                 foreach (var componentNode in objNode["components"].AsArray())
@@ -70,6 +79,18 @@ namespace Engine
                 }
 
                 hierarchy.Objs.Add(gameObj);
+            }
+
+            foreach (var par in parents)
+            {
+                var parent = par[1];
+                if (parent == "null") continue;
+
+                var child = par[0];
+                var childObj = GameObject.FindObjectByName(child, hierarchy);
+                var parentObj = GameObject.FindObjectByName(parent, hierarchy);
+
+                if (childObj != null) childObj.transform.Parent = parentObj?.transform;
             }
 
             return hierarchy;
