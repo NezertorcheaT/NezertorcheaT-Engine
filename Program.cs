@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ConsoleEngine.Components;
+using ConsoleEngine.Symbols;
 
 namespace ConsoleEngine
 {
@@ -17,6 +19,7 @@ namespace ConsoleEngine
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
                 m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
+                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(h))
                 {
                     try

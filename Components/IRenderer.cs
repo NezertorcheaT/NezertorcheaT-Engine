@@ -1,6 +1,6 @@
-﻿using ConsoleEngine.Components;
+﻿using ConsoleEngine.Symbols;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Components
 {
     public interface IRenderer : IComponentInit
     {

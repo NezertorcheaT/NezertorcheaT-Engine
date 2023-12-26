@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ConsoleEngine.Components
 {
+    [SuppressMessage("ReSharper", "UnusedType.Global")]
     public abstract class Behavior : Component, IComponentStart, IComponentUpdate
     {
         void IComponentStart.Start()
@@ -31,10 +33,11 @@ namespace ConsoleEngine.Components
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(e,"Fixed update error");
+                    Logger.Log(e, "Fixed update error");
                 }
             }
         }
+
         public virtual void FixedUpdate()
         {
         }

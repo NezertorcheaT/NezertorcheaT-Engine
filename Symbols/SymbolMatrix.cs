@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Numerics;
+using ConsoleEngine.Components;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Symbols
 {
     public class SymbolMatrix
     {

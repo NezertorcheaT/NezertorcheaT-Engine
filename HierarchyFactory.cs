@@ -53,10 +53,11 @@ namespace ConsoleEngine
                 foreach (var componentNode in objNode["components"].AsArray())
                 {
                     if (componentNode["name"].ToString() == nameof(Transform) ||
-                        componentNode["name"].ToString() == nameof(Behavior)) continue;
+                        componentNode["name"].ToString() == nameof(Behavior) ||
+                        componentNode["name"].ToString() == nameof(Component)) continue;
 
                     var comp = (Activator.CreateInstance(
-                        ReflectiveEnumerator.GetEnumerableOfType<Component>().FirstOrDefault(component =>
+                        StaticShit.GetEnumerableOfType<Component>().FirstOrDefault(component =>
                             componentNode["name"].ToString() == component.Name)) as Component);
 
                     if (comp == null) continue;

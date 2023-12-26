@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
-using ConsoleEngine.Components;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Components
 {
     public class Player : Behavior
     {
