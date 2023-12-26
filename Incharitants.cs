@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 
-namespace Engine
+namespace ConsoleEngine
 {
     public static class ReflectiveEnumerator
     {

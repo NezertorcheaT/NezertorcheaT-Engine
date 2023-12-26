@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Engine.Components
+namespace ConsoleEngine.Components
 {
     public class Transform : Component
     {

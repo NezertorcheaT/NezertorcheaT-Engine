@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Engine
+namespace ConsoleEngine
 {
     internal static class Program
     {
@@ -84,7 +84,7 @@ namespace Engine
             Hierarchy h;
             try
             {
-                h = Scene.GenerateMap(GameConfig.Data.MAP);
+                h = HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP);
             }
             catch (Exception e)
             {

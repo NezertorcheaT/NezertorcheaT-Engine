@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Engine.Components;
+using ConsoleEngine.Components;
 
-namespace Engine
+namespace ConsoleEngine
 {
     public interface IGameObjectUpdatable
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Engine
+namespace ConsoleEngine
 {
     public class Hierarchy
     {

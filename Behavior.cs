@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Engine.Components
+namespace ConsoleEngine.Components
 {
     public abstract class Behavior : Component, IComponentStart, IComponentUpdate
     {

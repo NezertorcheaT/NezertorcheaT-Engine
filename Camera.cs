@@ -1,6 +1,6 @@
-﻿using Engine.Components;
+﻿using ConsoleEngine.Components;
 
-namespace Engine
+namespace ConsoleEngine
 {
     public class Camera : Component
     {

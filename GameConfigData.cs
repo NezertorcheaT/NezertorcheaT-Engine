@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace Engine
+namespace ConsoleEngine
 {
     interface IJsonable
     {

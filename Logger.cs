@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net.Http;
 
-namespace Engine
+namespace ConsoleEngine
 {
     public static class Logger
     {

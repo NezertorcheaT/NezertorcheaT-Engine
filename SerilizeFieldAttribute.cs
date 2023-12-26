@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engine
+namespace ConsoleEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class SerilizeFieldAttribute : Attribute

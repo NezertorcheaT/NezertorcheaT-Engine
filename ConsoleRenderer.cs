@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Engine.Components;
+using ConsoleEngine.Components;
 
-namespace Engine.ConsoleRenderers
+namespace ConsoleEngine.ConsoleRenderers
 {
     public class ConsoleRenderer : Component, IRenderer
     {

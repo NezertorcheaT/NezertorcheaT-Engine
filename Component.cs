@@ -1,4 +1,4 @@
-﻿namespace Engine.Components
+﻿namespace ConsoleEngine.Components
 {
     public interface IComponentInit
     {

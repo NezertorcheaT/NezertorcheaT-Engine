@@ -5,21 +5,21 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Engine.Components;
+using ConsoleEngine.Components;
 
-namespace Engine
+namespace ConsoleEngine
 {
-    public class Scene
+    public static class HierarchyFactory
     {
-        public static string SaveMap(Hierarchy hierarchy)
+        public static string SaveHierarchy(Hierarchy hierarchy)
         {
             var s = "";
             return s;
         }
 
-        public static Hierarchy GenerateMap(string mapName)
+        public static Hierarchy CreateHierarchy(string mapPath)
         {
-            var path = $"maps\\{mapName}.json";
+            var path = $"maps\\{mapPath}.json";
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString)!;

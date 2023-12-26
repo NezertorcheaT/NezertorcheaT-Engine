@@ -1,4 +1,4 @@
-﻿namespace Engine
+﻿namespace ConsoleEngine
 {
     public static class MathRepeat
     {
