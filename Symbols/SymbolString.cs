@@ -44,6 +44,11 @@ namespace ConsoleEngine.Symbols
 
             foreach (var symbol in symbolString.SymbolArray)
             {
+                if (symbol.Character == ' ')
+                {
+                    x++;
+                    continue;
+                }
                 matrix.Draw(symbol, pos + new Vector2(x, y));
 
                 x++;
