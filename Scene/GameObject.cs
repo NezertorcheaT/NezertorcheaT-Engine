@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using ConsoleEngine.Components;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Scene
 {
     public interface IGameObjectUpdatable
     {

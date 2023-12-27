@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
     public static class StaticShit
     {

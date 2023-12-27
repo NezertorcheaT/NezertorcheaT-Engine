@@ -6,8 +6,9 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ConsoleEngine.Components;
+using ConsoleEngine.IO;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Scene
 {
     public static class HierarchyFactory
     {
@@ -17,17 +18,15 @@ namespace ConsoleEngine
             return s;
         }
 
-        public static Hierarchy CreateHierarchy(string mapPath)
+        public static Hierarchy CreateHierarchy(string path)
         {
-            var path = $"maps\\{mapPath}.json";
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
 
-            Logger.Log(path);
-            Logger.Log(options);
-            Logger.Log(hierarchy);
+            Logger.Log(path,"map path");
+            Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
 
@@ -49,7 +48,7 @@ namespace ConsoleEngine
                     objNode["components"].AsArray().First()["data"].AsArray()[1]["value"].Deserialize<string>()
                 });
 
-                Logger.Log(gameObj);
+                Logger.Log(gameObj,"GameObject to initialize");
                 foreach (var componentNode in objNode["components"].AsArray())
                 {
                     if (componentNode["name"].ToString() == nameof(Transform) ||
@@ -61,11 +60,11 @@ namespace ConsoleEngine
                             componentNode["name"].ToString() == component.Name)) as Component);
 
                     if (comp == null) continue;
-                    Logger.Log(comp);
+                    Logger.Log(comp, "component to initialize");
 
                     foreach (var varNode in componentNode["data"].AsArray())
                     {
-                        Logger.Log(varNode["value"]);
+                        Logger.Log(varNode["value"], "component field to initialize");
                         foreach (var fieldInfo in comp.GetType().GetFields())
                         {
                             if (fieldInfo.Name != varNode["name"].ToString()) continue;

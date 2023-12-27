@@ -1,4 +1,4 @@
-﻿namespace ConsoleEngine.Random
+﻿namespace ConsoleEngine.IO.Random
 {
     public static class Random
     {

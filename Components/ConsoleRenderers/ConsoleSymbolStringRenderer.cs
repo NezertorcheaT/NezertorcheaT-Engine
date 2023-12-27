@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleEngine.Scene;
 using ConsoleEngine.Symbols;
 
 namespace ConsoleEngine.Components.ConsoleRenderers

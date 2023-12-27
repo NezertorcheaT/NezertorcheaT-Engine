@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
     /// <summary>
     /// Game settings
@@ -12,14 +12,15 @@ namespace ConsoleEngine
         /// <summary>
         /// Current game settings
         /// </summary>
-        public static GameConfigData Data => data;
+        public static GameConfigData Data { get; private set; }
 
-        private static GameConfigData data;
-
+        /// <summary>
+        /// Rewrite current config file
+        /// </summary>
         public static void SaveCurrentConfig()
         {
             var stream = File.CreateText("config.json");
-            stream.Write((data as IJsonable).Json);
+            stream.Write((Data as IJsonable).Json);
             stream.Close();
         }
 
@@ -27,7 +28,7 @@ namespace ConsoleEngine
         /// Default config
         /// </summary>
         public static readonly string DefaultConfig =
-            "{\"HEIGHT\": 15,\"WIDTH\": 36,\"MAP\": \"main\",\"COLLISION_SUBSTEPS\": 1,\"RIGIDBODY_SUBSTEPS\": 1,\"FPS\": 256,\"FIXED_REPETITIONS\": 0.02,\"LOG_DRAWCALLS\": false,\"DRAW_BUFFER_SIZE\":1,\"CONSOLE_LINE_RENDERER_DELAY\": 8.0}";
+            "{\"HEIGHT\": 15,\"WIDTH\": 36,\"MAP\": \"maps\\main.json\",\"COLLISION_SUBSTEPS\": 1,\"RIGIDBODY_SUBSTEPS\": 1,\"FPS\": 256,\"FIXED_REPETITIONS\": 0.02,\"LOG_DRAWCALLS\": false,\"DRAW_BUFFER_SIZE\":1,\"CONSOLE_LINE_RENDERER_DELAY\": 8.0, \"RESIZE_WINDOW\": true, \"START_RESIZE_WINDOW\": true}";
 
         /// <summary>
         /// Updates current game settings
@@ -38,8 +39,8 @@ namespace ConsoleEngine
             var jsonString = File.ReadAllText("config.json");
             var options = new JsonSerializerOptions {WriteIndented = true};
             JsonNode node = JsonNode.Parse(jsonString) ?? JsonNode.Parse(DefaultConfig)!;
-            data = JsonSerializer.Deserialize<GameConfigData>(node)!;
-            return data;
+            Data = node.Deserialize<GameConfigData>()!;
+            return Data;
         }
     }
 }

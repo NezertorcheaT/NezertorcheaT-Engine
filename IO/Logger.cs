@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
     public static class Logger
     {

@@ -1,4 +1,6 @@
-﻿namespace ConsoleEngine.Components
+﻿using ConsoleEngine.Scene;
+
+namespace ConsoleEngine.Components
 {
     public interface IComponentInit
     {

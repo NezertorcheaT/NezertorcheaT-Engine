@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using ConsoleEngine.Scene;
 using ConsoleEngine.Symbols;
 
 namespace ConsoleEngine.Components.ConsoleRenderers

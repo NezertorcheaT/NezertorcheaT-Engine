@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
     interface IJsonable
     {
@@ -23,6 +23,8 @@ namespace ConsoleEngine
         public double FIXED_REPETITIONS { get; set; }
         public float CONSOLE_LINE_RENDERER_DELAY { get; set; }
         public bool LOG_DRAWCALLS { get; set; }
+        public bool RESIZE_WINDOW { get; set; }
+        public bool START_RESIZE_WINDOW { get; set; }
 
         private static readonly string AsString = "NezertorcheatIsGandonAndUebok";
 

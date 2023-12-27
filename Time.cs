@@ -1,4 +1,6 @@
-﻿namespace ConsoleEngine
+﻿using ConsoleEngine.IO;
+
+namespace ConsoleEngine
 {
     public static class Time
     {

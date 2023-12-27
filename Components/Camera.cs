@@ -1,4 +1,5 @@
-﻿using ConsoleEngine.Symbols;
+﻿using ConsoleEngine.IO;
+using ConsoleEngine.Symbols;
 
 namespace ConsoleEngine.Components
 {

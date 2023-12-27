@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using ConsoleEngine.IO;
 
 namespace ConsoleEngine.Components
 {

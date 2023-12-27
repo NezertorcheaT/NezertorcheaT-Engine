@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using ConsoleEngine.IO;
+using ConsoleEngine.Scene;
 using ConsoleEngine.Symbols;
 
 namespace ConsoleEngine.Components.ConsoleRenderers

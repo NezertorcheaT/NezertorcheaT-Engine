@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ConsoleEngine.Components;
+using ConsoleEngine.Scene;
 using ConsoleEngine.Symbols;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
     public static class Startup
     {
+        /// <summary>
+        /// Is app work as intended
+        /// </summary>
+        public static bool IsWork { get; private set; }
+
+        /// <summary>
+        /// Full preparation of app to run
+        /// </summary>
+        /// <param name="hierarchy">Prepared scene</param>
         public static void Start(out Hierarchy? hierarchy)
         {
             hierarchy = null;
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
-                if (!Logger.IsSessionExist) return;
-
+                IsWork = false;
                 Logger.Log(sender ?? "null", "closing event sender");
                 Logger.Stop();
             };
@@ -28,7 +37,7 @@ namespace ConsoleEngine
             {
                 Console.WriteLine(e);
                 Logger.Log(e, "game config error");
-                Logger.Stop();
+                Stop();
                 return;
             }
 
@@ -41,12 +50,12 @@ namespace ConsoleEngine
             {
                 Console.WriteLine(e);
                 Logger.Log(e, "scene build error");
-                Logger.Stop();
+                Stop();
                 return;
             }
 
-            Logger.Log(GameConfig.Data.ToString());
-            Logger.Log(GameConfig.DefaultConfig);
+            Logger.Log(GameConfig.Data.ToString(), "Current Config");
+            Logger.Log(GameConfig.DefaultConfig, "Default Config");
 
             foreach (IGameObjectStartable obj in h.Objs)
             {
@@ -61,26 +70,43 @@ namespace ConsoleEngine
             }
 
             hierarchy = h;
+            IsWork = true;
         }
 
-        public static async void DrawCycle(Hierarchy h)
+        /// <summary>
+        /// Safe app stop
+        /// </summary>
+        public static void Stop()
         {
-            SymbolMatrix m;
+            IsWork = false;
+            if (!Logger.IsSessionExist) return;
+            Logger.Stop();
+        }
 
-            while (true)
+        /// <summary>
+        /// Rendering thread
+        /// </summary>
+        /// <param name="hierarchy">Scene to render</param>
+        public static async void DrawCycle(Hierarchy hierarchy)
+        {
+            if (GameConfig.Data.START_RESIZE_WINDOW)
+                Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
+            while (IsWork)
             {
                 if (GameConfig.Data.FPS > 0)
                     await Task.Delay((int) (1000 / GameConfig.Data.FPS));
 
-                Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
-                m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
+                if (GameConfig.Data.RESIZE_WINDOW)
+                    Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
+
+                var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(h))
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(hierarchy))
                 {
                     try
                     {
-                        obj.OnDraw(m);
+                        obj.OnDraw(matrix);
                     }
                     catch (Exception e)
                     {
@@ -100,7 +126,7 @@ namespace ConsoleEngine
                         {
                             Console.SetCursorPosition(x, y);
 
-                            var c = m.Read(m.IFromPos(x, y));
+                            var c = matrix.Read(matrix.IFromPos(x, y));
                             Console.ForegroundColor = c.Color;
                             Console.Write(c.Character);
                         }
@@ -116,19 +142,17 @@ namespace ConsoleEngine
             }
         }
 
-        public static void Stop()
+        /// <summary>
+        /// Main update thread
+        /// </summary>
+        /// <param name="hierarchy">Scene to Main Updating</param>
+        public static void MainLoop(Hierarchy hierarchy)
         {
-            Logger.Stop();
-            Console.ReadKey();
-        }
-
-        public static void MainLoop(Hierarchy h)
-        {
-            while (true)
+            while (IsWork)
             {
                 //if (GameConfig.Data.FPS > 0)
                 //    await Task.Delay((int) (1000 / GameConfig.Data.FPS));
-                foreach (IGameObjectUpdatable obj in h.Objs)
+                foreach (IGameObjectUpdatable obj in hierarchy.Objs)
                 {
                     try
                     {

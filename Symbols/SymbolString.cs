@@ -5,10 +5,17 @@ using System.Numerics;
 
 namespace ConsoleEngine.Symbols
 {
+    /// <summary>
+    /// Colored string for rendering
+    /// </summary>
     public class SymbolString
     {
         public string String = "";
+        public ConsoleColor Color = ConsoleColor.White;
 
+        /// <summary>
+        /// Character enumerable
+        /// </summary>
         public IEnumerable<Symbol> SymbolArray
         {
             get
@@ -19,9 +26,7 @@ namespace ConsoleEngine.Symbols
                 }
             }
         }
-
-        public ConsoleColor Color = ConsoleColor.White;
-
+        
         public SymbolString()
         {
         }
@@ -37,6 +42,12 @@ namespace ConsoleEngine.Symbols
             Color = color;
         }
 
+        /// <summary>
+        /// Render String in SymbolMatrix
+        /// </summary>
+        /// <param name="matrix">Matrix to render at</param>
+        /// <param name="symbolString">String to render</param>
+        /// <param name="pos">2D Vector position in matrix space</param>
         public static void PlaceAt(SymbolMatrix matrix, SymbolString symbolString, Vector2 pos)
         {
             var y = 0;
@@ -49,6 +60,7 @@ namespace ConsoleEngine.Symbols
                     x++;
                     continue;
                 }
+
                 matrix.Draw(symbol, pos + new Vector2(x, y));
 
                 x++;
@@ -58,7 +70,7 @@ namespace ConsoleEngine.Symbols
             }
         }
     }
-
+    
     public static class SymbolStringFactory
     {
         public static SymbolString Get(string path)

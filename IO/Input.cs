@@ -1,9 +1,15 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.IO
 {
+    /// <summary>
+    /// Keyboard input
+    /// </summary>
     public static class Input
     {
+        /// <summary>
+        /// Windows Forms Keys duplicate (^J^)
+        /// </summary>
         public enum Keys
         {
             /// <summary>
@@ -978,7 +984,7 @@ namespace ConsoleEngine
         }
 
         [DllImport("user32.dll")]
-        public static extern short GetAsyncKeyState(int vKey);
+        private static extern short GetAsyncKeyState(int vKey);
 
         public static bool GetKey(Keys key) => (GetAsyncKeyState((int) key) & 0x8000) != 0;
     }
