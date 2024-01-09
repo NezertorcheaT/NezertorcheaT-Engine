@@ -78,7 +78,7 @@ namespace ConsoleEngine.Scene
                     gameObj.AddComponent(comp);
                 }
 
-                hierarchy.Objs.Add(gameObj);
+                hierarchy.Objects.Add(gameObj);
             }
 
             foreach (var par in parents)

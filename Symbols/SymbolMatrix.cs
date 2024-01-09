@@ -76,7 +76,7 @@ namespace ConsoleEngine.Symbols
         /// </summary>
         /// <param name="pos">2D Vector position in matrix space</param>
         /// <returns></returns>
-        public Symbol Read(Vector2 pos) => _matrix[IFromPos(pos)];
+        public Symbol Read(Vector2 pos) => Read(IFromPos(pos));
 
         /// <summary>
         /// Get Symbol at array position of matrix

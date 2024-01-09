@@ -113,7 +113,7 @@ namespace ConsoleEngine.Scene
         /// <param name="hierarchy"></param>
         /// <returns></returns>
         public static IEnumerable<GameObject> FindAllByTag(string tag, Hierarchy hierarchy) =>
-            hierarchy.Objs.Where(obj => obj.tag == tag);
+            hierarchy.Objects.Where(obj => obj.tag == tag);
 
         /// <summary>
         /// Finds all objects with name
@@ -122,7 +122,7 @@ namespace ConsoleEngine.Scene
         /// <param name="hierarchy"></param>
         /// <returns></returns>
         public static IEnumerable<GameObject> FindAllByName(string name, Hierarchy hierarchy) =>
-            hierarchy.Objs.Where(obj => obj.name == name);
+            hierarchy.Objects.Where(obj => obj.name == name);
 
         /// <summary>
         /// Finds first object with Component
@@ -132,7 +132,7 @@ namespace ConsoleEngine.Scene
         /// <returns></returns>
         public static T? FindObjectOfType<T>(Hierarchy hierarchy) where T : Component, IComponentInit
         {
-            foreach (var obj in hierarchy.Objs)
+            foreach (var obj in hierarchy.Objects)
             {
                 foreach (var comp in obj._components)
                 {
@@ -152,7 +152,7 @@ namespace ConsoleEngine.Scene
         /// <typeparam name="T">Type inherited from Component</typeparam>
         /// <returns></returns>
         public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : IComponentInit =>
-            hierarchy.Objs.Aggregate(Array.Empty<Component>() as IEnumerable<Component>,
+            hierarchy.Objects.Aggregate(Array.Empty<Component>() as IEnumerable<Component>,
                 (current, obj) => current.Concat(obj.GetAllComponents<T>()));
 
         /// <summary>

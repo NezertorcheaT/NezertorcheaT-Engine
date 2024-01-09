@@ -6,11 +6,11 @@ namespace ConsoleEngine
     {
         public static void Main(string[] args)
         {
-            Startup.Start(out var hierarchy);
+            Startup.Start();
 
-            if (hierarchy == null) return;
-            Startup.DrawCycle(hierarchy);
-            Startup.MainLoop(hierarchy);
+            if (GameConfig.GameHierarchy == null) return;
+            Startup.DrawCycle();
+            Startup.MainLoop();
 
             Startup.Stop();
         }

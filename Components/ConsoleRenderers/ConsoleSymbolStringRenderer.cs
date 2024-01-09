@@ -14,7 +14,7 @@ namespace ConsoleEngine.Components.ConsoleRenderers
             var cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);
 
             var pos = transform.Position;
-            var symbolString = SymbolStringFactory.Get(Path);
+            var symbolString = SymbolStringFactory.GetFromPath(Path);
             symbolString.Color = (ConsoleColor) Color;
 
             if (SymbolMatrix.WorldToSymbolMatrixPosition(ref pos, cam, true))

@@ -16,10 +16,8 @@ namespace ConsoleEngine.IO
         /// <summary>
         /// Full preparation of app to run
         /// </summary>
-        /// <param name="hierarchy">Prepared scene</param>
-        public static void Start(out Hierarchy? hierarchy)
+        public static void Start()
         {
-            hierarchy = null;
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
@@ -44,7 +42,7 @@ namespace ConsoleEngine.IO
             Hierarchy h;
             try
             {
-                h = HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP);
+                GameConfig.SetupHierarchy((() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP)));
             }
             catch (Exception e)
             {
@@ -57,7 +55,7 @@ namespace ConsoleEngine.IO
             Logger.Log(GameConfig.Data.ToString(), "Current Config");
             Logger.Log(GameConfig.DefaultConfig, "Default Config");
 
-            foreach (IGameObjectStartable obj in h.Objs)
+            foreach (IGameObjectStartable obj in GameConfig.GameHierarchy.Objects)
             {
                 try
                 {
@@ -69,7 +67,6 @@ namespace ConsoleEngine.IO
                 }
             }
 
-            hierarchy = h;
             IsWork = true;
         }
 
@@ -87,7 +84,7 @@ namespace ConsoleEngine.IO
         /// Rendering thread
         /// </summary>
         /// <param name="hierarchy">Scene to render</param>
-        public static async void DrawCycle(Hierarchy hierarchy)
+        public static async void DrawCycle()
         {
             if (GameConfig.Data.START_RESIZE_WINDOW)
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
@@ -102,7 +99,8 @@ namespace ConsoleEngine.IO
                 var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(hierarchy))
+                Logger.Assert(GameConfig.GameHierarchy != null, "GameConfig.GameHierarchy != null");
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.GameHierarchy))
                 {
                     try
                     {
@@ -146,13 +144,13 @@ namespace ConsoleEngine.IO
         /// Main update thread
         /// </summary>
         /// <param name="hierarchy">Scene to Main Updating</param>
-        public static void MainLoop(Hierarchy hierarchy)
+        public static void MainLoop()
         {
             while (IsWork)
             {
                 //if (GameConfig.Data.FPS > 0)
                 //    await Task.Delay((int) (1000 / GameConfig.Data.FPS));
-                foreach (IGameObjectUpdatable obj in hierarchy.Objs)
+                foreach (IGameObjectUpdatable obj in GameConfig.GameHierarchy.Objects)
                 {
                     try
                     {

@@ -4,11 +4,11 @@ namespace ConsoleEngine.Scene
 {
     public class Hierarchy
     {
-        public List<GameObject> Objs { get; }
+        public List<GameObject> Objects { get; }
 
         public Hierarchy()
         {
-            Objs = new List<GameObject>();
+            Objects = new List<GameObject>();
         }
     }
 }

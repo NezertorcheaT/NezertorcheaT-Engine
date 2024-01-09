@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using ConsoleEngine.Scene;
 
 namespace ConsoleEngine.IO
 {
@@ -13,6 +15,13 @@ namespace ConsoleEngine.IO
         /// Current game settings
         /// </summary>
         public static GameConfigData Data { get; private set; }
+
+        public static Hierarchy? GameHierarchy { get; private set; }
+
+        public static void SetupHierarchy(Func<Hierarchy?> factory)
+        {
+            GameHierarchy = factory.Invoke();
+        }
 
         /// <summary>
         /// Rewrite current config file

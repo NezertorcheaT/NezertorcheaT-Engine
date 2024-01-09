@@ -73,7 +73,7 @@ namespace ConsoleEngine.Symbols
     
     public static class SymbolStringFactory
     {
-        public static SymbolString Get(string path)
+        public static SymbolString GetFromPath(string path)
         {
             return new SymbolString(new StreamReader(path).ReadToEnd() ?? "");
         }
