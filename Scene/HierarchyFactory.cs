@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ConsoleEngine.Components;
@@ -12,6 +13,15 @@ namespace ConsoleEngine.Scene
 {
     public static class HierarchyFactory
     {
+        private static readonly string GameObjectNameLiteral = "name";
+        private static readonly string GameObjectTagLiteral = "tag";
+        private static readonly string GameObjectLayerLiteral = "layer";
+        private static readonly string ComponentsLiteral = "components";
+        private static readonly string ComponentDataLiteral = "data";
+        private static readonly string ComponentDataValueLiteral = "value";
+        private static readonly string ComponentDataNameLiteral = "name";
+        private static readonly string NullLiteral = "null";
+        
         public static string SaveHierarchy(Hierarchy hierarchy)
         {
             var s = "";
@@ -25,52 +35,53 @@ namespace ConsoleEngine.Scene
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
 
-            Logger.Log(path,"map path");
+            Logger.Log(path, "map path");
             Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
 
             foreach (var objNode in node.AsArray())
             {
-                var gameObj = new GameObject(objNode["name"].ToString(), objNode["tag"].ToString(),
-                    objNode["layer"].Deserialize<int>(), hierarchy);
+                var gameObj = new GameObject(objNode[GameObjectNameLiteral].ToString(), objNode[GameObjectTagLiteral].ToString(),
+                    objNode[GameObjectLayerLiteral].Deserialize<int>(), hierarchy);
 
                 gameObj.transform.LocalPosition = new Vector2(
-                    objNode["components"].AsArray().First()["data"].AsArray().First()["value"].AsArray().First()
+                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray().First()[ComponentDataValueLiteral].AsArray().First()
                         .Deserialize<float>(),
-                    objNode["components"].AsArray().First()["data"].AsArray().First()["value"].AsArray().Last()
+                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray().First()[ComponentDataValueLiteral].AsArray().Last()
                         .Deserialize<float>()
                 );
 
                 parents.Add(new[]
                 {
                     gameObj.name,
-                    objNode["components"].AsArray().First()["data"].AsArray()[1]["value"].Deserialize<string>()
+                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray()[1][ComponentDataValueLiteral].Deserialize<string>()
                 });
 
-                Logger.Log(gameObj,"GameObject to initialize");
-                foreach (var componentNode in objNode["components"].AsArray())
+                Logger.Log(gameObj, "GameObject to initialize");
+                foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
-                    if (componentNode["name"].ToString() == nameof(Transform) ||
-                        componentNode["name"].ToString() == nameof(Behavior) ||
-                        componentNode["name"].ToString() == nameof(Component)) continue;
+                    if (componentNode[ComponentDataNameLiteral].ToString() == nameof(Transform) ||
+                        componentNode[ComponentDataNameLiteral].ToString() == nameof(Behavior) ||
+                        componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
 
                     var comp = (Activator.CreateInstance(
                         StaticShit.GetEnumerableOfType<Component>().FirstOrDefault(component =>
-                            componentNode["name"].ToString() == component.Name)) as Component);
+                            componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component);
 
                     if (comp == null) continue;
                     Logger.Log(comp, "component to initialize");
 
-                    foreach (var varNode in componentNode["data"].AsArray())
+                    foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
                     {
-                        Logger.Log(varNode["value"], "component field to initialize");
-                        foreach (var fieldInfo in comp.GetType().GetFields())
+                        Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
+                        foreach (var fieldInfo in comp.GetType()
+                            .GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                         {
-                            if (fieldInfo.Name != varNode["name"].ToString()) continue;
+                            if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
                             Logger.Log(fieldInfo.FieldType.Name);
                             Logger.Log(fieldInfo.Name);
-                            fieldInfo.SetValue(comp, varNode["value"].Deserialize(fieldInfo.FieldType));
+                            fieldInfo.SetValue(comp, varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             break;
                         }
                     }
@@ -84,7 +95,7 @@ namespace ConsoleEngine.Scene
             foreach (var par in parents)
             {
                 var parent = par[1];
-                if (parent == "null") continue;
+                if (parent == NullLiteral) continue;
 
                 var child = par[0];
                 var childObj = GameObject.FindObjectByName(child, hierarchy);

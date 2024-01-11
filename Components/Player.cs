@@ -5,7 +5,7 @@ namespace ConsoleEngine.Components
 {
     public class Player : Behavior
     {
-        public float speed;
+        private float speed;
 
         public override void Update()
         {

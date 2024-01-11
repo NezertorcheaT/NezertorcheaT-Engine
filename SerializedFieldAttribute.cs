@@ -3,10 +3,7 @@
 namespace ConsoleEngine
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-    public class SerilizeFieldAttribute : Attribute
+    public class SerializedFieldAttribute : Attribute
     {
-        public SerilizeFieldAttribute()
-        {
-        }
     }
 }
