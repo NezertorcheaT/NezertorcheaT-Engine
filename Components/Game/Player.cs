@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using ConsoleEngine.IO;
 
-namespace ConsoleEngine.Components
+namespace ConsoleEngine.Components.Game
 {
     public class Player : Behavior
     {

@@ -21,7 +21,7 @@ namespace ConsoleEngine.Scene
         private static readonly string ComponentDataValueLiteral = "value";
         private static readonly string ComponentDataNameLiteral = "name";
         private static readonly string NullLiteral = "null";
-        
+
         public static string SaveHierarchy(Hierarchy hierarchy)
         {
             var s = "";
@@ -42,20 +42,25 @@ namespace ConsoleEngine.Scene
 
             foreach (var objNode in node.AsArray())
             {
-                var gameObj = new GameObject(objNode[GameObjectNameLiteral].ToString(), objNode[GameObjectTagLiteral].ToString(),
+                var gameObj = new GameObject(objNode[GameObjectNameLiteral].ToString(),
+                    objNode[GameObjectTagLiteral].ToString(),
                     objNode[GameObjectLayerLiteral].Deserialize<int>(), hierarchy);
 
+                var trcmp = objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray();
+
                 gameObj.transform.LocalPosition = new Vector2(
-                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray().First()[ComponentDataValueLiteral].AsArray().First()
-                        .Deserialize<float>(),
-                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray().First()[ComponentDataValueLiteral].AsArray().Last()
-                        .Deserialize<float>()
+                    trcmp.First()[ComponentDataValueLiteral].AsArray().First().Deserialize<float>(),
+                    trcmp.First()[ComponentDataValueLiteral].AsArray().Last().Deserialize<float>()
                 );
+
+                var localRotation = trcmp[1][ComponentDataValueLiteral].Deserialize<float>();
+                gameObj.transform.LocalRotation = localRotation;
+                Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
 
                 parents.Add(new[]
                 {
                     gameObj.name,
-                    objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray()[1][ComponentDataValueLiteral].Deserialize<string>()
+                    trcmp.Last()[ComponentDataValueLiteral].Deserialize<string>()
                 });
 
                 Logger.Log(gameObj, "GameObject to initialize");
@@ -66,7 +71,7 @@ namespace ConsoleEngine.Scene
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
 
                     var comp = (Activator.CreateInstance(
-                        StaticShit.GetEnumerableOfType<Component>().FirstOrDefault(component =>
+                        Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
                             componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component);
 
                     if (comp == null) continue;
@@ -81,7 +86,8 @@ namespace ConsoleEngine.Scene
                             if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
                             Logger.Log(fieldInfo.FieldType.Name);
                             Logger.Log(fieldInfo.Name);
-                            fieldInfo.SetValue(comp, varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
+                            fieldInfo.SetValue(comp,
+                                varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             break;
                         }
                     }

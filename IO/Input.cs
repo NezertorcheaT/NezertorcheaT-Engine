@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace ConsoleEngine.IO
 {
@@ -8,8 +9,9 @@ namespace ConsoleEngine.IO
     public static class Input
     {
         /// <summary>
-        /// Windows Forms Keys duplicate (^J^)
+        /// Windows Forms Keys duplicate (^0^)
         /// </summary>
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public enum Keys
         {
             /// <summary>

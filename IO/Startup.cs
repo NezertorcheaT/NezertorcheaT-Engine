@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using ConsoleEngine.Components;
 using ConsoleEngine.Scene;
@@ -118,6 +119,20 @@ namespace ConsoleEngine.IO
 
                 try
                 {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(0, 0);
+                    var stringBuilder = new StringBuilder();
+ /*                   
+                    for (var x = 0; x < GameConfig.Data.WIDTH; x++)
+                    {
+                        for (var y = 0; y < GameConfig.Data.HEIGHT; y++)
+                        {
+                            stringBuilder.Append(matrix.Read(matrix.IFromPos(x, y)).Character);
+                        }
+                        stringBuilder.Append('\n');
+                    }
+                    Console.Write(stringBuilder.ToString());
+*/
                     for (var x = 0; x < GameConfig.Data.WIDTH; x++)
                     {
                         for (var y = 0; y < GameConfig.Data.HEIGHT; y++)
