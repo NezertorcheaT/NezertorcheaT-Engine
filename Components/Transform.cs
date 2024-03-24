@@ -17,7 +17,8 @@ namespace ConsoleEngine.Components
         public Vector2 Position => GetPosition(LocalPosition, Parent);
         public float Rotation => GetRotation(LocalRotationRadians, Parent);
         public float RotationRadians => Rotation * Helper.DegToRadFloat;
-        public Matrix3x2 RotationMatrix => Matrix3x2.CreateRotation(GetRotation(RotationRadians, Parent));
+        public Matrix3x2 RotationMatrix => Matrix3x2.CreateRotation(RotationRadians);
+        public Matrix3x2 LocalRotationMatrix => Matrix3x2.CreateRotation(LocalRotationRadians);
 
         private static float GetRotation(float rot, Transform? par)
         {
@@ -36,7 +37,7 @@ namespace ConsoleEngine.Components
             {
                 if (par == null) return loc;
 
-                loc += Vector2.Transform(par.LocalPosition, par.RotationMatrix);
+                loc= Vector2.Transform(loc, par.LocalRotationMatrix)+par.LocalPosition;
                 //loc += par.LocalPosition;
                 par = par.Parent;
             }
