@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using ConsoleEngine.Components.Physics;
 
 namespace ConsoleEngine.IO
 {
@@ -33,5 +34,9 @@ namespace ConsoleEngine.IO
         public static float DegToRadFloat => (float) (Math.PI / 180.0);
         public static double RadToDeg => 180.0 / Math.PI;
         public static float RadToDegFloat => (float) (180.0 / Math.PI);
+        public static Vector2 Normal(Vector2 a, Vector2 b) => new Vector2(-(b.Y - a.Y), b.X - a.X);
+
+        public static Collision? CheckCollision(this SatTriangle triangle1, SatTriangle triangle2) =>
+            SatTriangle.CheckCollision(triangle1, triangle2);
     }
 }

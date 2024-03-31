@@ -35,6 +35,8 @@ namespace ConsoleEngine.Scene
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
 
+            StaticContainersFactory.CreateStaticContainers(hierarchy);
+
             Logger.Log(path, "map path");
             Logger.Log(options, "map json options");
 
@@ -42,9 +44,12 @@ namespace ConsoleEngine.Scene
 
             foreach (var objNode in node.AsArray())
             {
-                var gameObj = new GameObject(objNode[GameObjectNameLiteral].ToString(),
+                var gameObj = new GameObject(
+                    objNode[GameObjectNameLiteral].ToString(),
                     objNode[GameObjectTagLiteral].ToString(),
-                    objNode[GameObjectLayerLiteral].Deserialize<int>(), hierarchy);
+                    objNode[GameObjectLayerLiteral].Deserialize<int>(),
+                    hierarchy
+                );
 
                 var trcmp = objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray();
 

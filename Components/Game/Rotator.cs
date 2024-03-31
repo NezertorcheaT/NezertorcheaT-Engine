@@ -4,20 +4,18 @@ namespace ConsoleEngine.Components.Game
 {
     public class Rotator : Behavior
     {
-        private float speed = 0.1f;
+        private float speed = 1f;
 
-        public override void Update()
+        public override void FixedUpdate()
         {
             if (Input.GetKey(Input.Keys.NumPad1))
             {
                 transform.LocalRotation += speed;
-                Logger.Log(transform.Rotation);
             }
 
             if (Input.GetKey(Input.Keys.NumPad2))
             {
                 transform.LocalRotation -= speed;
-                Logger.Log(transform.Rotation);
             }
         }
     }

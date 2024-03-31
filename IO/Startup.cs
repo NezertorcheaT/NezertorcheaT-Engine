@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ConsoleEngine.Components;
 using ConsoleEngine.Scene;
@@ -85,22 +86,25 @@ namespace ConsoleEngine.IO
         /// Rendering thread
         /// </summary>
         /// <param name="hierarchy">Scene to render</param>
-        public static async void DrawCycle()
+        public static void DrawCycle()
         {
             if (GameConfig.Data.START_RESIZE_WINDOW)
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
             while (IsWork)
             {
                 if (GameConfig.Data.FPS > 0)
-                    await Task.Delay((int) (1000 / GameConfig.Data.FPS));
+                    Thread.Sleep((int) (1000.0 / GameConfig.Data.FPS));
 
                 if (GameConfig.Data.RESIZE_WINDOW)
                     Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
+
+                if (!GameConfig.Data.DRAW_PRIOIRITY && MainLoopWorking) continue;
 
                 var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 Logger.Assert(GameConfig.GameHierarchy != null, "GameConfig.GameHierarchy != null");
+                DrawLoopWorking = true;
                 foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.GameHierarchy))
                 {
                     try
@@ -117,12 +121,14 @@ namespace ConsoleEngine.IO
                         Logger.Log($"{obj.gameObject}: {obj}, {obj.gameObject.transform.Position}", "drawcall");
                 }
 
+                DrawLoopWorking = false;
+
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.SetCursorPosition(0, 0);
                     var stringBuilder = new StringBuilder();
- /*                   
+                    /*                   
                     for (var x = 0; x < GameConfig.Data.WIDTH; x++)
                     {
                         for (var y = 0; y < GameConfig.Data.HEIGHT; y++)
@@ -132,7 +138,7 @@ namespace ConsoleEngine.IO
                         stringBuilder.Append('\n');
                     }
                     Console.Write(stringBuilder.ToString());
-*/
+                   */
                     for (var x = 0; x < GameConfig.Data.WIDTH; x++)
                     {
                         for (var y = 0; y < GameConfig.Data.HEIGHT; y++)
@@ -155,6 +161,9 @@ namespace ConsoleEngine.IO
             }
         }
 
+        public static bool DrawLoopWorking { get; private set; }
+        public static bool MainLoopWorking { get; private set; }
+
         /// <summary>
         /// Main update thread
         /// </summary>
@@ -163,8 +172,11 @@ namespace ConsoleEngine.IO
         {
             while (IsWork)
             {
-                //if (GameConfig.Data.FPS > 0)
-                //    await Task.Delay((int) (1000 / GameConfig.Data.FPS));
+                Thread.Yield();
+                MainLoopWorking = false;
+
+                if (GameConfig.Data.DRAW_PRIOIRITY && DrawLoopWorking) continue;
+
                 foreach (IGameObjectUpdatable obj in GameConfig.GameHierarchy.Objects)
                 {
                     try
@@ -176,7 +188,11 @@ namespace ConsoleEngine.IO
                         Logger.Log(e, "update error");
                     }
                 }
+
+                MainLoopWorking = true;
             }
+
+            Stop();
         }
     }
 }

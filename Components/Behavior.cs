@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using ConsoleEngine.Components.Physics;
 using ConsoleEngine.IO;
 
 namespace ConsoleEngine.Components
 {
     [SuppressMessage("ReSharper", "UnusedType.Global")]
-    public abstract class Behavior : Component, IComponentStart, IComponentUpdate
+    public abstract class Behavior : Component, IComponentStart, IComponentUpdate,ICollidable
     {
         void IComponentStart.Start()
         {
@@ -41,6 +42,11 @@ namespace ConsoleEngine.Components
 
         public virtual void FixedUpdate()
         {
+        }
+
+        public virtual void OnStayColliding(Collision collision)
+        {
+            
         }
     }
 }

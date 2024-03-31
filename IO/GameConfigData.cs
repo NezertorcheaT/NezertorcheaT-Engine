@@ -25,6 +25,7 @@ namespace ConsoleEngine.IO
         public bool LOG_DRAWCALLS { get; set; }
         public bool RESIZE_WINDOW { get; set; }
         public bool START_RESIZE_WINDOW { get; set; }
+        public bool DRAW_PRIOIRITY { get; set; }
 
         private static readonly string AsString = "NezertorcheatIsGandonAndUebok";
 
