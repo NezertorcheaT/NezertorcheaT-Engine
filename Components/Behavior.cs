@@ -7,7 +7,7 @@ using ConsoleEngine.IO;
 namespace ConsoleEngine.Components
 {
     [SuppressMessage("ReSharper", "UnusedType.Global")]
-    public abstract class Behavior : Component, IComponentStart, IComponentUpdate,ICollidable
+    public abstract class Behavior : Component, IComponentStart, IComponentUpdate, ICollidable
     {
         void IComponentStart.Start()
         {
@@ -15,11 +15,17 @@ namespace ConsoleEngine.Components
             FixedCycle();
         }
 
-        public virtual void Start()
+        protected virtual void Start()
         {
         }
 
-        public virtual void Update()
+        void IComponentUpdate.Update()
+        {
+            if (!ActiveAndEnabled) return;
+            Update();
+        }
+
+        protected virtual void Update()
         {
         }
 
@@ -28,7 +34,7 @@ namespace ConsoleEngine.Components
             for (;;)
             {
                 await Task.Delay((int) (GameConfig.GetData().FIXED_REPETITIONS * 1000));
-                if (!enabled) continue;
+                if (!ActiveAndEnabled) continue;
                 try
                 {
                     FixedUpdate();
@@ -44,9 +50,13 @@ namespace ConsoleEngine.Components
         {
         }
 
-        public virtual void OnStayColliding(Collision collision)
+        void ICollidable.OnStayColliding(Collision collision)
         {
-            
+            OnStayCollide(collision);
+        }
+
+        protected virtual void OnStayCollide(Collision collision)
+        {
         }
     }
 }

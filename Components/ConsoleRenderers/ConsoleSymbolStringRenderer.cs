@@ -11,6 +11,7 @@ namespace ConsoleEngine.Components.ConsoleRenderers
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
         {
+            if (!ActiveAndEnabled) return;
             var cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);
 
             var pos = transform.Position;

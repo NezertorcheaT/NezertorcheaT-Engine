@@ -2,7 +2,7 @@
 
 namespace ConsoleEngine.Components.Physics
 {
-    public interface IPolygonamical
+    public interface IPolygonamical:IComponentInit
     {
         IEnumerable<SatTriangle> ToSatTriangles { get; }
     }

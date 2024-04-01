@@ -19,7 +19,7 @@ namespace ConsoleEngine.Components.Physics
         {
             foreach (var component in gameObject.GetAllComponents<Component>())
             {
-                if (component is ICollidable collidable)
+                if (component.ActiveAndEnabled && component is ICollidable collidable)
                 {
                     collidable.OnStayColliding(collision);
                 }
@@ -43,7 +43,7 @@ namespace ConsoleEngine.Components.Physics
             for (;;)
             {
                 await Task.Delay((int) (GameConfig.GetData().FIXED_REPETITIONS * 1000));
-                if (!enabled) continue;
+                if (!ActiveAndEnabled) continue;
                 try
                 {
                     FixedUpdate();

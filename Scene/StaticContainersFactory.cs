@@ -13,6 +13,7 @@ namespace ConsoleEngine.Scene
             var path = GameConfig.StaticContainersPath;
             var fileString = File.ReadAllText(path);
             var gameObject = new GameObject("_StaticComponentsContainer", "", 0, hierarchy);
+            gameObject.active = true;
             
             foreach (var componentLiteral in fileString.Split('\n'))
             {
@@ -24,9 +25,11 @@ namespace ConsoleEngine.Scene
                 var comp = Activator.CreateInstance(compType) as Component;
 
                 gameObject.AddComponent(comp);
+                Logger.Log(componentLiteral, "Static Components added");
             }
 
             hierarchy.Objects.Add(gameObject);
+            Logger.Log(gameObject.name, "Static Components Container created");
         }
     }
 }

@@ -24,6 +24,7 @@ namespace ConsoleEngine.Components
         public Transform transform => gameObject.transform;
 
         public bool enabled = true;
+        public bool ActiveAndEnabled => enabled && gameObject.active;
 
 
         void IComponentInit.Init(GameObject gameObject)

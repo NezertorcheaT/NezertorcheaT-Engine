@@ -25,6 +25,7 @@ namespace ConsoleEngine.Scene
         public string name { get; set; }
         public string tag { get; set; }
         public int layer { get; set; }
+        public bool active { get; set; }
 
         /// <summary>
         /// Link to Transform component of GameObject

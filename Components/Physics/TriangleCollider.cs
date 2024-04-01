@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using ConsoleEngine.IO;
 
@@ -10,23 +11,25 @@ namespace ConsoleEngine.Components.Physics
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class TriangleCollider : Collider, IPolygonamical
     {
-        public Vector2 P1;
-        public Vector2 P2;
-        public Vector2 P3;
+        public double[] P1;
+        public double[] P2;
+        public double[] P3;
 
         IEnumerable<SatTriangle> IPolygonamical.ToSatTriangles => new[] {SatTriangle};
 
         private SatTriangle SatTriangle => new SatTriangle(
-            Vector2.Transform(P1 + transform.Position, transform.LocalRotationMatrix),
-            Vector2.Transform(P2 + transform.Position, transform.LocalRotationMatrix),
-            Vector2.Transform(P3 + transform.Position, transform.LocalRotationMatrix)
+            Vector2.Transform(P1.Da2V2(), transform.LocalRotationMatrix) + transform.Position,
+            Vector2.Transform(P2.Da2V2(), transform.LocalRotationMatrix) + transform.Position,
+            Vector2.Transform(P3.Da2V2(), transform.LocalRotationMatrix) + transform.Position
         );
 
         protected override Collision? Check()
         {
             var thisSat = SatTriangle;
-            foreach (var triangle in CollidersCounter.Triangles)
+            var triangles = CollidersCounter.Triangles.ToList();
+            foreach (var triangle in triangles)
             {
+                //Logger.Log(triangle, "triangle");
                 if (triangle.Equals(thisSat)) continue;
                 var collision = thisSat.CheckCollision(triangle);
 

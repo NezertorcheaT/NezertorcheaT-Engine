@@ -16,10 +16,12 @@ namespace ConsoleEngine.Scene
         private static readonly string GameObjectNameLiteral = "name";
         private static readonly string GameObjectTagLiteral = "tag";
         private static readonly string GameObjectLayerLiteral = "layer";
+        private static readonly string GameObjectActiveLiteral = "active";
         private static readonly string ComponentsLiteral = "components";
         private static readonly string ComponentDataLiteral = "data";
         private static readonly string ComponentDataValueLiteral = "value";
         private static readonly string ComponentDataNameLiteral = "name";
+        private static readonly string ComponentEnabledLiteral = "enabled";
         private static readonly string NullLiteral = "null";
 
         public static string SaveHierarchy(Hierarchy hierarchy)
@@ -50,6 +52,7 @@ namespace ConsoleEngine.Scene
                     objNode[GameObjectLayerLiteral].Deserialize<int>(),
                     hierarchy
                 );
+                gameObj.active = objNode[GameObjectActiveLiteral].Deserialize<bool>();
 
                 var trcmp = objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray();
 
@@ -75,11 +78,13 @@ namespace ConsoleEngine.Scene
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Behavior) ||
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
 
-                    var comp = (Activator.CreateInstance(
+                    var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
-                            componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component);
+                            componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component;
 
                     if (comp == null) continue;
+                    comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
+                    
                     Logger.Log(comp, "component to initialize");
 
                     foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
