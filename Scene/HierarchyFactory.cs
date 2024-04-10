@@ -30,7 +30,7 @@ namespace ConsoleEngine.Scene
             return s;
         }
 
-        public static Hierarchy CreateHierarchy(string path)
+        public static Hierarchy CreateHierarchy(string path, bool debug=true)
         {
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
@@ -39,8 +39,8 @@ namespace ConsoleEngine.Scene
 
             StaticContainersFactory.CreateStaticContainers(hierarchy);
 
-            Logger.Log(path, "map path");
-            Logger.Log(options, "map json options");
+            if(debug) Logger.Log(path, "map path");
+            if(debug) Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
 
@@ -63,7 +63,7 @@ namespace ConsoleEngine.Scene
 
                 var localRotation = trcmp[1][ComponentDataValueLiteral].Deserialize<float>();
                 gameObj.transform.LocalRotation = localRotation;
-                Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
+                if(debug) Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
 
                 parents.Add(new[]
                 {
@@ -71,7 +71,7 @@ namespace ConsoleEngine.Scene
                     trcmp.Last()[ComponentDataValueLiteral].Deserialize<string>()
                 });
 
-                Logger.Log(gameObj, "GameObject to initialize");
+                if(debug) Logger.Log(gameObj, "GameObject to initialize");
                 foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
                     if (componentNode[ComponentDataNameLiteral].ToString() == nameof(Transform) ||
@@ -85,17 +85,17 @@ namespace ConsoleEngine.Scene
                     if (comp == null) continue;
                     comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
                     
-                    Logger.Log(comp, "component to initialize");
+                    if(debug) Logger.Log(comp, "component to initialize");
 
                     foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
                     {
-                        Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
+                        if(debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
                         foreach (var fieldInfo in comp.GetType()
                             .GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                         {
                             if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
-                            Logger.Log(fieldInfo.FieldType.Name);
-                            Logger.Log(fieldInfo.Name);
+                            if(debug) Logger.Log(fieldInfo.FieldType.Name);
+                            if(debug) Logger.Log(fieldInfo.Name);
                             fieldInfo.SetValue(comp,
                                 varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             break;

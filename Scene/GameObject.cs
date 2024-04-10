@@ -93,7 +93,7 @@ namespace ConsoleEngine.Scene
             GetAllComponents<T>().FirstOrDefault(defaultValue: null) as T;
 
         public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit => _components.Where(
-            c => c.GetType().FullName == typeof(T).FullName || c.GetType().GetInterfaces().Contains(typeof(T)));
+            c => c is T || c.GetType().GetInterfaces().Contains(typeof(T)));
 
         /// <summary>
         /// Adds already created Component to GameObject
@@ -103,7 +103,7 @@ namespace ConsoleEngine.Scene
         public Component AddComponent(Component component)
         {
             _components.Add(component);
-            (component as IComponentInit)?.Init(this);
+            (component as IComponentInit).Init(this);
             return component;
         }
 

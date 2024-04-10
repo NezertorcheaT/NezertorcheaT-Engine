@@ -45,7 +45,7 @@ namespace ConsoleEngine.IO
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
         /// <exception cref="Exception">Initialise before logging</exception>
-        public static void Log(object message, string logType = "log message")
+        public static void Log(object message, string logType = "info")
         {
             if (File.Exists("logs\\.now"))
             {

@@ -53,6 +53,17 @@ namespace ConsoleEngine.Components.Physics
             this.P3 = P3;
         }
 
+        public static bool operator ==(SatTriangle a, SatTriangle b) => a.Equals(b);
+        public static bool operator !=(SatTriangle a, SatTriangle b) => !a.Equals(b);
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null) return false;
+            var t = obj is SatTriangle ? (SatTriangle) obj : (SatTriangle?) null;
+            if (t is null) return false;
+            return P1 == t.Value.P1 && P2 == t.Value.P2 && P3 == t.Value.P3;
+        }
+
         public static Collision? CheckCollision(SatTriangle triangle1, SatTriangle triangle2)
         {
             var collision = new Collision();
@@ -66,9 +77,9 @@ namespace ConsoleEngine.Components.Physics
             {
                 var normal = normals1[va];
                 var minimumSeparation = float.MaxValue;
-                for (var vb = 0; vb < 3; vb++)
+                foreach (var vert1 in vertecies2)
                 {
-                    var proj = Vector2.Dot(vertecies1[vb] - vertecies2[va], normal);
+                    var proj = Vector2.Dot(vert1 - vertecies1[va], normal);
                     minimumSeparation = MathF.Min(minimumSeparation, proj);
                 }
 
@@ -82,14 +93,12 @@ namespace ConsoleEngine.Components.Physics
 
             //Logger.Log(separation, "sat separation");
 
-            if (separation >= 0) return collision;
+            //return collision;
+            if (separation <= 0) return collision;
 
             return null;
         }
 
-        public override string ToString()
-        {
-            return $"SatTriangle({P1}, {P2}, {P3})";
-        }
+        public override string ToString() => $"SatTriangle({P1}, {P2}, {P3})";
     }
 }

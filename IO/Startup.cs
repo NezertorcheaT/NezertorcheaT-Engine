@@ -41,10 +41,13 @@ namespace ConsoleEngine.IO
                 return;
             }
 
+            //Logger.Log(GameConfig.Data.ToString(), "Current Config");
+            //Logger.Log(GameConfig.DefaultConfig, "Default Config");
+
             Hierarchy h;
             try
             {
-                GameConfig.SetupHierarchy((() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP)));
+                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP,false));
             }
             catch (Exception e)
             {
@@ -53,9 +56,6 @@ namespace ConsoleEngine.IO
                 Stop();
                 return;
             }
-
-            Logger.Log(GameConfig.Data.ToString(), "Current Config");
-            Logger.Log(GameConfig.DefaultConfig, "Default Config");
 
             foreach (IGameObjectStartable obj in GameConfig.GameHierarchy.Objects)
             {
@@ -170,6 +170,9 @@ namespace ConsoleEngine.IO
         /// <param name="hierarchy">Scene to Main Updating</param>
         public static void MainLoop()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            Logger.Log("Starting World Cycle");
+            
             while (IsWork)
             {
                 Thread.Yield();
@@ -188,8 +191,10 @@ namespace ConsoleEngine.IO
                         Logger.Log(e, "update error");
                     }
                 }
-
+                
                 MainLoopWorking = true;
+                Time.SetDeltaTime(watch.Elapsed.TotalSeconds);
+                watch.Restart();
             }
 
             Stop();
