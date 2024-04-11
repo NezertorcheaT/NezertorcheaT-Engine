@@ -15,34 +15,7 @@ namespace ConsoleEngine.Components.Physics
         public double[] P3;
 
         IEnumerable<SatTriangle> IPolygonamical.ToSatTriangles => new[] {SatTriangle};
-
-        public Bounds Bounds
-        {
-            get
-            {
-                var b = new Bounds();
-                var polygonamical = this as IPolygonamical;
-                var n = 0;
-                
-                foreach (var triangle in polygonamical.ToSatTriangles)
-                {
-                    b.Position += triangle.Centroid;
-                    n++;
-                }
-                b.Position /= n;
-                
-                
-                foreach (var triangle in polygonamical.ToSatTriangles)
-                {
-                    foreach (var vert in triangle.Verts)
-                    {
-                        
-                    }
-                }
-
-                return b;
-            }
-        }
+        public Bounds Bounds => new Bounds(SatTriangle.Verts);
 
         private SatTriangle SatTriangle => new SatTriangle(
             P1.Da2V2() + transform.Position,
@@ -50,7 +23,7 @@ namespace ConsoleEngine.Components.Physics
             P3.Da2V2() + transform.Position
         );
 
-        protected override Collision? Check()
+        Collision? IPolygonamical.Check()
         {
             var thisSat = SatTriangle;
             var triangles = CollidersCounter.Triangles.ToArray();

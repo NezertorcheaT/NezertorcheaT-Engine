@@ -21,5 +21,18 @@ namespace ConsoleEngine.Components.Physics
                 }
             }
         }
+        public static IEnumerable<Bounds> AABBs
+        {
+            get
+            {
+                if (GameConfig.GameHierarchy is null) yield break;
+                if (GameConfig.GameHierarchy.Objects.Count == 0) yield break;
+
+                foreach (var collider in GameObject.FindAllTypes<IAabb>(GameConfig.GameHierarchy))
+                {
+                    yield return (collider as IAabb)?.Bounds;
+                }
+            }
+        }
     }
 }

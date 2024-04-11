@@ -26,7 +26,9 @@ namespace ConsoleEngine.Components.Physics
 
     public abstract class Collider : Component, IComponentStart
     {
-        protected abstract Collision? Check();
+        private Collision? Check() => GameConfig.Data.USE_AABB
+            ? (this as IAabb)?.Check()
+            : (this as IPolygonamical)?.Check();
 
         private void IfColliding(Collision collision)
         {

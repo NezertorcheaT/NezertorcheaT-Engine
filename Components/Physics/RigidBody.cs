@@ -2,11 +2,12 @@
 {
     public class RigidBody : Component, ICollidable
     {
-        public float CollisionOffset = 0.05f;
+        public bool Static = false;
 
         public void OnStayColliding(Collision collision)
         {
-            transform.LocalPosition += collision.Normal * (CollisionOffset);
+            if (Static) return;
+            transform.LocalPosition += collision.Normal * collision.Distance;
         }
     }
 }

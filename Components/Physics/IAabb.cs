@@ -3,9 +3,8 @@ using ConsoleEngine.IO;
 
 namespace ConsoleEngine.Components.Physics
 {
-    public interface IPolygonamical : IComponentInit
+    public interface IAabb : IComponentInit
     {
-        IEnumerable<SatTriangle> ToSatTriangles { get; }
         Bounds Bounds { get; }
         Collision? Check();
     }

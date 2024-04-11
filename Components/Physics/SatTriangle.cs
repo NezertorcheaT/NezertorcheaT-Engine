@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -66,6 +65,8 @@ namespace ConsoleEngine.Components.Physics
 
         public static Collision? CheckCollision(SatTriangle triangle1, SatTriangle triangle2)
         {
+            throw new NotImplementedException("TODO GJK collision");
+            
             var collision = new Collision();
             var vertecies1 = triangle1.Verts.ToArray();
             var vertecies2 = triangle2.Verts.ToArray();

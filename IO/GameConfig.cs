@@ -52,7 +52,8 @@ namespace ConsoleEngine.IO
     ""CONSOLE_LINE_RENDERER_DELAY"": 8.0,
     ""RESIZE_WINDOW"": true,
     ""START_RESIZE_WINDOW"": true,
-    ""DRAW_PRIOIRITY"": false
+    ""DRAW_PRIOIRITY"": false,
+    ""USE_AABB"": true
 }
 ";
 
