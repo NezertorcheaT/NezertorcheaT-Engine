@@ -1,6 +1,6 @@
 ﻿using ConsoleEngine.IO;
 
-namespace ConsoleEngine
+namespace ConsoleEngine.Scene
 {
     public static class Time
     {
@@ -10,10 +10,10 @@ namespace ConsoleEngine
         /// <summary>
         /// pls, DO NOT USE!!!!!!
         /// </summary>
-        /// <param name="dt"></param>
-        public static void SetDeltaTime(double dt)
+        /// <param name="deltaTime"></param>
+        public static void SetDeltaTime(double deltaTime)
         {
-            DeltaTime = dt;
+            DeltaTime = deltaTime;
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System.Numerics;
+using ConsoleEngine.Components;
 using ConsoleEngine.Components.Physics;
 using ConsoleEngine.IO;
+using ConsoleEngine.Scene;
 
-namespace ConsoleEngine.Components.Game
+namespace GameProject
 {
     public class Player2 : Behavior
     {

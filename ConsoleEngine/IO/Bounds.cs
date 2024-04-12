@@ -95,9 +95,21 @@ namespace ConsoleEngine.IO
             return new Bounds(new[]
                 {
                     a.LeftUp + b.LeftUp,
+                    a.LeftUp + b.RightUp,
+                    a.LeftUp + b.LeftDown,
+                    a.LeftUp + b.RightDown,
+                    a.RightUp + b.LeftUp,
                     a.RightUp + b.RightUp,
+                    a.RightUp + b.LeftDown,
+                    a.RightUp + b.RightDown,
+                    a.LeftDown + b.LeftUp,
+                    a.LeftDown + b.RightUp,
                     a.LeftDown + b.LeftDown,
-                    a.RightDown + b.RightDown
+                    a.LeftDown + b.RightDown,
+                    a.RightDown + b.LeftUp,
+                    a.RightDown + b.RightUp,
+                    a.RightDown + b.LeftDown,
+                    a.RightDown + b.RightDown,
                 }
             );
         }

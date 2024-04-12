@@ -1,6 +1,7 @@
-﻿using ConsoleEngine.IO;
+﻿using ConsoleEngine.Components;
+using ConsoleEngine.IO;
 
-namespace ConsoleEngine.Components.Game
+namespace GameProject
 {
     public class Rotator : Behavior
     {

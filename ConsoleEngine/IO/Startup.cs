@@ -47,7 +47,7 @@ namespace ConsoleEngine.IO
             Hierarchy h;
             try
             {
-                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP,false));
+                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP,true));
             }
             catch (Exception e)
             {

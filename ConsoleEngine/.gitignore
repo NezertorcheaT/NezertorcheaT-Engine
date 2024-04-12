@@ -23,19 +23,11 @@
 *.suo
 *.user
 .vs/
-ConsoleEngine/[Bb]in/
-ConsoleEngine/[Oo]bj/
-ConsoleEngine/_UpgradeReport_Files/
-ConsoleEngine/[Pp]ackages/
-Editor/[Bb]in/
-Editor/[Oo]bj/
-Editor/_UpgradeReport_Files/
-Editor/[Pp]ackages/
-GameProject/[Bb]in/
-GameProject/[Oo]bj/
-GameProject/_UpgradeReport_Files/
-GameProject/[Pp]ackages/
+[Bb]in/
+[Oo]bj/
+_UpgradeReport_Files/
+[Pp]ackages/
 
 Thumbs.db
-**/Desktop.ini
+Desktop.ini
 .DS_Store
