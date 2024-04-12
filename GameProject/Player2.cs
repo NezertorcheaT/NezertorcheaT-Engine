@@ -21,10 +21,5 @@ namespace GameProject
             if (Input.GetKey(Input.Keys.NumPad4))
                 transform.LocalPosition += new Vector2(-speed*(float)Time.DeltaTime, 0);
         }
-
-        protected override void OnStayCollide(Collision collision)
-        {
-            Logger.Log("ALERT ALERT COLLISION DETECTED IN U LOCATION");
-        }
     }
 }

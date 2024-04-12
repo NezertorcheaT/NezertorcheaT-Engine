@@ -116,7 +116,7 @@ namespace ConsoleEngine.Symbols
 
             var posYrew = new Vector2(pos.X, -pos.Y);
 
-            var newPos = posYrew - camPos + camera.Offset.Da2V2();
+            var newPos = posYrew - camPos + camera.Offset;
             newPos.X *= Symbol.FiveByEight;
 
             if (newPos.X < 0 || newPos.X >= GameConfig.Data.WIDTH || newPos.Y < 0 ||

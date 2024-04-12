@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using ConsoleEngine.Components;
 using ConsoleEngine.IO;
+using ConsoleEngine.Scene.Serializing;
 
 namespace ConsoleEngine.Scene
 {
@@ -27,10 +28,11 @@ namespace ConsoleEngine.Scene
         public static string SaveHierarchy(Hierarchy hierarchy)
         {
             var s = "";
+            var node = JsonNode.Parse(s)!;
             return s;
         }
 
-        public static Hierarchy CreateHierarchy(string path, bool debug=true)
+        public static Hierarchy CreateHierarchy(string path, bool debug = true)
         {
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
@@ -39,8 +41,8 @@ namespace ConsoleEngine.Scene
 
             StaticContainersFactory.CreateStaticContainers(hierarchy);
 
-            if(debug) Logger.Log(path, "map path");
-            if(debug) Logger.Log(options, "map json options");
+            if (debug) Logger.Log(path, "map path");
+            if (debug) Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
 
@@ -56,14 +58,14 @@ namespace ConsoleEngine.Scene
 
                 var trcmp = objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray();
 
-                gameObj.transform.LocalPosition = new Vector2(
-                    trcmp.First()[ComponentDataValueLiteral].AsArray().First().Deserialize<float>(),
-                    trcmp.First()[ComponentDataValueLiteral].AsArray().Last().Deserialize<float>()
-                );
+                gameObj.transform.LocalPosition =
+                    (Vector2) SerializingHelper.PremadeDeserializationFunctions["Vector2"](
+                        trcmp.First()[ComponentDataValueLiteral]);
 
                 var localRotation = trcmp[1][ComponentDataValueLiteral].Deserialize<float>();
                 gameObj.transform.LocalRotation = localRotation;
-                if(debug) Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
+
+                if (debug) Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
 
                 parents.Add(new[]
                 {
@@ -71,7 +73,7 @@ namespace ConsoleEngine.Scene
                     trcmp.Last()[ComponentDataValueLiteral].Deserialize<string>()
                 });
 
-                if(debug) Logger.Log(gameObj, "GameObject to initialize");
+                if (debug) Logger.Log(gameObj, "GameObject to initialize");
                 foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
                     if (componentNode[ComponentDataNameLiteral].ToString() == nameof(Transform) ||
@@ -84,20 +86,29 @@ namespace ConsoleEngine.Scene
 
                     if (comp == null) continue;
                     comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
-                    
-                    if(debug) Logger.Log(comp, "component to initialize");
+
+                    if (debug) Logger.Log(comp, "component to initialize");
 
                     foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
                     {
-                        if(debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
+                        if (debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
                         foreach (var fieldInfo in comp.GetType()
                             .GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                         {
                             if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
-                            if(debug) Logger.Log(fieldInfo.FieldType.Name);
-                            if(debug) Logger.Log(fieldInfo.Name);
-                            fieldInfo.SetValue(comp,
-                                varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
+                            if (debug) Logger.Log(fieldInfo.FieldType.Name);
+                            if (debug) Logger.Log(fieldInfo.Name);
+                            if (SerializingHelper.PremadeDeserializationFunctions.ContainsKey(fieldInfo.FieldType.Name))
+                            {
+                                if (debug) Logger.Log($"PremadeDeserializationFunctions contains {fieldInfo.FieldType.Name}");
+                                fieldInfo.SetValue(comp, SerializingHelper.PremadeDeserializationFunctions[fieldInfo.FieldType.Name](varNode[ComponentDataValueLiteral]));
+                            }
+                            else
+                            {
+                                if (debug) Logger.Log($"PremadeDeserializationFunctions not contains {fieldInfo.FieldType.Name}");
+                                fieldInfo.SetValue(comp, varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
+                            }
+
                             break;
                         }
                     }
@@ -107,7 +118,7 @@ namespace ConsoleEngine.Scene
 
                 hierarchy.Objects.Add(gameObj);
             }
-
+            
             foreach (var par in parents)
             {
                 var parent = par[1];

@@ -7,7 +7,7 @@ namespace ConsoleEngine.Components.Physics
 {
     public class RectCollider : Collider, IPolygonamical, IAabb
     {
-        public double[] Size;
+        public Vector2 Size;
 
         IEnumerable<Collision> IAabb.Check()
         {
@@ -85,6 +85,6 @@ namespace ConsoleEngine.Components.Physics
             }
         }
 
-        public Bounds Bounds => new Bounds(Size.Da2V2(), transform.Position);
+        public Bounds Bounds => new Bounds(Size, transform.Position);
     }
 }

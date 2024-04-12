@@ -10,17 +10,17 @@ namespace ConsoleEngine.Components.Physics
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class TriangleCollider : Collider, IPolygonamical
     {
-        public double[] P1;
-        public double[] P2;
-        public double[] P3;
+        public Vector2 P1;
+        public Vector2 P2;
+        public Vector2 P3;
 
         IEnumerable<SatTriangle> IPolygonamical.ToSatTriangles => new[] {SatTriangle};
         public Bounds Bounds => new Bounds(SatTriangle.Verts);
 
         private SatTriangle SatTriangle => new SatTriangle(
-            P1.Da2V2() + transform.Position,
-            P2.Da2V2() + transform.Position,
-            P3.Da2V2() + transform.Position
+            P1 + transform.Position,
+            P2 + transform.Position,
+            P3 + transform.Position
         );
 
         IEnumerable<Collision> IPolygonamical.Check()
