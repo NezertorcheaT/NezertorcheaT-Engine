@@ -7,12 +7,11 @@ using ConsoleEngine.IO;
 namespace ConsoleEngine.Components
 {
     [SuppressMessage("ReSharper", "UnusedType.Global")]
-    public abstract class Behavior : Component, IComponentStart, IComponentUpdate, ICollidable
+    public abstract class Behavior : Component, IComponentStart, IComponentUpdate, ICollidable,IComponentFixedUpdate
     {
         void IComponentStart.Start()
         {
             Start();
-            FixedCycle();
         }
 
         protected virtual void Start()
@@ -24,29 +23,17 @@ namespace ConsoleEngine.Components
             if (!ActiveAndEnabled) return;
             Update();
         }
+        void IComponentFixedUpdate.FixedUpdate()
+        {
+            if (!ActiveAndEnabled) return;
+            FixedUpdate();
+        }
 
         protected virtual void Update()
         {
         }
 
-        private async void FixedCycle()
-        {
-            for (;;)
-            {
-                await Task.Delay((int) (GameConfig.GetData().FIXED_REPETITIONS * 1000));
-                if (!ActiveAndEnabled) continue;
-                try
-                {
-                    FixedUpdate();
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e, "Fixed update error");
-                }
-            }
-        }
-
-        public virtual void FixedUpdate()
+        protected virtual void FixedUpdate()
         {
         }
 

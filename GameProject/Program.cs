@@ -8,10 +8,12 @@ public static class Program
         Startup.Start();
         if (GameConfig.GameHierarchy == null) return;
             
-        Thread draw = new Thread(Startup.DrawCycle);
-        Thread main = new Thread(Startup.MainLoop);
+        Thread drawLoop = new Thread(Startup.DrawCycle);
+        Thread mainLoop = new Thread(Startup.MainLoop);
+        Thread fixedLoop = new Thread(Startup.FixedLoop);
             
-        draw.Start();
-        main.Start();
+        drawLoop.Start();
+        mainLoop.Start();
+        fixedLoop.Start();
     }
 }

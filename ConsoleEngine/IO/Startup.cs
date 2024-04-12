@@ -47,7 +47,7 @@ namespace ConsoleEngine.IO
             Hierarchy h;
             try
             {
-                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP,true));
+                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP, true));
             }
             catch (Exception e)
             {
@@ -172,7 +172,7 @@ namespace ConsoleEngine.IO
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             Logger.Log("Starting World Cycle");
-            
+
             while (IsWork)
             {
                 Thread.Yield();
@@ -184,6 +184,7 @@ namespace ConsoleEngine.IO
                 {
                     try
                     {
+                        if (!(obj as GameObject)!.active) continue;
                         obj.Update();
                     }
                     catch (Exception e)
@@ -191,9 +192,43 @@ namespace ConsoleEngine.IO
                         Logger.Log(e, "update error");
                     }
                 }
-                
+
                 MainLoopWorking = true;
                 Time.SetDeltaTime(watch.Elapsed.TotalSeconds);
+                watch.Restart();
+            }
+
+            Stop();
+        }
+
+        /// <summary>
+        /// Main update thread
+        /// </summary>
+        /// <param name="hierarchy">Scene to Main Updating</param>
+        public static void FixedLoop()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            Logger.Log("Starting Fixed Cycle");
+
+            while (IsWork)
+            {
+                foreach (IGameObjectFixedUpdatable obj in GameConfig.GameHierarchy.Objects)
+                {
+                    try
+                    {
+                        if (!(obj as GameObject)!.active) continue;
+                        obj.FixedUpdate();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(e, "update error");
+                    }
+                }
+
+                var invDt = (int) ((GameConfig.GetData().FIXED_REPETITIONS - watch.Elapsed.TotalSeconds) * 1000);
+                if (invDt > 0)
+                    Thread.Sleep(invDt);
+                
                 watch.Restart();
             }
 

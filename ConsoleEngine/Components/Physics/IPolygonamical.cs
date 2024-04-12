@@ -7,6 +7,6 @@ namespace ConsoleEngine.Components.Physics
     {
         IEnumerable<SatTriangle> ToSatTriangles { get; }
         Bounds Bounds { get; }
-        Collision? Check();
+        IEnumerable<Collision> Check();
     }
 }

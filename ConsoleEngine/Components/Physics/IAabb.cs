@@ -6,6 +6,6 @@ namespace ConsoleEngine.Components.Physics
     public interface IAabb : IComponentInit
     {
         Bounds Bounds { get; }
-        Collision? Check();
+        IEnumerable<Collision> Check();
     }
 }

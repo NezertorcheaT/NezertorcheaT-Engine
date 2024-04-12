@@ -12,6 +12,10 @@ namespace ConsoleEngine.Components
     {
         void Update();
     }
+    public interface IComponentFixedUpdate : IComponentInit
+    {
+        void FixedUpdate();
+    }
 
     public interface IComponentStart : IComponentInit
     {

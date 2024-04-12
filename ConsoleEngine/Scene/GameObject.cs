@@ -10,6 +10,11 @@ namespace ConsoleEngine.Scene
     {
         void Update();
     }
+    
+    public interface IGameObjectFixedUpdatable
+    {
+        void FixedUpdate();
+    }
 
     public interface IGameObjectStartable
     {
@@ -19,7 +24,7 @@ namespace ConsoleEngine.Scene
     /// <summary>
     /// World living entity
     /// </summary>
-    public class GameObject : IGameObjectUpdatable, IGameObjectStartable
+    public class GameObject : IGameObjectUpdatable, IGameObjectStartable,IGameObjectFixedUpdatable
     {
         private List<Component> _components;
         public string name { get; set; }
@@ -68,6 +73,13 @@ namespace ConsoleEngine.Scene
             transform = tr;
         }
 
+        void IGameObjectFixedUpdatable.FixedUpdate()
+        {
+            foreach (var c in _components.Where(c => c.enabled))
+            {
+                (c as IComponentFixedUpdate)?.FixedUpdate();
+            }
+        }
         void IGameObjectUpdatable.Update()
         {
             foreach (var c in _components.Where(c => c.enabled))
@@ -173,5 +185,6 @@ namespace ConsoleEngine.Scene
         /// <returns></returns>
         public static GameObject? FindObjectByName(string name, Hierarchy hierarchy) =>
             FindAllByName(name, hierarchy).FirstOrDefault(defaultValue: null);
+
     }
 }

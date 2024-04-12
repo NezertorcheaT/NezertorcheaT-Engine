@@ -23,7 +23,7 @@ namespace ConsoleEngine.Components.Physics
             P3.Da2V2() + transform.Position
         );
 
-        Collision? IPolygonamical.Check()
+        IEnumerable<Collision> IPolygonamical.Check()
         {
             var thisSat = SatTriangle;
             var triangles = CollidersCounter.Triangles.ToArray();
@@ -34,10 +34,8 @@ namespace ConsoleEngine.Components.Physics
                 var collision = thisSat.CheckCollision(triangle) ?? triangle.CheckCollision(thisSat);
                 collision ??= triangle.CheckCollision(thisSat) ?? thisSat.CheckCollision(triangle);
 
-                if (collision is not null) return collision;
+                if (collision is not null) yield return collision.Value;
             }
-
-            return null;
         }
     }
 }

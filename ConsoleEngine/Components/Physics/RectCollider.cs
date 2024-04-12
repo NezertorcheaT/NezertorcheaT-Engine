@@ -9,7 +9,7 @@ namespace ConsoleEngine.Components.Physics
     {
         public double[] Size;
 
-        Collision? IAabb.Check()
+        IEnumerable<Collision> IAabb.Check()
         {
             //throw new System.NotImplementedException();
             var thisBox = Bounds;
@@ -20,7 +20,7 @@ namespace ConsoleEngine.Components.Physics
                 var diff = Bounds.MinkowskiDif(box, thisBox);
                 //Logger.Log($"{diff} {diff.Contains(new Vector2(0, 0))} Vector2(0, 0)");
 
-                if (!diff.Contains(new Vector2(0, 0))) return null;
+                if (!diff.Contains(new Vector2(0, 0))) continue;
                 var collision = new Collision();
                 Vector2[] faces =
                 {
@@ -54,13 +54,11 @@ namespace ConsoleEngine.Components.Physics
                     }
                 }
 
-                return collision;
+                yield return collision;
             }
-
-            return null;
         }
 
-        Collision? IPolygonamical.Check()
+        IEnumerable<Collision> IPolygonamical.Check()
         {
             var thisSats = ToSatTriangles.ToArray();
             var triangles = CollidersCounter.Triangles.ToArray();
@@ -73,11 +71,9 @@ namespace ConsoleEngine.Components.Physics
                     var collision = thisSat.CheckCollision(triangle) ?? triangle.CheckCollision(thisSat);
                     collision ??= triangle.CheckCollision(thisSat) ?? thisSat.CheckCollision(triangle);
 
-                    if (collision is not null) return collision;
+                    if (collision is not null) yield return collision.Value;
                 }
             }
-
-            return null;
         }
 
         public IEnumerable<SatTriangle> ToSatTriangles

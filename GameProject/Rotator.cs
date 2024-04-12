@@ -7,7 +7,7 @@ namespace GameProject
     {
         private float speed = 1f;
 
-        public override void FixedUpdate()
+        protected override void FixedUpdate()
         {
             if (Input.GetKey(Input.Keys.NumPad1))
             {
