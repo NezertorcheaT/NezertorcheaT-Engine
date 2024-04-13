@@ -23,10 +23,10 @@
 *.suo
 *.user
 .vs/
-ConsoleEngine/[Bb]in/
-ConsoleEngine/[Oo]bj/
-ConsoleEngine/_UpgradeReport_Files/
-ConsoleEngine/[Pp]ackages/
+Engine/[Bb]in/
+Engine/[Oo]bj/
+Engine/_UpgradeReport_Files/
+Engine/[Pp]ackages/
 Editor/[Bb]in/
 Editor/[Oo]bj/
 Editor/_UpgradeReport_Files/

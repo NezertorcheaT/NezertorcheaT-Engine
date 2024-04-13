@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
-using ConsoleEngine.Components;
-using ConsoleEngine.IO;
-using ConsoleEngine.Scene;
-using ConsoleEngine.Scene.Serializing;
+using Engine.Components;
+using Engine.Core;
+using Engine.Scene;
+using Engine.Scene.Serializing;
 
 namespace GameProject
 {

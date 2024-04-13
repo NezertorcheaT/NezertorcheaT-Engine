@@ -1,5 +1,5 @@
-﻿using ConsoleEngine.Components;
-using ConsoleEngine.IO;
+﻿using Engine.Components;
+using Engine.Core;
 
 namespace GameProject
 {
