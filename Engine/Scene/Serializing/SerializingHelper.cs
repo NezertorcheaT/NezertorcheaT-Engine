@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using Engine.Components;
 using Engine.Core;
 
 namespace Engine.Scene.Serializing
 {
     public static class SerializingHelper
     {
-        public static Dictionary<string, Func<object, JsonNode>> PremadeSerializationFunctions =
-            new Dictionary<string, Func<object, JsonNode>>
+        public static Dictionary<string, Func<object?, JsonNode>> PremadeSerializationFunctions =
+            new Dictionary<string, Func<object?, JsonNode>>
             {
                 {
                     "Vector2", vec =>
@@ -48,6 +50,20 @@ namespace Engine.Scene.Serializing
                             {"Size", PremadeSerializationFunctions["Vector2"](b.Size)},
                             {"Position", PremadeSerializationFunctions["Vector2"](b.Position)}
                         };
+                    }
+                },
+                {
+                    "GameObject", obj =>
+                    {
+                        var gameObject = (GameObject) obj;
+                        return obj is null ? "null" : gameObject.name;
+                    }
+                },
+                {
+                    "Transform", obj =>
+                    {
+                        var comp = (Transform) obj;
+                        return obj is null ? "null" : comp.gameObject.name;
                     }
                 },
             };

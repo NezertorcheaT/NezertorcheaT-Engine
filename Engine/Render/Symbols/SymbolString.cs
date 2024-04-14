@@ -102,7 +102,7 @@ namespace Engine.Render.Symbols
                     continue;
                 }
 
-                matrix.Draw(symbol, pos + new Vector2(x, y));
+                matrix.Draw(symbol.Character == ' ' ? new Symbol(' ', symbol.Color) : symbol, pos + new Vector2(x, y));
 
                 x++;
                 if (symbol.Character != '\n') continue;
@@ -130,7 +130,7 @@ namespace Engine.Render.Symbols
                     continue;
                 }
 
-                symbolStringTo.Draw(symbol, pos + new Vector2(x, y));
+                symbolStringTo.Draw(symbol.Character, pos + new Vector2(x, y));
 
                 x++;
                 if (symbol.Character != '\n') continue;
@@ -187,11 +187,12 @@ namespace Engine.Render.Symbols
 
             String = strBuff.ToString();
         }
-        
+
         protected bool Equals(SymbolString other)
         {
             return String == other.String && Color == other.Color;
         }
+
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -207,7 +208,6 @@ namespace Engine.Render.Symbols
 
         public static bool operator ==(SymbolString a, SymbolString b) => a.Equals(b);
         public static bool operator !=(SymbolString a, SymbolString b) => !a.Equals(b);
-
     }
 
     public static class SymbolStringFactory

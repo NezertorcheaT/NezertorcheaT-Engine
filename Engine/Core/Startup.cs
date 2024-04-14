@@ -43,15 +43,38 @@ namespace Engine.Core
             //Logger.Log(GameConfig.Data.ToString(), "Current Config");
             //Logger.Log(GameConfig.DefaultConfig, "Default Config");
 
-            Hierarchy h;
             try
             {
-                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP, true));
+                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP, false));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 Logger.Log(e, "scene build error");
+                Stop();
+                return;
+            }
+
+            try
+            {
+                Logger.Log(HierarchyFactory.SaveHierarchy(GameConfig.GameHierarchy), "Export Hierarchy");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Logger.Log(e, "Export Hierarchy error");
+                Stop();
+                return;
+            }
+
+            try
+            {
+                StaticContainersFactory.CreateStaticContainers(GameConfig.GameHierarchy);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Logger.Log(e, "Static Containers creation error");
                 Stop();
                 return;
             }
@@ -106,7 +129,7 @@ namespace Engine.Core
                 Logger.Assert(GameConfig.GameHierarchy != null, "GameConfig.GameHierarchy != null");
                 Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
                 DrawLoopWorking = true;
-                
+
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.GameHierarchy))
                 {

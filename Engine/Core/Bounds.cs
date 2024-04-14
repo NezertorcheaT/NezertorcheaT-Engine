@@ -151,16 +151,18 @@ namespace Engine.Core
         public static bool operator ==(Bounds a, Bounds b) => a.Equals(b);
         public static bool operator !=(Bounds a, Bounds b) => !a.Equals(b);
 
-        public override bool Equals(object? obj)
-        {
-            if (obj is null) return false;
-            if (!(obj is Bounds t)) return false;
-            return Equals(t);
-        }
         protected bool Equals(Bounds other)
         {
             return Size.Equals(other.Size) && Position.Equals(other.Position);
         }
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Bounds) obj);
+        }
+
 
         public override int GetHashCode()
         {

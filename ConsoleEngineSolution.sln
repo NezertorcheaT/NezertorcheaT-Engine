@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameProject", "GameProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csproj", "{6BBA0E9F-B0AC-425B-B501-50E537EDB3B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorPreview", "EditorPreview\EditorPreview.csproj", "{D1515F56-128B-4146-8362-7179067B5D5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6BBA0E9F-B0AC-425B-B501-50E537EDB3B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BBA0E9F-B0AC-425B-B501-50E537EDB3B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BBA0E9F-B0AC-425B-B501-50E537EDB3B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1515F56-128B-4146-8362-7179067B5D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1515F56-128B-4146-8362-7179067B5D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1515F56-128B-4146-8362-7179067B5D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1515F56-128B-4146-8362-7179067B5D5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,16 +4,10 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <LangVersion>9</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EditorPreview\EditorPreview.csproj" />
       <ProjectReference Include="..\Engine\Engine.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Elements" />
     </ItemGroup>
 
 </Project>

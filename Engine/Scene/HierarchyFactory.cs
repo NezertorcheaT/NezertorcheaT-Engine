@@ -27,9 +27,59 @@ namespace Engine.Scene
 
         public static string SaveHierarchy(Hierarchy hierarchy)
         {
-            var s = "";
-            var node = JsonNode.Parse(s)!;
-            return s;
+            var node = new JsonArray();
+            foreach (var gameObject in hierarchy.Objects)
+            {
+                var objectJson = new JsonObject();
+                objectJson.Add(GameObjectNameLiteral, gameObject.name);
+                objectJson.Add(GameObjectTagLiteral, gameObject.tag);
+                objectJson.Add(GameObjectLayerLiteral, gameObject.layer);
+                objectJson.Add(GameObjectActiveLiteral, gameObject.active);
+
+                var componentsJson = new JsonArray();
+                foreach (var component in gameObject.GetAllComponents<Component>())
+                {
+                    var componentJson = new JsonObject();
+                    componentJson.Add(ComponentDataNameLiteral, component.GetType().Name);
+                    componentJson.Add(ComponentEnabledLiteral, component.enabled);
+
+                    var dataJson = new JsonArray();
+                    var componentType = component.GetType();
+                    var componentFields = componentType.GetFields();
+                    foreach (var field in componentFields)
+                    {
+                        var fieldData = new JsonObject();
+                        fieldData.Add(ComponentDataNameLiteral, field.Name);
+                        
+                        if (SerializingHelper.PremadeSerializationFunctions.ContainsKey(field.FieldType.Name))
+                        {
+                            Logger.Log($"PremadeSerializationFunctions contains {field.FieldType.Name}");
+                            fieldData.Add(ComponentDataValueLiteral,
+                                SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](field.GetValue(component)));
+                        }
+                        else
+                        {
+                            Logger.Log($"PremadeSerializationFunctions not contains {field.FieldType.Name}");
+                            fieldData.Add(ComponentDataValueLiteral,
+                                JsonSerializer.SerializeToNode(field.GetValue(component), field.FieldType));
+                        }
+
+                        dataJson.Add(fieldData);
+                    }
+
+                    componentJson.Add(ComponentDataLiteral, dataJson);
+
+                    componentsJson.Add(componentJson);
+                }
+
+                objectJson.Add(ComponentsLiteral, componentsJson);
+
+                node.Add(objectJson);
+            }
+
+            var options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+            return node.ToJsonString(options);
         }
 
         public static Hierarchy CreateHierarchy(string path, bool debug = true)
@@ -38,8 +88,6 @@ namespace Engine.Scene
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString)!;
             var hierarchy = new Hierarchy();
-
-            StaticContainersFactory.CreateStaticContainers(hierarchy);
 
             if (debug) Logger.Log(path, "map path");
             if (debug) Logger.Log(options, "map json options");
@@ -80,6 +128,8 @@ namespace Engine.Scene
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Behavior) ||
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
 
+                    if (debug) Logger.Log(componentNode[ComponentDataNameLiteral].ToString(), "component name");
+                    
                     var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
                             componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component;

@@ -11,7 +11,7 @@ namespace Engine.Core
     /// <summary>
     /// Game settings data
     /// </summary>
-    public struct GameConfigData : IJsonable
+    public class GameConfigData : IJsonable
     {
         public uint HEIGHT { get; set; }
         public uint WIDTH { get; set; }
