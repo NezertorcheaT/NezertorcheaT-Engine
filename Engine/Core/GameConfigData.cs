@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace Engine.Core
-{
+{ 
     interface IJsonable
     {
         string Json { get; }
@@ -15,7 +16,7 @@ namespace Engine.Core
     {
         public uint HEIGHT { get; set; }
         public uint WIDTH { get; set; }
-        public string MAP { get; set; }
+        public string[] MAPS { get; set; }
         public string RENDER_FEATURE { get; set; }
         public uint COLLISION_SUBSTEPS { get; set; }
         public uint DRAW_BUFFER_SIZE { get; set; }
@@ -72,10 +73,10 @@ namespace Engine.Core
                 var f = new FieldType
                 {
                     Type = i.PropertyType.Name,
-                    Value = i.GetValue(this) != null ? i.GetValue(this).ToString() : "null",
+                    Value = i.GetValue(this) != null ? JsonSerializer.Serialize(i.GetValue(this)) : "null",
                     Instance = i
                 };
-                s.Append($", \"{f.Instance.Name}\": {(f.Type == "String" ? $"\"{f.Value}\"" : f.Value)}");
+                s.Append($", \"{f.Instance.Name}\": {f.Value}");
             }
 
             s.Append('}');

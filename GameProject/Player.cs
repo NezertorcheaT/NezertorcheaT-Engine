@@ -2,19 +2,12 @@
 using Engine.Components;
 using Engine.Core;
 using Engine.Scene;
-using Engine.Scene.Serializing;
 
 namespace GameProject
 {
     public class Player : Behavior
     {
         private float speed;
-
-        protected override void Start()
-        {
-            Logger.Log(SerializingHelper.PremadeSerializationFunctions["Vector2"](new Vector2(1, 5.5f)).ToJsonString());
-            Logger.Log((Vector2)SerializingHelper.PremadeDeserializationFunctions["Vector2"](SerializingHelper.PremadeSerializationFunctions["Vector2"](new Vector2(1, 5.5f))));
-        }
 
         protected override void Update()
         {

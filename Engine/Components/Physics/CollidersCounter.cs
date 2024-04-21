@@ -10,10 +10,10 @@ namespace Engine.Components.Physics
         {
             get
             {
-                if (GameConfig.GameHierarchy is null) yield break;
-                if (GameConfig.GameHierarchy.Objects.Count == 0) yield break;
+                if (GameConfig.SceneManager.CurrentHierarchy is null) yield break;
+                if (GameConfig.SceneManager.CurrentHierarchy.Objects.Count == 0) yield break;
 
-                foreach (var collider in GameObject.FindAllTypes<IPolygonamical>(GameConfig.GameHierarchy))
+                foreach (var collider in GameObject.FindAllTypes<IPolygonamical>(GameConfig.SceneManager.CurrentHierarchy))
                 {
                     if (!(collider is IPolygonamical pol)) continue;
                     foreach (var triangle in pol.ToSatTriangles)
@@ -25,10 +25,10 @@ namespace Engine.Components.Physics
         {
             get
             {
-                if (GameConfig.GameHierarchy is null) yield break;
-                if (GameConfig.GameHierarchy.Objects.Count == 0) yield break;
+                if (GameConfig.SceneManager.CurrentHierarchy is null) yield break;
+                if (GameConfig.SceneManager.CurrentHierarchy.Objects.Count == 0) yield break;
 
-                foreach (var collider in GameObject.FindAllTypes<IAabb>(GameConfig.GameHierarchy))
+                foreach (var collider in GameObject.FindAllTypes<IAabb>(GameConfig.SceneManager.CurrentHierarchy))
                 {
                     yield return (collider as IAabb)?.Bounds;
                 }

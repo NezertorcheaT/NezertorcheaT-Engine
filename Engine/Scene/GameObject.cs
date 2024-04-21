@@ -6,17 +6,17 @@ using Engine.Components;
 
 namespace Engine.Scene
 {
-    public interface IGameObjectUpdatable
+    internal interface IGameObjectUpdatable
     {
         void Update();
     }
-    
-    public interface IGameObjectFixedUpdatable
+
+    internal interface IGameObjectFixedUpdatable
     {
         void FixedUpdate();
     }
 
-    public interface IGameObjectStartable
+    internal interface IGameObjectStartable
     {
         void Start();
     }
@@ -24,7 +24,7 @@ namespace Engine.Scene
     /// <summary>
     /// World living entity
     /// </summary>
-    public class GameObject : IGameObjectUpdatable, IGameObjectStartable,IGameObjectFixedUpdatable
+    public class GameObject : IGameObjectUpdatable, IGameObjectStartable, IGameObjectFixedUpdatable
     {
         private List<Component> _components;
         public string name { get; set; }
@@ -80,6 +80,7 @@ namespace Engine.Scene
                 (c as IComponentFixedUpdate)?.FixedUpdate();
             }
         }
+
         void IGameObjectUpdatable.Update()
         {
             foreach (var c in _components.Where(c => c.enabled))
@@ -104,8 +105,10 @@ namespace Engine.Scene
         public T? GetComponent<T>() where T : Component, IComponentInit =>
             GetAllComponents<T>().FirstOrDefault(defaultValue: null) as T;
 
-        public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit => _components.Where(
-            c => c is T || c.GetType().GetInterfaces().Contains(typeof(T)));
+        public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit =>
+            nameof(T) == nameof(Component)
+                ? _components
+                : _components.Where(c => c is T || c.GetType().GetInterfaces().Contains(typeof(T)));
 
         /// <summary>
         /// Adds already created Component to GameObject
@@ -185,6 +188,5 @@ namespace Engine.Scene
         /// <returns></returns>
         public static GameObject? FindObjectByName(string name, Hierarchy hierarchy) =>
             FindAllByName(name, hierarchy).FirstOrDefault(defaultValue: null);
-
     }
 }

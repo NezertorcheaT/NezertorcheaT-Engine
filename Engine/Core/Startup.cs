@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Engine.Components;
@@ -19,6 +20,14 @@ namespace Engine.Core
         /// </summary>
         public static void Start()
         {
+            static IEnumerable<Hierarchy> SetupHierarchies()
+            {
+                foreach (var map in GameConfig.Data.MAPS)
+                {
+                    yield return HierarchyFactory.CreateHierarchy(map, false);
+                }
+            }
+            
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
@@ -45,7 +54,7 @@ namespace Engine.Core
 
             try
             {
-                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP, false));
+                GameConfig.SetupHierarchy(SetupHierarchies);
             }
             catch (Exception e)
             {
@@ -57,7 +66,7 @@ namespace Engine.Core
 
             try
             {
-                Logger.Log(HierarchyFactory.SaveHierarchy(GameConfig.GameHierarchy), "Export Hierarchy");
+                Logger.Log(HierarchyFactory.SaveHierarchy(GameConfig.SceneManager.CurrentHierarchy), "Export Hierarchy");
             }
             catch (Exception e)
             {
@@ -69,7 +78,7 @@ namespace Engine.Core
 
             try
             {
-                StaticContainersFactory.CreateStaticContainers(GameConfig.GameHierarchy);
+                StaticContainersFactory.CreateStaticContainers(GameConfig.SceneManager.CurrentHierarchy);
             }
             catch (Exception e)
             {
@@ -82,7 +91,7 @@ namespace Engine.Core
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
 
-            foreach (IGameObjectStartable obj in GameConfig.GameHierarchy.Objects)
+            foreach (IGameObjectStartable obj in GameConfig.SceneManager.CurrentHierarchy.Objects)
             {
                 try
                 {
@@ -126,12 +135,12 @@ namespace Engine.Core
 
                 var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
-                Logger.Assert(GameConfig.GameHierarchy != null, "GameConfig.GameHierarchy != null");
+                Logger.Assert(GameConfig.SceneManager.CurrentHierarchy != null, "GameConfig.GameHierarchy != null");
                 Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
                 DrawLoopWorking = true;
 
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.GameHierarchy))
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy))
                 {
                     try
                     {
@@ -178,7 +187,7 @@ namespace Engine.Core
 
                 if (GameConfig.Data.DRAW_PRIOIRITY && DrawLoopWorking) continue;
 
-                foreach (IGameObjectUpdatable obj in GameConfig.GameHierarchy.Objects)
+                foreach (IGameObjectUpdatable obj in GameConfig.SceneManager.CurrentHierarchy.Objects)
                 {
                     try
                     {
@@ -209,7 +218,7 @@ namespace Engine.Core
 
             while (IsWork)
             {
-                foreach (IGameObjectFixedUpdatable obj in GameConfig.GameHierarchy.Objects)
+                foreach (IGameObjectFixedUpdatable obj in GameConfig.SceneManager.CurrentHierarchy.Objects)
                 {
                     try
                     {

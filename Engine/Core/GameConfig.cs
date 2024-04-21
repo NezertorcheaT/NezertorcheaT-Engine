@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -20,12 +21,13 @@ namespace Engine.Core
 
         public static readonly string StaticContainersPath = "staticContainers.txt";
 
-        public static Hierarchy? GameHierarchy { get; private set; }
+        public static SceneManager SceneManager;
         public static IRenderFeature RenderFeature { get; private set; }
 
-        public static void SetupHierarchy(Func<Hierarchy?> factory)
+        public static void SetupHierarchy(Func<IEnumerable<Hierarchy>> factory)
         {
-            GameHierarchy = factory.Invoke();
+            SceneManager = new SceneManager();
+            (SceneManager as IGameConfigSceneManager).InitializeHierarchies(factory.Invoke().ToArray());
         }
 
         public static void SetupRenderFeature()
@@ -59,7 +61,7 @@ namespace Engine.Core
 {
     ""HEIGHT"": 15,
     ""WIDTH"": 36,
-    ""MAP"": ""maps\\main.json"",
+    ""MAPS"": [""maps\\main.json""],
     ""RENDER_FEATURE"": ""BaseRenderFeature"",
     ""COLLISION_SUBSTEPS"": 1,
     ""FPS"": 256,
@@ -86,5 +88,28 @@ namespace Engine.Core
             Data = node.Deserialize<GameConfigData>()!;
             return Data;
         }
+    }
+
+    public class SceneManager : IGameConfigSceneManager
+    {
+        private Hierarchy[] _hierarchies = new Hierarchy[1];
+        private int _currentHierarchy = 0;
+        public Hierarchy CurrentHierarchy => _hierarchies[_currentHierarchy];
+        public int CurrentHierarchyNumber => _currentHierarchy;
+
+        public void SetScene(int sceneNumber)
+        {
+            _currentHierarchy = sceneNumber;
+        }
+
+        void IGameConfigSceneManager.InitializeHierarchies(Hierarchy[] hierarchies)
+        {
+            _hierarchies = hierarchies;
+        }
+    }
+
+    internal interface IGameConfigSceneManager
+    {
+        void InitializeHierarchies(Hierarchy[] hierarchies);
     }
 }

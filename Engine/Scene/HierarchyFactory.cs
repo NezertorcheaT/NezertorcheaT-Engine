@@ -86,7 +86,7 @@ namespace Engine.Scene
         {
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
-            var node = JsonNode.Parse(jsonString)!;
+            var node = JsonNode.Parse(jsonString,new JsonNodeOptions{PropertyNameCaseInsensitive = false})!;
             var hierarchy = new Hierarchy();
 
             if (debug) Logger.Log(path, "map path");

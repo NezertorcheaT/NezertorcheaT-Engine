@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Engine.Components;
 using Engine.Core;
 using Engine.Render.Symbols;
@@ -10,29 +11,19 @@ namespace EditorPreview
     {
         public static void Start()
         {
-            Logger.Initialise();
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-            {
-                Logger.Log(sender ?? "null", "closing event sender");
-                Logger.Stop();
-            };
-
-            try
-            {
-                GameConfig.GetData();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Logger.Log(e, "game config error");
-            }
+            GameConfig.GetData();
         }
 
-        public static void BuildMap()
+        private static IEnumerable<Hierarchy> SetupHierarchies(string MAP)
+        {
+            yield return HierarchyFactory.CreateHierarchy(MAP, false);
+        }
+
+        public static void BuildMap(string MAP)
         {
             try
             {
-                GameConfig.SetupHierarchy(() => HierarchyFactory.CreateHierarchy(GameConfig.Data.MAP, true));
+                GameConfig.SetupHierarchy(() => SetupHierarchies(MAP));
             }
             catch (Exception e)
             {
@@ -52,10 +43,10 @@ namespace EditorPreview
 
             var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
-            Logger.Assert(GameConfig.GameHierarchy != null, "GameConfig.GameHierarchy != null");
+            Logger.Assert(GameConfig.SceneManager.CurrentHierarchy != null, "GameConfig.GameHierarchy != null");
             Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
 
-            foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.GameHierarchy))
+            foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy))
             {
                 try
                 {

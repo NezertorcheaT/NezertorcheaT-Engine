@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using Engine.Components.Physics;
 
 namespace Engine.Core
@@ -44,10 +45,7 @@ namespace Engine.Core
         public static double Repeat(double inp, double max)
         {
             if (inp <= max)
-            {
                 return inp < 0 ? Repeat(max - inp, max) : inp;
-            }
-
             return inp > max ? Repeat(inp - max, max) : inp;
         }
 
@@ -60,5 +58,67 @@ namespace Engine.Core
 
         public static Collision? CheckCollision(this SatTriangle triangle1, SatTriangle triangle2) =>
             SatTriangle.CheckCollision(triangle1, triangle2);
+
+        public static int Lines(this StringBuilder sb) => sb.ToString().Lines();
+        public static int Lines(this string str) => str.Split('\n').Length;
+
+        public static int Wight(this StringBuilder sb) => Wight(sb.ToString());
+        public static int Wight(this string str) => str.Split('\n').Select(c => c.Length).Prepend(int.MinValue).Max();
+
+        public static char? At(this string str, int x, int y) => str.At(new Vector2(x, y));
+        public static char? At(this string str, float x, float y) => str.At(new Vector2(x, y));
+
+        public static char? At(this string str, Vector2 pos)
+        {
+            var ind = str.PosToInd(pos);
+            if (ind >= 0) return str[ind];
+            return null;
+        }
+
+        public static int PosToInd(this string str, Vector2 pos)
+        {
+            if (pos.X == 0 && pos.Y == 0) return 0;
+            if (pos.X >= str.Wight() || pos.Y >= str.Lines()) return -1;
+            if (pos.X < 0 || pos.Y < 0) return -1;
+
+            return str.Split('\n').TakeWhile((t, j) => j != (int) pos.Y).Sum(t => t.Length + 1) + (int) pos.X;
+        }
+
+        public static string Insert(this string s1, string s2, Vector2 offset)
+        {
+            var sb = new StringBuilder();
+            var s1Wight = s1.Wight();
+            var s2Wight = s2.Wight();
+            var s1Lines = s1.Lines();
+            var s2Lines = s2.Lines();
+
+            return sb.ToString();
+        }
+
+        public static string Offset(this string str, Vector2 offset)
+        {
+            var sb = new StringBuilder();
+            var wight = str.Wight();
+            var lines = str.Lines();
+
+            for (var x = 0; x < offset.X + wight; x++)
+            {
+                for (var y = 0; y < offset.Y + lines; y++)
+                {
+                    if (x <= offset.X || y <= offset.Y)
+                    {
+                        sb.Append(' ');
+                    }
+                    else
+                    {
+                        sb.Append(str.At(x, y));
+                    }
+                }
+
+                sb.Append('\n');
+            }
+
+            return sb.ToString();
+        }
     }
 }

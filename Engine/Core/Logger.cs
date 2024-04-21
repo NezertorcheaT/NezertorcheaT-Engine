@@ -45,17 +45,17 @@ namespace Engine.Core
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
         /// <exception cref="Exception">Initialise before logging</exception>
-        public static void Log(object message, string logType = "info")
+        public static void Log(object? message, string logType = "info")
         {
             if (File.Exists("logs\\.now"))
             {
                 File.AppendAllText("logs\\.now",
-                    $"\n[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message.ToString()}");
-            }
+                    $"\n[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
+            }/*
             else
             {
                 throw new Exception("Initialise before logging");
-            }
+            }*/
         }
 
         public static void Assert(bool condition, object falseMessage, string logType = "assert message")

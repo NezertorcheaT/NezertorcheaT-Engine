@@ -1,5 +1,6 @@
 using System;
 using Engine.Core;
+using Engine.Scene;
 
 namespace EditorPreview
 {
@@ -13,8 +14,8 @@ namespace EditorPreview
             }
 
             Preview.Start();
-            Preview.BuildMap();
-            GameConfig.Data.MAP = args[0];
+            Preview.BuildMap(args[0]);
+            GameConfig.Data.MAPS[0] = args[0];
             Preview.ShowMap();
 
             Console.ReadKey();
