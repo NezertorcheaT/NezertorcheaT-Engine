@@ -50,12 +50,13 @@ namespace Engine.Scene
                     {
                         var fieldData = new JsonObject();
                         fieldData.Add(ComponentDataNameLiteral, field.Name);
-                        
+
                         if (SerializingHelper.PremadeSerializationFunctions.ContainsKey(field.FieldType.Name))
                         {
                             Logger.Log($"PremadeSerializationFunctions contains {field.FieldType.Name}");
                             fieldData.Add(ComponentDataValueLiteral,
-                                SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](field.GetValue(component)));
+                                SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](
+                                    field.GetValue(component)));
                         }
                         else
                         {
@@ -86,13 +87,14 @@ namespace Engine.Scene
         {
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
-            var node = JsonNode.Parse(jsonString,new JsonNodeOptions{PropertyNameCaseInsensitive = false})!;
+            var node = JsonNode.Parse(jsonString, new JsonNodeOptions {PropertyNameCaseInsensitive = false})!;
             var hierarchy = new Hierarchy();
 
             if (debug) Logger.Log(path, "map path");
             if (debug) Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
+            List<string[]> gObjects = new List<string[]>(1);
 
             foreach (var objNode in node.AsArray())
             {
@@ -129,7 +131,7 @@ namespace Engine.Scene
                         componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
 
                     if (debug) Logger.Log(componentNode[ComponentDataNameLiteral].ToString(), "component name");
-                    
+
                     var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
                             componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component;
@@ -156,6 +158,16 @@ namespace Engine.Scene
                                     SerializingHelper.PremadeDeserializationFunctions[fieldInfo.FieldType.Name](
                                         varNode[ComponentDataValueLiteral]));
                             }
+                            else if (fieldInfo.FieldType.Name == typeof(GameObject).Name)
+                            {
+                                gObjects.Add(new string[]
+                                {
+                                    gameObj.name,
+                                    componentNode[ComponentDataNameLiteral].ToString(),
+                                    varNode[ComponentDataNameLiteral].Deserialize<string>(),
+                                    varNode[ComponentDataValueLiteral].Deserialize<string>(),
+                                });
+                            }
                             else
                             {
                                 if (debug)
@@ -173,6 +185,30 @@ namespace Engine.Scene
                 }
 
                 hierarchy.Objects.Add(gameObj);
+            }
+
+            foreach (var gObject in gObjects)
+            {
+                if (gObject is null) continue;
+                var orgObj = GameObject.FindObjectByName(gObject[0], hierarchy);
+                Component comObj = null;
+                foreach (var component in orgObj.GetAllComponents<Component>())
+                {
+                    if (component.GetType().Name == gObject[1])
+                    {
+                        comObj = component;
+                    }
+                }
+
+                if (comObj is null) continue;
+
+                foreach (var fieldInfo in comObj.GetType().GetFields())
+                {
+                    if (fieldInfo.Name == gObject[2])
+                    {
+                        fieldInfo.SetValue(comObj, GameObject.FindObjectByName(gObject[3], hierarchy));
+                    }
+                }
             }
 
             foreach (var par in parents)

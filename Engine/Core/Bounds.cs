@@ -89,6 +89,9 @@ namespace Engine.Core
 
         public bool Contains(Vector2 point) => point.X >= Left && point.X <= Right && point.Y >= Down && point.Y <= Up;
 
+        public Vector2 Clamp(Vector2 point) =>
+            new Vector2(Math.Clamp(point.X, Left, Right), Math.Clamp(point.Y, Down, Up));
+
         public static Bounds MinkowskiSum(Bounds a, Bounds b)
         {
             return new Bounds(new[]
@@ -155,6 +158,7 @@ namespace Engine.Core
         {
             return Size.Equals(other.Size) && Position.Equals(other.Position);
         }
+
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;

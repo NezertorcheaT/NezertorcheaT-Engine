@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Core;
 
 namespace Engine.Render.Symbols
 {
@@ -13,7 +14,14 @@ namespace Engine.Render.Symbols
         /// <summary>
         /// Character aspect
         /// </summary>
-        public static readonly float FiveByEight = 52f / 25f;
+        public static float Aspect
+        {
+            get
+            {
+                var font = Input.GetConsoleFont();
+                return font.Size.Y / font.Size.X;
+            }
+        }
 
         public Symbol()
         {
@@ -32,11 +40,12 @@ namespace Engine.Render.Symbols
 
         public static bool operator ==(Symbol a, Symbol b) => a.Equals(b);
         public static bool operator !=(Symbol a, Symbol b) => !a.Equals(b);
-        
+
         protected bool Equals(Symbol other)
         {
             return Character == other.Character && Color == other.Color;
         }
+
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -49,6 +58,5 @@ namespace Engine.Render.Symbols
         {
             return HashCode.Combine(Character, (int) Color);
         }
-
     }
 }

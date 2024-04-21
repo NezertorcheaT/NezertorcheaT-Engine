@@ -93,13 +93,12 @@ namespace Engine.Core
     public class SceneManager : IGameConfigSceneManager
     {
         private Hierarchy[] _hierarchies = new Hierarchy[1];
-        private int _currentHierarchy = 0;
-        public Hierarchy CurrentHierarchy => _hierarchies[_currentHierarchy];
-        public int CurrentHierarchyNumber => _currentHierarchy;
+        public Hierarchy CurrentHierarchy => _hierarchies[CurrentHierarchyNumber];
+        public int CurrentHierarchyNumber { get; private set; }
 
         public void SetScene(int sceneNumber)
         {
-            _currentHierarchy = sceneNumber;
+            CurrentHierarchyNumber = sceneNumber;
         }
 
         void IGameConfigSceneManager.InitializeHierarchies(Hierarchy[] hierarchies)

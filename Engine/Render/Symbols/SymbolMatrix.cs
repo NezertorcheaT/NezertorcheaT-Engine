@@ -111,13 +111,8 @@ namespace Engine.Render.Symbols
         {
             if (camera == null) return false;
 
-            var camPos = camera.transform.Position;
-            camPos.Y = -camPos.Y;
-
-            var posYrew = new Vector2(pos.X, -pos.Y);
-
-            var newPos = posYrew - camPos + camera.Offset;
-            newPos.X *= Symbol.FiveByEight;
+            var newPos = pos.Multiply(new Vector2(1, -1)) - camera.transform.Position.Multiply(new Vector2(1, -1)) + camera.Offset;
+            newPos.X *= Symbol.Aspect;
 
             if (newPos.X < 0 || newPos.X >= GameConfig.Data.WIDTH || newPos.Y < 0 ||
                 newPos.Y >= GameConfig.Data.HEIGHT)
@@ -130,11 +125,12 @@ namespace Engine.Render.Symbols
             pos = newPos;
             return true;
         }
-        
+
         protected bool Equals(SymbolMatrix other)
         {
             return _matrix.Equals(other._matrix) && _size.Equals(other._size);
         }
+
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -150,6 +146,5 @@ namespace Engine.Render.Symbols
 
         public static bool operator ==(SymbolMatrix a, SymbolMatrix b) => a.Equals(b);
         public static bool operator !=(SymbolMatrix a, SymbolMatrix b) => !a.Equals(b);
-
     }
 }

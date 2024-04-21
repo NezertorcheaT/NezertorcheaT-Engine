@@ -42,6 +42,9 @@ namespace Engine.Core
         public static Vector2 Da2V2(this uint[] arr) => new Vector2(arr[0], arr[1]);
         public static Vector2 Da2V2(this long[] arr) => new Vector2(arr[0], arr[1]);
 
+        public static Vector2 Multiply(this Vector2 vec1, Vector2 vec2) =>
+            new Vector2(vec1.X * vec2.X, vec1.Y * vec2.Y);
+
         public static double Repeat(double inp, double max)
         {
             if (inp <= max)
