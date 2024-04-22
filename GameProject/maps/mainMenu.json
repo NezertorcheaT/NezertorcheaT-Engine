@@ -1,0 +1,51 @@
+[
+  {
+    "name": "cam",
+    "tag": "mainCamera",
+    "layer": 0,
+    "active": true,
+    "components": [
+      {
+        "name": "Transform",
+        "enabled": true,
+        "data": [
+          {
+            "name": "LocalPosition",
+            "value": [
+              0,
+              0
+            ]
+          },
+          {
+            "name": "Rotation",
+            "value": 0
+          },
+          {
+            "name": "Parent",
+            "value": "player"
+          }
+        ]
+      },
+      {
+        "name": "Camera",
+        "enabled": true,
+        "data": []
+      },
+      {
+        "name": "HierSwich",
+        "enabled": true,
+        "data": []
+      },
+      {
+        "name": "ConsoleRenderer",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Character",
+            "value": "1"
+          }
+        ]
+      }
+    ]
+  }
+]
