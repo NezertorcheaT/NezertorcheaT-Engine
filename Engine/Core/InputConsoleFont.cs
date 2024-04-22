@@ -15,11 +15,11 @@ namespace Engine.Core
         /// <returns></returns>
         public static Vector2 ScreenToConsolePosition(Vector2 screenPosition)
         {
-            var v = new Vector2();
+            var v = screenPosition;
             var bounds = GetWindowBounds();
             var font = GetConsoleFont();
-            v = bounds.Clamp(GetCursorPosition());
-            v -= bounds.LeftUp;
+            //v = bounds.Clamp(v);
+            v -= bounds.LeftDown;
             v.X /= font.Size.X;
             v.Y /= font.Size.Y;
             return v;
@@ -35,9 +35,10 @@ namespace Engine.Core
         {
             consolePosition.X /= Symbol.Aspect;
             consolePosition -= camera.Offset;
-            consolePosition += camera.transform.Position.Multiply(new Vector2(1, -1));
             consolePosition.Multiply(new Vector2(1, -1));
-            return consolePosition;
+            consolePosition += camera.transform.Position.Multiply(new Vector2(1, -1));
+            
+            return consolePosition.Multiply(new Vector2(1, -1));
         }
 
         /// <summary>

@@ -21,6 +21,7 @@ namespace Engine.Scene
         private static readonly string ComponentsLiteral = "components";
         private static readonly string ComponentDataLiteral = "data";
         private static readonly string ComponentDataValueLiteral = "value";
+        private static readonly string ComponentNameLiteral = "name";
         private static readonly string ComponentDataNameLiteral = "name";
         private static readonly string ComponentEnabledLiteral = "enabled";
         private static readonly string NullLiteral = "null";
@@ -89,12 +90,14 @@ namespace Engine.Scene
             var options = new JsonSerializerOptions {WriteIndented = true};
             var node = JsonNode.Parse(jsonString, new JsonNodeOptions {PropertyNameCaseInsensitive = false})!;
             var hierarchy = new Hierarchy();
+            (hierarchy as ISetHierarchyName).MapName = Path.GetFileName(path);
 
             if (debug) Logger.Log(path, "map path");
+            if (debug) Logger.Log(hierarchy.MapName, "map name");
             if (debug) Logger.Log(options, "map json options");
 
             List<string[]> parents = new List<string[]>(node.AsArray().Count);
-            List<string[]> gObjects = new List<string[]>(1);
+            List<Tuple<string, int, string, string>> gObjects = new List<Tuple<string, int, string, string>>(1);
 
             foreach (var objNode in node.AsArray())
             {
@@ -123,18 +126,19 @@ namespace Engine.Scene
                     trcmp.Last()[ComponentDataValueLiteral].Deserialize<string>()
                 });
 
+                var compInd = 1;
                 if (debug) Logger.Log(gameObj, "GameObject to initialize");
                 foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
-                    if (componentNode[ComponentDataNameLiteral].ToString() == nameof(Transform) ||
-                        componentNode[ComponentDataNameLiteral].ToString() == nameof(Behavior) ||
-                        componentNode[ComponentDataNameLiteral].ToString() == nameof(Component)) continue;
+                    if (componentNode[ComponentNameLiteral].ToString() == nameof(Transform) ||
+                        componentNode[ComponentNameLiteral].ToString() == nameof(Behavior) ||
+                        componentNode[ComponentNameLiteral].ToString() == nameof(Component)) continue;
 
-                    if (debug) Logger.Log(componentNode[ComponentDataNameLiteral].ToString(), "component name");
+                    if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name");
 
                     var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
-                            componentNode[ComponentDataNameLiteral].ToString() == component.Name)) as Component;
+                            componentNode[ComponentNameLiteral].ToString() == component.Name)) as Component;
 
                     if (comp == null) continue;
                     comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
@@ -160,13 +164,13 @@ namespace Engine.Scene
                             }
                             else if (fieldInfo.FieldType.Name == typeof(GameObject).Name)
                             {
-                                gObjects.Add(new string[]
-                                {
-                                    gameObj.name,
-                                    componentNode[ComponentDataNameLiteral].ToString(),
-                                    varNode[ComponentDataNameLiteral].Deserialize<string>(),
-                                    varNode[ComponentDataValueLiteral].Deserialize<string>(),
-                                });
+                                gObjects.Add(new Tuple<string, int, string, string>(
+                                        gameObj.name,
+                                        compInd,
+                                        varNode[ComponentDataNameLiteral].ToString(),
+                                        varNode[ComponentDataValueLiteral].Deserialize<string>()
+                                    )
+                                );
                             }
                             else
                             {
@@ -181,6 +185,7 @@ namespace Engine.Scene
                         }
                     }
 
+                    compInd++;
                     gameObj.AddComponent(comp);
                 }
 
@@ -189,24 +194,33 @@ namespace Engine.Scene
 
             foreach (var gObject in gObjects)
             {
+                if (debug)
+                    Logger.Log($"{gObject.Item1}, {gObject.Item2}, {gObject.Item3}, {gObject.Item4}",
+                        "gameobject fields initializer");
                 if (gObject is null) continue;
-                var orgObj = GameObject.FindObjectByName(gObject[0], hierarchy);
+                var orgObj = GameObject.FindObjectByName(gObject.Item1, hierarchy);
+                if (debug) Logger.Log(orgObj.name, "gameobject fields initializer");
                 Component comObj = null;
-                foreach (var component in orgObj.GetAllComponents<Component>())
+                var coml = orgObj.GetAllComponents<Component>().ToArray();
+                for (var i = 0; i < coml.Length; i++)
                 {
-                    if (component.GetType().Name == gObject[1])
-                    {
-                        comObj = component;
-                    }
+                    if (i != gObject.Item2) continue;
+                    comObj = coml[i];
+                    break;
                 }
 
                 if (comObj is null) continue;
+                if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer");
 
                 foreach (var fieldInfo in comObj.GetType().GetFields())
                 {
-                    if (fieldInfo.Name == gObject[2])
+                    if (fieldInfo.Name == gObject.Item3)
                     {
-                        fieldInfo.SetValue(comObj, GameObject.FindObjectByName(gObject[3], hierarchy));
+                        if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer");
+                        var gg = GameObject.FindObjectByName(gObject.Item4, hierarchy);
+                        if (debug) Logger.Log(gg?.name, "gameobject fields initializer");
+                        fieldInfo.SetValue(comObj, gg);
+                        break;
                     }
                 }
             }

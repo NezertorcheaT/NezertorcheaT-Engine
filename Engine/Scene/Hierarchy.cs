@@ -2,7 +2,12 @@
 
 namespace Engine.Scene
 {
-    public class Hierarchy
+    internal interface ISetHierarchyName
+    {
+        string MapName { get; set; }
+    }
+
+    public class Hierarchy : ISetHierarchyName
     {
         public List<GameObject> Objects { get; }
 
@@ -10,5 +15,13 @@ namespace Engine.Scene
         {
             Objects = new List<GameObject>();
         }
+
+        string ISetHierarchyName.MapName
+        {
+            get => MapName;
+            set => MapName = value;
+        }
+
+        public string MapName { get; private set; }
     }
 }

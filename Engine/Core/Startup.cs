@@ -24,10 +24,23 @@ namespace Engine.Core
             {
                 foreach (var map in GameConfig.Data.MAPS)
                 {
-                    yield return HierarchyFactory.CreateHierarchy(map, false);
+                    var her = HierarchyFactory.CreateHierarchy(map, true);
+                    try
+                    {
+                        StaticContainersFactory.CreateStaticContainers(her);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        Logger.Log(e, "Static Containers creation error");
+                        Stop();
+                        continue;
+                    }
+
+                    yield return her;
                 }
             }
-            
+
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
@@ -64,7 +77,7 @@ namespace Engine.Core
                 return;
             }
 
-            try
+            /*try
             {
                 Logger.Log(HierarchyFactory.SaveHierarchy(GameConfig.SceneManager.CurrentHierarchy), "Export Hierarchy");
             }
@@ -74,19 +87,7 @@ namespace Engine.Core
                 Logger.Log(e, "Export Hierarchy error");
                 Stop();
                 return;
-            }
-
-            try
-            {
-                StaticContainersFactory.CreateStaticContainers(GameConfig.SceneManager.CurrentHierarchy);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Logger.Log(e, "Static Containers creation error");
-                Stop();
-                return;
-            }
+            }*/
 
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
