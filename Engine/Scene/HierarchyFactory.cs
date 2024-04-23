@@ -41,7 +41,7 @@ namespace Engine.Scene
                 foreach (var component in gameObject.GetAllComponents<Component>())
                 {
                     var componentJson = new JsonObject();
-                    componentJson.Add(ComponentDataNameLiteral, component.GetType().Name);
+                    componentJson.Add(ComponentDataNameLiteral, component.GetType().AssemblyQualifiedName);
                     componentJson.Add(ComponentEnabledLiteral, component.enabled);
 
                     var dataJson = new JsonArray();
@@ -54,14 +54,14 @@ namespace Engine.Scene
 
                         if (SerializingHelper.PremadeSerializationFunctions.ContainsKey(field.FieldType.Name))
                         {
-                            Logger.Log($"PremadeSerializationFunctions contains {field.FieldType.Name}");
+                            Logger.Log($"PremadeSerializationFunctions contains {field.FieldType.AssemblyQualifiedName}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](
                                     field.GetValue(component)));
                         }
                         else
                         {
-                            Logger.Log($"PremadeSerializationFunctions not contains {field.FieldType.Name}");
+                            Logger.Log($"PremadeSerializationFunctions not contains {field.FieldType.AssemblyQualifiedName}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 JsonSerializer.SerializeToNode(field.GetValue(component), field.FieldType));
                         }

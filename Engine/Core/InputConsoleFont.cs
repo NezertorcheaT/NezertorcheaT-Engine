@@ -16,7 +16,7 @@ namespace Engine.Core
         public static Vector2 ScreenToConsolePosition(Vector2 screenPosition)
         {
             var v = screenPosition;
-            var bounds = GetWindowBounds();
+            var bounds = GetWindowFieldBounds();
             var font = GetConsoleFont();
             //v = bounds.Clamp(v);
             v -= bounds.LeftDown;

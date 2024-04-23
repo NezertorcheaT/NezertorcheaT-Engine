@@ -49,9 +49,18 @@ namespace Engine.Core
         {
             if (File.Exists("logs\\.now"))
             {
-                File.AppendAllText("logs\\.now",
-                    $"\n[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
-            }/*
+                try
+                {
+                    File.AppendAllText("logs\\.now",
+                        $"\n[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.ReadKey();
+                    throw;
+                }
+            } /*
             else
             {
                 throw new Exception("Initialise before logging");
