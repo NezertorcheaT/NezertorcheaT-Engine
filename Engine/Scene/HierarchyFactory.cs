@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -41,7 +40,7 @@ namespace Engine.Scene
                 foreach (var component in gameObject.GetAllComponents<Component>())
                 {
                     var componentJson = new JsonObject();
-                    componentJson.Add(ComponentDataNameLiteral, component.GetType().AssemblyQualifiedName);
+                    componentJson.Add(ComponentDataNameLiteral, component.GetType().Name);
                     componentJson.Add(ComponentEnabledLiteral, component.enabled);
 
                     var dataJson = new JsonArray();
@@ -55,7 +54,7 @@ namespace Engine.Scene
                         if (SerializingHelper.PremadeSerializationFunctions.ContainsKey(field.FieldType.Name))
                         {
                             Logger.Log(
-                                $"PremadeSerializationFunctions contains {field.FieldType.AssemblyQualifiedName}");
+                                $"PremadeSerializationFunctions contains {field.FieldType.Name}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](
                                     field.GetValue(component)));
@@ -63,7 +62,7 @@ namespace Engine.Scene
                         else
                         {
                             Logger.Log(
-                                $"PremadeSerializationFunctions not contains {field.FieldType.AssemblyQualifiedName}");
+                                $"PremadeSerializationFunctions not contains {field.FieldType.Name}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 JsonSerializer.SerializeToNode(field.GetValue(component), field.FieldType));
                         }
@@ -112,13 +111,13 @@ namespace Engine.Scene
                 gameObj.active = objNode[GameObjectActiveLiteral].Deserialize<bool>();
 
                 var compInd = 0;
-                if (debug) Logger.Log(gameObj, "GameObject to initialize");
+                if (debug) Logger.Log(gameObj, "GameObject to initialize", 1);
                 foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
                     if (componentNode[ComponentNameLiteral].ToString() == nameof(Behavior) ||
                         componentNode[ComponentNameLiteral].ToString() == nameof(Component)) continue;
 
-                    if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name");
+                    if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name", 2);
 
                     var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
@@ -127,21 +126,22 @@ namespace Engine.Scene
                     if (comp == null) continue;
                     comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
 
-                    if (debug) Logger.Log(comp, "component to initialize");
+                    if (debug) Logger.Log(comp, "component to initialize", 2);
 
                     foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
                     {
-                        if (debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize");
+                        if (debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize", 3);
                         foreach (var fieldInfo in comp.GetType()
                             .GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                         {
                             if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
-                            if (debug) Logger.Log(fieldInfo.FieldType.Name);
-                            if (debug) Logger.Log(fieldInfo.Name);
+                            if (debug) Logger.Log(fieldInfo.FieldType.Name, tabs: 4);
+                            if (debug) Logger.Log(fieldInfo.Name, tabs: 4);
                             if (SerializingHelper.PremadeDeserializationFunctions.ContainsKey(fieldInfo.FieldType.Name))
                             {
                                 if (debug)
-                                    Logger.Log($"PremadeDeserializationFunctions contains {fieldInfo.FieldType.Name}");
+                                    Logger.Log($"PremadeDeserializationFunctions contains {fieldInfo.FieldType.Name}",
+                                        tabs: 4);
                                 fieldInfo.SetValue(comp,
                                     SerializingHelper.PremadeDeserializationFunctions[fieldInfo.FieldType.Name](
                                         varNode[ComponentDataValueLiteral]));
@@ -176,18 +176,20 @@ namespace Engine.Scene
                             {
                                 if (debug)
                                     Logger.Log(
-                                        $"PremadeDeserializationFunctions not contains {fieldInfo.FieldType.Name}");
+                                        $"PremadeDeserializationFunctions not contains {fieldInfo.FieldType.Name}",
+                                        tabs: 4);
                                 fieldInfo.SetValue(comp,
                                     varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             }
+                            
+                            if (debug) Logger.Log(fieldInfo.GetValue(comp), "fieldInfo.GetValue(comp)", 4);
 
                             break;
                         }
                     }
 
                     compInd++;
-                    if (comp is not Transform)
-                        gameObj.AddComponent(comp);
+                    gameObj.AddComponent(comp);
                 }
 
                 hierarchy.Objects.Add(gameObj);
@@ -197,25 +199,24 @@ namespace Engine.Scene
             {
                 if (debug)
                     Logger.Log($"{gObject.Item1}, {gObject.Item2}, {gObject.Item3}, {gObject.Item4}",
-                        "gameobject fields initializer");
+                        "gameobject fields initializer", tabs: 1);
                 if (gObject is null) continue;
                 if (gObject.Item4.Item1 == NullLiteral) continue;
                 var orgObj = GameObject.FindObjectByName(gObject.Item1, hierarchy);
-                if (debug) Logger.Log(orgObj.name, "gameobject fields initializer");
-                var coml = orgObj.GetAllComponents<Component>().ToArray();
-                Component comObj = coml.Where((t, i) => i == gObject.Item2).FirstOrDefault();
+                if (debug) Logger.Log(orgObj.name, "gameobject fields initializer", tabs: 2);
+                Component comObj = orgObj.GetComponentAt(gObject.Item2);
 
                 if (comObj is null) continue;
-                if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer");
+                if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer", tabs: 2);
 
                 foreach (var fieldInfo in comObj.GetType().GetFields())
                 {
                     if (fieldInfo.Name == gObject.Item3)
                     {
-                        if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer");
+                        if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer", tabs: 3);
                         var gg = GameObject.FindObjectByName(gObject.Item4.Item1, hierarchy);
-                        if (debug) Logger.Log(gg?.name, "gameobject fields initializer");
-                        if (debug) Logger.Log(gObject.Item4.Item2, "gameobject fields initializer");
+                        if (debug) Logger.Log(gg?.name, "gameobject fields initializer", tabs: 3);
+                        if (debug) Logger.Log(gObject.Item4.Item2, "gameobject fields initializer", tabs: 3);
                         if (gObject.Item4.Item2 < 0)
                             fieldInfo.SetValue(comObj, gg);
                         else

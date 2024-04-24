@@ -77,21 +77,6 @@ namespace Engine.Core
                 return;
             }
 
-            foreach (var hierarchy in (GameConfig.SceneManager as IGameConfigSceneManager).Hierarchies)
-            {
-                try
-                {
-                    Logger.Log($"\n{HierarchyFactory.SaveHierarchy(hierarchy)}", "Export Hierarchy");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    Logger.Log(e, "Export Hierarchy error");
-                    Stop();
-                    return;
-                }
-            }
-
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
 
@@ -104,6 +89,19 @@ namespace Engine.Core
                 catch (Exception e)
                 {
                     Logger.Log(e, "start error");
+                }
+            }
+            
+            foreach (var hierarchy in (GameConfig.SceneManager as IGameConfigSceneManager).Hierarchies)
+            {
+                try
+                {
+                    Logger.Log($"\n{HierarchyFactory.SaveHierarchy(hierarchy)}", "Export Hierarchy");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Logger.Log(e, "Export Hierarchy error");
                 }
             }
 

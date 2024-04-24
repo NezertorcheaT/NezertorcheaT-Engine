@@ -5,6 +5,8 @@ namespace Engine.Core
 {
     public static class Logger
     {
+        private static readonly string Lines = "   ";
+
         /// <summary>
         /// Stopping current logger session
         /// </summary>
@@ -45,14 +47,14 @@ namespace Engine.Core
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
         /// <exception cref="Exception">Initialise before logging</exception>
-        public static void Log(object? message, string logType = "info")
+        public static void Log(object? message, string logType = "info", int tabs = 0)
         {
             if (File.Exists("logs\\.now"))
             {
                 try
                 {
                     File.AppendAllText("logs\\.now",
-                        $"\n[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
+                        $"\n{Lines.Multiply(Math.Max(tabs, 0))}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
                 }
                 catch (Exception e)
                 {

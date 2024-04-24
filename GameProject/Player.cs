@@ -7,7 +7,7 @@ namespace GameProject
 {
     public class Player : Behavior
     {
-        private float speed;
+        private float speed=1;
 
         protected override void Update()
         {

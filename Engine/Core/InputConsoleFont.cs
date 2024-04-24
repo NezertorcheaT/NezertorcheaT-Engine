@@ -41,6 +41,14 @@ namespace Engine.Core
             return consolePosition.Multiply(new Vector2(1, -1));
         }
 
+        public static Vector2 ConsoleToWorldPosition(Vector2 consolePosition)
+        {
+            consolePosition.X /= Symbol.Aspect;
+            consolePosition.Multiply(new Vector2(1, -1));
+            
+            return consolePosition.Multiply(new Vector2(1, -1));
+        }
+
         /// <summary>
         /// Get properties of console font
         /// </summary>

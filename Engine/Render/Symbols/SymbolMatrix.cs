@@ -126,6 +126,20 @@ namespace Engine.Render.Symbols
             return true;
         }
 
+        /// <summary>
+        /// Convert world 2D Vector position to matrix space position
+        /// </summary>
+        /// <param name="pos">2D Vector world position, will be converted to matrix space</param>
+        /// <param name="camera">Camera that renders</param>
+        /// <param name="extends">If true, "pos" can be outside of matrix bounds</param>
+        /// <returns>2D Vector, converted to matrix space</returns>
+        public static Vector2 WorldToSymbolMatrixPosition(Vector2 pos, Camera? camera, bool extends = false)
+        {
+            var v = pos;
+            WorldToSymbolMatrixPosition(ref v, camera, extends);
+            return v;
+        }
+
         protected bool Equals(SymbolMatrix other)
         {
             return _matrix.Equals(other._matrix) && _size.Equals(other._size);

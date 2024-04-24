@@ -125,6 +125,11 @@ namespace Engine.Scene
         /// <returns>Already created Component</returns>
         public Component AddComponent(Component component)
         {
+            if (component is Transform tr)
+            {
+                transform = tr;
+                return transform;
+            }
             _components.Add(component);
             (component as IComponentInit).Init(this);
             return component;

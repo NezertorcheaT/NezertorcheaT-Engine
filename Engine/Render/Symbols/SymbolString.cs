@@ -29,28 +29,24 @@ namespace Engine.Render.Symbols
             }
         }
 
+
+        private static IEnumerable<Vector2> BoundsPoints(string String)
+        {
+            for (int x = 0; x < String.Wight(); x++)
+            {
+                for (int y = 0; y < String.Length; y++)
+                {
+                    yield return new Vector2(x, y);
+                }
+            }
+        }
+
         public Bounds Bounds
         {
             get
             {
-                var b = new Bounds();
-                var x = 0;
-                var xMax = 0;
-                var y = 0;
-
-                foreach (var symbol in SymbolArray)
-                {
-                    x++;
-                    if (symbol.Character.Equals('\n'))
-                    {
-                        xMax = Math.Max(xMax, x);
-                        x = 0;
-                        y++;
-                    }
-                }
-
-                b.Size = new Vector2(xMax / 2.0f, y / 2.0f);
-
+                var b = new Bounds(BoundsPoints(String));
+                b.Size += Vector2.One;
                 return b;
             }
         }

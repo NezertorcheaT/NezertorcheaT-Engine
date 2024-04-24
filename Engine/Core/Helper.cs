@@ -57,10 +57,26 @@ namespace Engine.Core
         public static float DegToRadFloat => (float) (Math.PI / 180.0);
         public static double RadToDeg => 180.0 / Math.PI;
         public static float RadToDegFloat => (float) (180.0 / Math.PI);
+        
         public static Vector2 Normal(Vector2 a, Vector2 b) => new Vector2(-(b.Y - a.Y), b.X - a.X);
+        public static Vector2 Floor(this Vector2 a) => new Vector2(MathF.Floor(a.X), MathF.Floor(a.Y));
+        public static Vector2 Round(this Vector2 a) => new Vector2(MathF.Round(a.X), MathF.Round(a.Y));
+        public static Vector2 Ceiling(this Vector2 a) => new Vector2(MathF.Ceiling(a.X), MathF.Ceiling(a.Y));
 
         public static Collision? CheckCollision(this SatTriangle triangle1, SatTriangle triangle2) =>
             SatTriangle.CheckCollision(triangle1, triangle2);
+
+
+        public static string Multiply(this string s, int by)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (var i = 0; i < by; i++)
+            {
+                sb.Append(s);
+            }
+
+            return sb.ToString();
+        }
 
         public static int Lines(this StringBuilder sb) => sb.ToString().Lines();
         public static int Lines(this string str) => str.Split('\n').Length;

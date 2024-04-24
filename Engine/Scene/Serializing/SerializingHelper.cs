@@ -74,18 +74,18 @@ namespace Engine.Scene.Serializing
             new Dictionary<string, Func<JsonNode, object>>
             {
                 {
-                    "Vector2", node => new Vector2(node[0].GetValue<float>(), node[1].GetValue<float>())
+                    "Vector2", node => new Vector2(node.AsArray()[0].Deserialize<float>(), node.AsArray()[1].Deserialize<float>())
                 },
                 {
                     "Vector3",
-                    node => new Vector3(node[0].GetValue<float>(), node[1].GetValue<float>(), node[2].GetValue<float>())
+                    node => new Vector3(node.AsArray()[0].Deserialize<float>(), node.AsArray()[1].Deserialize<float>(), node.AsArray()[2].Deserialize<float>())
                 },
                 {
-                    "Vector2Int", node => new Vector2(node[0].GetValue<int>(), node[1].GetValue<int>())
+                    "Vector2Int", node => new Vector2(node.AsArray()[0].Deserialize<int>(), node.AsArray()[1].Deserialize<int>())
                 },
                 {
                     "Vector3Int",
-                    node => new Vector3(node[0].GetValue<int>(), node[1].GetValue<int>(), node[2].GetValue<int>())
+                    node => new Vector3(node.AsArray()[0].Deserialize<int>(), node.AsArray()[1].Deserialize<int>(), node.AsArray()[2].Deserialize<int>())
                 },
                 {
                     "Bounds",
