@@ -56,14 +56,16 @@ namespace Engine.Scene.Serializing
                     "GameObject", obj =>
                     {
                         var gameObject = (GameObject) obj;
-                        return obj is null ? "null" : gameObject.name;
+                        var ar = new JsonArray {obj is null ? "null" : gameObject.name, -1};
+                        return ar;
                     }
                 },
                 {
                     "Transform", obj =>
                     {
                         var comp = (Transform) obj;
-                        return obj is null ? "null" : comp.gameObject.name;
+                        var ar = new JsonArray {obj is null ? "null" : comp.gameObject.name, 0};
+                        return ar;
                     }
                 },
             };

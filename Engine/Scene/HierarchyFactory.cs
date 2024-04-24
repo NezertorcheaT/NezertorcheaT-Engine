@@ -54,14 +54,16 @@ namespace Engine.Scene
 
                         if (SerializingHelper.PremadeSerializationFunctions.ContainsKey(field.FieldType.Name))
                         {
-                            Logger.Log($"PremadeSerializationFunctions contains {field.FieldType.AssemblyQualifiedName}");
+                            Logger.Log(
+                                $"PremadeSerializationFunctions contains {field.FieldType.AssemblyQualifiedName}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](
                                     field.GetValue(component)));
                         }
                         else
                         {
-                            Logger.Log($"PremadeSerializationFunctions not contains {field.FieldType.AssemblyQualifiedName}");
+                            Logger.Log(
+                                $"PremadeSerializationFunctions not contains {field.FieldType.AssemblyQualifiedName}");
                             fieldData.Add(ComponentDataValueLiteral,
                                 JsonSerializer.SerializeToNode(field.GetValue(component), field.FieldType));
                         }
@@ -96,8 +98,8 @@ namespace Engine.Scene
             if (debug) Logger.Log(hierarchy.MapName, "map name");
             if (debug) Logger.Log(options, "map json options");
 
-            List<string[]> parents = new List<string[]>(node.AsArray().Count);
-            List<Tuple<string, int, string, string>> gObjects = new List<Tuple<string, int, string, string>>(1);
+            List<Tuple<string, int, string, Tuple<string, int>>> gObjects =
+                new List<Tuple<string, int, string, Tuple<string, int>>>(1);
 
             foreach (var objNode in node.AsArray())
             {
@@ -109,29 +111,11 @@ namespace Engine.Scene
                 );
                 gameObj.active = objNode[GameObjectActiveLiteral].Deserialize<bool>();
 
-                var trcmp = objNode[ComponentsLiteral].AsArray().First()[ComponentDataLiteral].AsArray();
-
-                gameObj.transform.LocalPosition =
-                    (Vector2) SerializingHelper.PremadeDeserializationFunctions["Vector2"](
-                        trcmp.First()[ComponentDataValueLiteral]);
-
-                var localRotation = trcmp[1][ComponentDataValueLiteral].Deserialize<float>();
-                gameObj.transform.LocalRotation = localRotation;
-
-                if (debug) Logger.Log(localRotation, $"{gameObj.name}'s localRotation");
-
-                parents.Add(new[]
-                {
-                    gameObj.name,
-                    trcmp.Last()[ComponentDataValueLiteral].Deserialize<string>()
-                });
-
-                var compInd = 1;
+                var compInd = 0;
                 if (debug) Logger.Log(gameObj, "GameObject to initialize");
                 foreach (var componentNode in objNode[ComponentsLiteral].AsArray())
                 {
-                    if (componentNode[ComponentNameLiteral].ToString() == nameof(Transform) ||
-                        componentNode[ComponentNameLiteral].ToString() == nameof(Behavior) ||
+                    if (componentNode[ComponentNameLiteral].ToString() == nameof(Behavior) ||
                         componentNode[ComponentNameLiteral].ToString() == nameof(Component)) continue;
 
                     if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name");
@@ -164,11 +148,27 @@ namespace Engine.Scene
                             }
                             else if (fieldInfo.FieldType.Name == typeof(GameObject).Name)
                             {
-                                gObjects.Add(new Tuple<string, int, string, string>(
+                                gObjects.Add(new Tuple<string, int, string, Tuple<string, int>>(
                                         gameObj.name,
                                         compInd,
                                         varNode[ComponentDataNameLiteral].ToString(),
-                                        varNode[ComponentDataValueLiteral].Deserialize<string>()
+                                        new Tuple<string, int>(
+                                            varNode[ComponentDataValueLiteral].AsArray().First().Deserialize<string>(),
+                                            -1
+                                        )
+                                    )
+                                );
+                            }
+                            else if (fieldInfo.FieldType.IsSubclassOf(typeof(Component)))
+                            {
+                                gObjects.Add(new Tuple<string, int, string, Tuple<string, int>>(
+                                        gameObj.name,
+                                        compInd,
+                                        varNode[ComponentDataNameLiteral].ToString(),
+                                        new Tuple<string, int>(
+                                            varNode[ComponentDataValueLiteral].AsArray().First().Deserialize<string>(),
+                                            varNode[ComponentDataValueLiteral].AsArray().Last().Deserialize<int>()
+                                        )
                                     )
                                 );
                             }
@@ -186,7 +186,8 @@ namespace Engine.Scene
                     }
 
                     compInd++;
-                    gameObj.AddComponent(comp);
+                    if (comp is not Transform)
+                        gameObj.AddComponent(comp);
                 }
 
                 hierarchy.Objects.Add(gameObj);
@@ -198,16 +199,11 @@ namespace Engine.Scene
                     Logger.Log($"{gObject.Item1}, {gObject.Item2}, {gObject.Item3}, {gObject.Item4}",
                         "gameobject fields initializer");
                 if (gObject is null) continue;
+                if (gObject.Item4.Item1 == NullLiteral) continue;
                 var orgObj = GameObject.FindObjectByName(gObject.Item1, hierarchy);
                 if (debug) Logger.Log(orgObj.name, "gameobject fields initializer");
-                Component comObj = null;
                 var coml = orgObj.GetAllComponents<Component>().ToArray();
-                for (var i = 0; i < coml.Length; i++)
-                {
-                    if (i != gObject.Item2) continue;
-                    comObj = coml[i];
-                    break;
-                }
+                Component comObj = coml.Where((t, i) => i == gObject.Item2).FirstOrDefault();
 
                 if (comObj is null) continue;
                 if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer");
@@ -217,24 +213,16 @@ namespace Engine.Scene
                     if (fieldInfo.Name == gObject.Item3)
                     {
                         if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer");
-                        var gg = GameObject.FindObjectByName(gObject.Item4, hierarchy);
+                        var gg = GameObject.FindObjectByName(gObject.Item4.Item1, hierarchy);
                         if (debug) Logger.Log(gg?.name, "gameobject fields initializer");
-                        fieldInfo.SetValue(comObj, gg);
+                        if (debug) Logger.Log(gObject.Item4.Item2, "gameobject fields initializer");
+                        if (gObject.Item4.Item2 < 0)
+                            fieldInfo.SetValue(comObj, gg);
+                        else
+                            fieldInfo.SetValue(comObj, gg?.GetComponentAt(gObject.Item4.Item2));
                         break;
                     }
                 }
-            }
-
-            foreach (var par in parents)
-            {
-                var parent = par[1];
-                if (parent == NullLiteral) continue;
-
-                var child = par[0];
-                var childObj = GameObject.FindObjectByName(child, hierarchy);
-                var parentObj = GameObject.FindObjectByName(parent, hierarchy);
-
-                if (childObj != null) childObj.transform.Parent = parentObj?.transform;
             }
 
             return hierarchy;

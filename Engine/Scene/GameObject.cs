@@ -105,8 +105,16 @@ namespace Engine.Scene
         public T? GetComponent<T>() where T : Component, IComponentInit =>
             GetAllComponents<T>().FirstOrDefault(defaultValue: null) as T;
 
+        internal Component GetComponentAt(int i) => _components[i];
+
+
+        /// <summary>
+        /// Gets components of type T of GameObject
+        /// </summary>
+        /// <typeparam name="T">Type inherited from Component</typeparam>
+        /// <returns></returns>
         public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit =>
-            nameof(T) == nameof(Component)
+            typeof(T).AssemblyQualifiedName == typeof(Component).AssemblyQualifiedName
                 ? _components
                 : _components.Where(c => c is T || c.GetType().GetInterfaces().Contains(typeof(T)));
 
@@ -114,12 +122,60 @@ namespace Engine.Scene
         /// Adds already created Component to GameObject
         /// </summary>
         /// <param name="component">Object of type inherited from Component</param>
-        /// <returns></returns>
+        /// <returns>Already created Component</returns>
         public Component AddComponent(Component component)
         {
             _components.Add(component);
             (component as IComponentInit).Init(this);
             return component;
+        }
+
+        /// <summary>
+        /// Adds already created Component to GameObject
+        /// </summary>
+        /// <param name="component">Object of type inherited from Component</param>
+        /// <typeparam name="T">Type inherited from Component</typeparam>
+        /// <returns>Already created Component</returns>
+        public T? AddComponent<T>(T component) where T : Component
+        {
+            if (!(component is Component componentInit)) return null;
+            _components.Add(componentInit);
+            (component as IComponentInit).Init(this);
+            return component;
+        }
+
+        public void RemoveComponent<T>() where T : IComponentInit => RemoveComponents<T>(1);
+
+        public void RemoveComponents<T>(int count) where T : IComponentInit
+        {
+            var j = 0;
+            for (var i = 0; i < _components.Count; i++)
+            {
+                if (j == count) return;
+                if (_components[i] is not T) continue;
+                _components.RemoveAt(i);
+                j++;
+            }
+        }
+
+        public void RemoveComponent(Type type) => RemoveComponents(type, 1);
+
+        public void RemoveComponents(Type type, int count)
+        {
+            var j = 0;
+            for (var i = 0; i < _components.Count; i++)
+            {
+                if (j == count) return;
+                var thisType = _components[i].GetType();
+                if (
+                    thisType.AssemblyQualifiedName == type.AssemblyQualifiedName ||
+                    thisType.GetInterfaces().Contains(type)
+                )
+                {
+                    _components.RemoveAt(i);
+                    j++;
+                }
+            }
         }
 
         /// <summary>
