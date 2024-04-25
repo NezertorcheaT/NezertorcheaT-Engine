@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Engine.Components;
 using Engine.Render.Symbols;
 
@@ -58,8 +57,11 @@ namespace Engine.Core
 
         internal static void ConsoleFontUpdate()
         {
-            _consoleFont = new _CONSOLE_FONT_INFOEX();
-            _consoleFont.cbSize = Marshal.SizeOf(_consoleFont);
+            if (_consoleFont is null)
+            {
+                _consoleFont=new _CONSOLE_FONT_INFOEX();
+                _consoleFont.cbSize = Marshal.SizeOf(_consoleFont);
+            }
             if (!GetCurrentConsoleFontEx(GetStdHandle(-11), false, _consoleFont))
                 Logger.Log(Marshal.GetLastWin32Error(), "Last Win32 error");
         }

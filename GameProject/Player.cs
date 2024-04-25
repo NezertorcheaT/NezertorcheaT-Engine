@@ -7,7 +7,9 @@ namespace GameProject
 {
     public class Player : Behavior
     {
-        private float speed = 1;
+        public float speed = 1;
+        public int walls = 10;
+        public int turrets = 1;
 
         protected override void Update()
         {

@@ -30,31 +30,11 @@
         "name": "Camera",
         "enabled": true,
         "data": []
-      },
-      {
-        "name": "HierSwich",
-        "enabled": true,
-        "data": [
-          {
-            "name": "pix",
-            "value": ["pixel",-1]
-          }
-        ]
-      },
-      {
-        "name": "ConsoleRenderer",
-        "enabled": true,
-        "data": [
-          {
-            "name": "Character",
-            "value": "0"
-          }
-        ]
       }
     ]
   },
   {
-    "name": "pixel",
+    "name": "player",
     "tag": "",
     "layer": 0,
     "active": true,
@@ -66,7 +46,7 @@
           {
             "name": "LocalPosition",
             "value": [
-              0,
+              2,
               0
             ]
           },
@@ -81,12 +61,22 @@
         ]
       },
       {
+        "name": "Player",
+        "enabled": true,
+        "data": [
+          {
+            "name": "speed",
+            "value": 3.0
+          }
+        ]
+      },
+      {
         "name": "ConsoleRenderer",
         "enabled": true,
         "data": [
           {
             "name": "Character",
-            "value": "5"
+            "value": "P"
           }
         ]
       }

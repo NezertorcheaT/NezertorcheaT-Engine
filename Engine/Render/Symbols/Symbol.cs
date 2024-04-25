@@ -19,6 +19,7 @@ namespace Engine.Render.Symbols
             get
             {
                 var font = Input.GetConsoleFont();
+                //if (font.Size.X == 0) return 9f / 20f;
                 return font.Size.Y / font.Size.X;
             }
         }

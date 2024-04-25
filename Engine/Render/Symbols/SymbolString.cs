@@ -98,7 +98,7 @@ namespace Engine.Render.Symbols
                     continue;
                 }
 
-                SymbolMatrix.Draw(symbol.Character == ' ' ? new Symbol(' ', symbol.Color) : symbol, pos + new Vector2(x, y),matrix);
+                SymbolMatrix.Draw(symbol.Character == ' ' ? new Symbol(' ', symbol.Color) : symbol, pos + new Vector2(x, y), matrix);
 
                 x++;
                 if (symbol.Character != '\n') continue;

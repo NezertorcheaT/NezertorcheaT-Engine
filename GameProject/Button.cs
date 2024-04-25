@@ -44,8 +44,9 @@ namespace GameProject
             {
                 for (var y = 0f; y < scale.Y; y += delay)
                 {
-                    SymbolMatrix.Draw(new Symbol(CharacterFill, (ConsoleColor) Color),
-                        SymbolMatrix.WorldToSymbolMatrixPosition(pos + new Vector2(x, y), _camera, true), matrix);
+                    var v = pos + new Vector2(x, y);
+                    if (SymbolMatrix.WorldToSymbolMatrixPosition(ref v, _camera, true))
+                        SymbolMatrix.Draw(new Symbol(CharacterFill, (ConsoleColor) Color), v, matrix);
                 }
             }
 

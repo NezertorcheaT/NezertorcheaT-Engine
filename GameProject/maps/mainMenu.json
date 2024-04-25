@@ -34,7 +34,7 @@
     ]
   },
   {
-    "name": "butEn",
+    "name": "butEx",
     "tag": "",
     "layer": 0,
     "active": true,
@@ -46,7 +46,7 @@
           {
             "name": "LocalPosition",
             "value": [
-              2,
+              -3.5,
               0
             ]
           },
@@ -66,7 +66,7 @@
         "data": [
           {
             "name": "Text",
-            "value": "goood"
+            "value": "start game"
           },
           {
             "name": "Scale",
@@ -80,7 +80,7 @@
     ]
   },
   {
-    "name": "butEx",
+    "name": "butEn",
     "tag": "",
     "layer": 0,
     "active": true,
@@ -92,8 +92,8 @@
           {
             "name": "LocalPosition",
             "value": [
-              2,
-              5
+              -3.5,
+              -5
             ]
           },
           {

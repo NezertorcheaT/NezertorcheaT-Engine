@@ -138,6 +138,7 @@ namespace Engine.Core
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
             while (IsWork)
             {
+                Input.ConsoleFontUpdate();
                 if (GameConfig.Data.FPS > 0)
                     Thread.Sleep((int) (1000.0 / GameConfig.Data.FPS));
 
@@ -161,11 +162,7 @@ namespace Engine.Core
                     catch (Exception e)
                     {
                         Logger.Log(e, "drawing error");
-                        continue;
                     }
-
-                    if (GameConfig.Data.LOG_DRAWCALLS)
-                        Logger.Log($"{obj.gameObject}: {obj}, {obj.gameObject.transform.Position}", "drawcall");
                 }
 
                 try
@@ -195,7 +192,6 @@ namespace Engine.Core
             while (IsWork)
             {
                 Thread.Yield();
-                Input.ConsoleFontUpdate();
                 MainLoopWorking = false;
 
                 if (GameConfig.Data.DRAW_PRIOIRITY && DrawLoopWorking) continue;

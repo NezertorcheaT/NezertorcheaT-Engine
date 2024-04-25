@@ -20,7 +20,7 @@ namespace Engine.Render.Symbols
 
             for (var i = 0; i < _matrix.Length; i++)
             {
-                _matrix[i] = new Symbol();
+                _matrix[i] = new Symbol(' ');
             }
         }
 
@@ -66,9 +66,9 @@ namespace Engine.Render.Symbols
         {
             if (pos.X < 0 || pos.X >= matrix._size.Y || pos.Y < 0 ||
                 pos.Y >= matrix._size.X) return matrix._matrix.Length - 1;
-            return (int) Math.Round(Math.Clamp(pos.X, 0, matrix._size.Y - 1)) +
-                   (int) matrix._size.Y *
-                   (int) Math.Round(Math.Clamp(pos.Y, 0, matrix._size.X - 1));
+            return (int) (Math.Round(Math.Clamp(pos.X, 0, matrix._size.Y - 1)) +
+                          matrix._size.Y *
+                          Math.Round(Math.Clamp(pos.Y, 0, matrix._size.X - 1)));
         }
 
         /// <summary>
@@ -91,17 +91,23 @@ namespace Engine.Render.Symbols
         /// </summary>
         /// <param name="symbol">Symbol to set</param>
         /// <param name="pos">2D Vector position in matrix space</param>
-        public static void Draw(Symbol symbol, Vector2 pos, SymbolMatrix matrix) =>
+        public static void Draw(Symbol symbol, Vector2 pos, SymbolMatrix matrix)
+        {
             Draw(symbol, IFromPos(pos, matrix), matrix);
+            if (GameConfig.Data.LOG_DRAWCALLS)
+                Logger.Log($"'{symbol.Character}'({symbol.Color}): {pos}", "drawcall");
+        }
 
         /// <summary>
         /// Set Symbol at 2D Vector position of matrix
         /// </summary>
         /// <param name="symbol">Symbol to set</param>
         /// <param name="pos">Array position, to get use IFromPos</param>
-        public static void Draw(Symbol symbol, int pos, SymbolMatrix matrix) =>
+        public static void Draw(Symbol symbol, int pos, SymbolMatrix matrix)
+        {
             matrix._matrix[(int) Math.Clamp(pos, 0, matrix._size.X * matrix._size.Y + GameConfig.Data.DRAW_BUFFER_SIZE)]
                 = symbol;
+        }
 
 
         /// <summary>

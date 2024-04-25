@@ -14,19 +14,10 @@ namespace Engine.Components.ConsoleRenderers
         {
             if (!ActiveAndEnabled) return;
             var cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);
+            var worldPos = transform.Position;
 
-            DrawSymbol(
-                matrix,
-                transform.Position,
-                new Symbol {Character = Character, Color = (ConsoleColor) Color},
-                cam
-            );
-        }
-
-        private static void DrawSymbol(SymbolMatrix symbolMatrix, Vector2 worldPos, Symbol symbol, Camera? camera)
-        {
-            if (SymbolMatrix.WorldToSymbolMatrixPosition(ref worldPos, camera))
-                SymbolMatrix.Draw(symbol, worldPos, symbolMatrix);
+            if (SymbolMatrix.WorldToSymbolMatrixPosition(ref worldPos, cam))
+                SymbolMatrix.Draw(new Symbol {Character = Character, Color = (ConsoleColor) Color}, worldPos, matrix);
         }
     }
 }
