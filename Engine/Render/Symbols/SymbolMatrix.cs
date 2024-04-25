@@ -20,7 +20,7 @@ namespace Engine.Render.Symbols
 
             for (var i = 0; i < _matrix.Length; i++)
             {
-                _matrix[i] = new Symbol(' ');
+                _matrix[i] = new Symbol();
             }
         }
 

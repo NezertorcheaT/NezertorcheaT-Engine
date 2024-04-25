@@ -23,20 +23,18 @@ namespace GameProject
         {
             if (!ActiveAndEnabled) return;
             if (_camera is null) return;
-            Draw(matrix, transform.Position, Scale, new Symbol(Character, (ConsoleColor) Color), _camera);
-        }
+            var pos = transform.Position;
+            var scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
+            var delay = 1f / Symbol.Aspect;
 
-        private static void Draw(SymbolMatrix symbolMatrix, Vector2 pos, Vector2 scale, Symbol symbol,
-            Camera? camera)
-        {
-            scale = new Vector2(Math.Abs(scale.X), Math.Abs(scale.Y));
-            var delay = Vector2.Distance(pos, pos + scale) / GameConfig.Data.CONSOLE_LINE_RENDERER_DELAY;
 
-            for (var x = pos.X; x < pos.X + scale.X; x += delay)
+            for (var x = 0f; x < scale.X; x += delay)
             {
-                for (var y = pos.Y; y < pos.Y + scale.Y; y += delay)
+                for (var y = 0f; y < scale.Y; y += delay)
                 {
-                    SymbolMatrix.Draw(symbol, SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y)*delay, camera),symbolMatrix);
+                    var v = pos + new Vector2(x, y) - scale / 2f;
+                    if (SymbolMatrix.WorldToSymbolMatrixPosition(ref v, _camera, true))
+                        SymbolMatrix.Draw(new Symbol(Character, (ConsoleColor) Color), v, matrix);
                 }
             }
         }

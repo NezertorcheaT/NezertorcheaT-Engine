@@ -71,12 +71,80 @@
         ]
       },
       {
+        "name": "RigidBody",
+        "enabled": true,
+        "data": []
+      },
+      {
         "name": "ConsoleRenderer",
         "enabled": true,
         "data": [
           {
             "name": "Character",
             "value": "P"
+          }
+        ]
+      },
+      {
+        "name": "RectCollider",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Size",
+            "value": [1,1]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "wall1",
+    "tag": "",
+    "layer": 0,
+    "active": true,
+    "components": [
+      {
+        "name": "Transform",
+        "enabled": true,
+        "data": [
+          {
+            "name": "LocalPosition",
+            "value": [
+              0,
+              0
+            ]
+          },
+          {
+            "name": "Rotation",
+            "value": 0
+          },
+          {
+            "name": "Parent",
+            "value": ["null",0]
+          }
+        ]
+      },
+      {
+        "name": "RectCollider",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Size",
+            "value": [2,20]
+          }
+        ]
+      },
+      {
+        "name": "Fill",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Character",
+            "value": "|"
+          },
+          {
+            "name": "Scale",
+            "value": [2,20]
           }
         ]
       }
