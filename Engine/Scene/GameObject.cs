@@ -113,10 +113,16 @@ namespace Engine.Scene
         /// </summary>
         /// <typeparam name="T">Type inherited from Component</typeparam>
         /// <returns></returns>
-        public IEnumerable<Component> GetAllComponents<T>() where T : IComponentInit =>
+        public IEnumerable<T> GetAllComponents<T>() where T : IComponentInit =>
             typeof(T).AssemblyQualifiedName == typeof(Component).AssemblyQualifiedName
-                ? _components
-                : _components.Where(c => c is T || c.GetType().GetInterfaces().Contains(typeof(T)));
+                ? _components.Select(c => (T) (c as IComponentInit))
+                : _components.Where(ComponentTypeCheck<T>).Select(c => (T) (c as IComponentInit));
+
+        public static bool ComponentTypeCheck<T>(Component c) => ComponentTypeCheck(c, typeof(T));
+
+        public static bool ComponentTypeCheck(Component c, Type type) =>
+            c.GetType().AssemblyQualifiedName == type.AssemblyQualifiedName ||
+            c.GetType().IsSubclassOf(type) || c.GetType().GetInterfaces().Contains(type);
 
         /// <summary>
         /// Adds already created Component to GameObject
@@ -130,6 +136,7 @@ namespace Engine.Scene
                 transform = tr;
                 return transform;
             }
+
             _components.Add(component);
             (component as IComponentInit).Init(this);
             return component;
@@ -157,7 +164,7 @@ namespace Engine.Scene
             for (var i = 0; i < _components.Count; i++)
             {
                 if (j == count) return;
-                if (_components[i] is not T) continue;
+                if (ComponentTypeCheck<T>(_components[i])) continue;
                 _components.RemoveAt(i);
                 j++;
             }
@@ -171,11 +178,7 @@ namespace Engine.Scene
             for (var i = 0; i < _components.Count; i++)
             {
                 if (j == count) return;
-                var thisType = _components[i].GetType();
-                if (
-                    thisType.AssemblyQualifiedName == type.AssemblyQualifiedName ||
-                    thisType.GetInterfaces().Contains(type)
-                )
+                if (ComponentTypeCheck(_components[i], type))
                 {
                     _components.RemoveAt(i);
                     j++;
@@ -207,20 +210,8 @@ namespace Engine.Scene
         /// <param name="hierarchy">Current hierarchy of object</param>
         /// <typeparam name="T">Type inherited from Component</typeparam>
         /// <returns></returns>
-        public static T? FindObjectOfType<T>(Hierarchy hierarchy) where T : Component, IComponentInit
-        {
-            foreach (var obj in hierarchy.Objects)
-            {
-                foreach (var comp in obj._components)
-                {
-                    if (comp.GetType().FullName == typeof(T).FullName ||
-                        comp.GetType().GetInterfaces().Contains(typeof(T)))
-                        return comp as T;
-                }
-            }
-
-            return null;
-        }
+        public static T? FindObjectOfType<T>(Hierarchy hierarchy) where T : Component, IComponentInit =>
+            FindAllTypes<T>(hierarchy).First();
 
         /// <summary>
         /// Finds all objects with Component
@@ -228,9 +219,16 @@ namespace Engine.Scene
         /// <param name="hierarchy">Current hierarchy of object</param>
         /// <typeparam name="T">Type inherited from Component</typeparam>
         /// <returns></returns>
-        public static IEnumerable<Component> FindAllTypes<T>(Hierarchy hierarchy) where T : IComponentInit =>
-            hierarchy.Objects.Aggregate(Array.Empty<Component>() as IEnumerable<Component>,
-                (current, obj) => current.Concat(obj.GetAllComponents<T>()));
+        public static IEnumerable<T> FindAllTypes<T>(Hierarchy hierarchy) where T : IComponentInit
+        {
+            foreach (var gameObject in hierarchy.Objects)
+            {
+                foreach (var component in gameObject.GetAllComponents<T>())
+                {
+                    yield return component;
+                }
+            }
+        }
 
         /// <summary>
         /// Finds first object with tag

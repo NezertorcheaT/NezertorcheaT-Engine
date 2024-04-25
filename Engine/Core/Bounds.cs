@@ -12,31 +12,31 @@ namespace Engine.Core
 
         public Vector2 Extends
         {
-            get => Size / 2f;
-            set => Size = value * 2f;
+            get => (Size / 2f).Abs();
+            set => Size = value.Abs() * 2f;
         }
 
         public float Right
         {
-            get => Position.X + Size.X / 2f;
+            get => Position.X + Extends.X;
             set => UpdateBounds(value, Left, Up, Down);
         }
 
         public float Left
         {
-            get => Position.X - Size.X / 2f;
+            get => Position.X - Extends.X;
             set => UpdateBounds(Right, value, Up, Down);
         }
 
         public float Down
         {
-            get => Position.Y - Size.Y / 2f;
+            get => Position.Y - Extends.Y;
             set => UpdateBounds(Right, Left, Up, value);
         }
 
         public float Up
         {
-            get => Position.Y + Size.Y / 2f;
+            get => Position.Y + Extends.Y;
             set => UpdateBounds(Right, Left, value, Down);
         }
 
@@ -53,13 +53,13 @@ namespace Engine.Core
 
         public Bounds(Vector2 size)
         {
-            Size = size;
+            Size = size.Abs();
             Position = new Vector2();
         }
 
         public Bounds(Vector2 size, Vector2 position)
         {
-            Size = size;
+            Size = size.Abs();
             Position = position;
         }
 
@@ -148,7 +148,7 @@ namespace Engine.Core
                 new Vector2(right, down) +
                 new Vector2(left, down)
             ) / 4f;
-            Size = new Vector2(right - left, up - down);
+            Size = new Vector2(right - left, up - down).Abs();
         }
 
         public static bool operator ==(Bounds a, Bounds b) => a.Equals(b);

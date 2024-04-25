@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\EditorPreview\EditorPreview.csproj" />
       <ProjectReference Include="..\Engine\Engine.csproj" />
+      <ProjectReference Include="..\GameProject\GameProject.csproj" />
     </ItemGroup>
 
 </Project>

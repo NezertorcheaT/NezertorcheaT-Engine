@@ -31,7 +31,7 @@ namespace Engine.Render.Symbols
         /// <param name="x">X coordinate of 2D Vector position in matrix space</param>
         /// <param name="y">Y coordinate of 2D Vector position in matrix space</param>
         /// <returns></returns>
-        public int IFromPos(int x, float y) => IFromPos(new Vector2(x, y));
+        public static int IFromPos(int x, float y, SymbolMatrix matrix) => IFromPos(new Vector2(x, y), matrix);
 
         /// <summary>
         /// Convert from 2D Vector to array position
@@ -39,7 +39,7 @@ namespace Engine.Render.Symbols
         /// <param name="x">X coordinate of 2D Vector position in matrix space</param>
         /// <param name="y">Y coordinate of 2D Vector position in matrix space</param>
         /// <returns></returns>
-        public int IFromPos(float x, int y) => IFromPos(new Vector2(x, y));
+        public static int IFromPos(float x, int y, SymbolMatrix matrix) => IFromPos(new Vector2(x, y), matrix);
 
         /// <summary>
         /// Convert from 2D Vector to array position
@@ -47,7 +47,7 @@ namespace Engine.Render.Symbols
         /// <param name="x">X coordinate of 2D Vector position in matrix space</param>
         /// <param name="y">Y coordinate of 2D Vector position in matrix space</param>
         /// <returns></returns>
-        public int IFromPos(float x, float y) => IFromPos(new Vector2(x, y));
+        public static int IFromPos(float x, float y, SymbolMatrix matrix) => IFromPos(new Vector2(x, y), matrix);
 
         /// <summary>
         /// Convert from 2D Vector to array position
@@ -55,20 +55,20 @@ namespace Engine.Render.Symbols
         /// <param name="x">X coordinate of 2D Vector position in matrix space</param>
         /// <param name="y">Y coordinate of 2D Vector position in matrix space</param>
         /// <returns></returns>
-        public int IFromPos(int x, int y) => IFromPos(new Vector2(x, y));
+        public static int IFromPos(int x, int y, SymbolMatrix matrix) => IFromPos(new Vector2(x, y), matrix);
 
         /// <summary>
         /// Convert from 2D Vector to array position
         /// </summary>
         /// <param name="pos">2D Vector position in matrix space</param>
         /// <returns></returns>
-        public int IFromPos(Vector2 pos)
+        public static int IFromPos(Vector2 pos, SymbolMatrix matrix)
         {
-            if (pos.X < 0 || pos.X >= _size.Y || pos.Y < 0 ||
-                pos.Y >= _size.X) return _matrix.Length - 1;
-            return (int) Math.Round(Math.Clamp(pos.X, 0, _size.Y - 1)) +
-                   (int) _size.Y *
-                   (int) Math.Round(Math.Clamp(pos.Y, 0, _size.X - 1));
+            if (pos.X < 0 || pos.X >= matrix._size.Y || pos.Y < 0 ||
+                pos.Y >= matrix._size.X) return matrix._matrix.Length - 1;
+            return (int) Math.Round(Math.Clamp(pos.X, 0, matrix._size.Y - 1)) +
+                   (int) matrix._size.Y *
+                   (int) Math.Round(Math.Clamp(pos.Y, 0, matrix._size.X - 1));
         }
 
         /// <summary>
@@ -76,28 +76,32 @@ namespace Engine.Render.Symbols
         /// </summary>
         /// <param name="pos">2D Vector position in matrix space</param>
         /// <returns></returns>
-        public Symbol Read(Vector2 pos) => Read(IFromPos(pos));
+        public static Symbol Read(Vector2 pos, SymbolMatrix matrix) => Read(IFromPos(pos, matrix), matrix);
 
         /// <summary>
         /// Get Symbol at array position of matrix
         /// </summary>
         /// <param name="pos">Array position, to get use IFromPos</param>
         /// <returns></returns>
-        public Symbol Read(int pos) => _matrix[pos];
+        public static Symbol Read(int pos, SymbolMatrix matrix) => matrix._matrix[
+            (int) Math.Clamp(pos, 0, matrix._size.X * matrix._size.Y + GameConfig.Data.DRAW_BUFFER_SIZE)];
 
         /// <summary>
         /// Set Symbol at 2D Vector position of matrix
         /// </summary>
         /// <param name="symbol">Symbol to set</param>
         /// <param name="pos">2D Vector position in matrix space</param>
-        public void Draw(Symbol symbol, Vector2 pos) => Draw(symbol, IFromPos(pos));
+        public static void Draw(Symbol symbol, Vector2 pos, SymbolMatrix matrix) =>
+            Draw(symbol, IFromPos(pos, matrix), matrix);
 
         /// <summary>
         /// Set Symbol at 2D Vector position of matrix
         /// </summary>
         /// <param name="symbol">Symbol to set</param>
         /// <param name="pos">Array position, to get use IFromPos</param>
-        public void Draw(Symbol symbol, int pos) => _matrix[pos] = symbol;
+        public static void Draw(Symbol symbol, int pos, SymbolMatrix matrix) =>
+            matrix._matrix[(int) Math.Clamp(pos, 0, matrix._size.X * matrix._size.Y + GameConfig.Data.DRAW_BUFFER_SIZE)]
+                = symbol;
 
 
         /// <summary>
@@ -111,7 +115,8 @@ namespace Engine.Render.Symbols
         {
             if (camera == null) return false;
 
-            var newPos = pos.Multiply(new Vector2(1, -1)) - camera.transform.Position.Multiply(new Vector2(1, -1)) + camera.Offset;
+            var newPos = pos.Multiply(new Vector2(1, -1)) - camera.transform.Position.Multiply(new Vector2(1, -1)) +
+                         camera.Offset;
             newPos.X *= Symbol.Aspect;
 
             if (newPos.X < 0 || newPos.X >= GameConfig.Data.WIDTH || newPos.Y < 0 ||

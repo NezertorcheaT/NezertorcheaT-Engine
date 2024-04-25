@@ -24,6 +24,7 @@ namespace Editor
                     yield return HierarchyFactory.CreateHierarchy(map, false);
                 }
             }
+            Input.ConsoleFontUpdate();
 
             try
             {
@@ -62,7 +63,7 @@ namespace Editor
             Logger.Stop();
         }
     }
-
+    
     public abstract class Widget
     {
         public uint Wight { get; set; }

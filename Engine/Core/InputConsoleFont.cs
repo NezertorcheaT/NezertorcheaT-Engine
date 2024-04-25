@@ -19,12 +19,15 @@ namespace Engine.Core
             var v = screenPosition;
             var bounds = GetWindowFieldBounds();
             var font = GetConsoleFont();
-            //v = bounds.Clamp(v);
             v -= bounds.LeftDown;
             v.X /= font.Size.X;
             v.Y /= font.Size.Y;
             return v;
         }
+
+        public static Vector2 ScreenToWorldPosition(Vector2 screenPosition, Camera camera) =>
+            ((screenPosition - GetWindowFieldBounds().LeftDown) / GetConsoleFont().Size.Y - camera.Offset +
+             camera.transform.Position).Multiply(new Vector2(1, -1));
 
         /// <summary>
         /// Converts position from screen space to console symbol space
@@ -55,8 +58,10 @@ namespace Engine.Core
 
         internal static void ConsoleFontUpdate()
         {
+            _consoleFont = new _CONSOLE_FONT_INFOEX();
+            _consoleFont.cbSize = Marshal.SizeOf(_consoleFont);
             if (!GetCurrentConsoleFontEx(GetStdHandle(-11), false, _consoleFont))
-            Logger.Log(Marshal.GetLastWin32Error(), "Last Win32 error");
+                Logger.Log(Marshal.GetLastWin32Error(), "Last Win32 error");
         }
 
         /// <summary>

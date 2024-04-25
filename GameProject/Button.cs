@@ -24,10 +24,10 @@ namespace GameProject
 
         void IComponentUpdate.Update()
         {
-            if(!ActiveAndEnabled) return;
-            var v = Input.ConsoleToWorldPosition(Input.ScreenToConsolePosition(Input.GetCursorPosition()), _camera);
-            var b = new Bounds(transform.Position + Scale / 2f, Scale);
-            if (b.Contains(v) && Input.GetKey(Input.Keys.E))
+            if (!ActiveAndEnabled) return;
+            var v = Input.ScreenToWorldPosition(Input.GetCursorPosition(), _camera);
+            var b = new Bounds(Scale, transform.Position + Scale / 2f);
+            if (Input.GetKey(Input.Keys.E) && b.Contains(v))
                 OnClick?.Invoke();
         }
 
@@ -44,8 +44,8 @@ namespace GameProject
             {
                 for (var y = 0f; y < scale.Y; y += delay)
                 {
-                    matrix.Draw(new Symbol(CharacterFill, (ConsoleColor) Color),
-                        SymbolMatrix.WorldToSymbolMatrixPosition(pos + new Vector2(x, y), _camera, true));
+                    SymbolMatrix.Draw(new Symbol(CharacterFill, (ConsoleColor) Color),
+                        SymbolMatrix.WorldToSymbolMatrixPosition(pos + new Vector2(x, y), _camera, true), matrix);
                 }
             }
 
@@ -60,15 +60,15 @@ namespace GameProject
                         Math.Abs(y - (pos.Y + scale.Y) / delay) < delay / 2f
                     )
                     {
-                        matrix.Draw(new Symbol(CharacterBorders, (ConsoleColor) Color),
-                            SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y) * delay, _camera, true));
+                        SymbolMatrix.Draw(new Symbol(CharacterBorders, (ConsoleColor) Color),
+                            SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y) * delay, _camera, true), matrix);
                     }
                 }
             }
 
             var ss = new SymbolString(Text);
             SymbolString.PlaceAt(matrix, ss, SymbolMatrix.WorldToSymbolMatrixPosition(
-                pos + scale / 2f, _camera, true) + ss.Bounds.Extends.Multiply(new Vector2(-1, 0.25f)));
+                pos + scale / 2f, _camera, true) - ss.Bounds.Extends.Multiply(new Vector2(1, 0.25f)));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Engine.Components.ConsoleRenderers
         private static void DrawSymbol(SymbolMatrix symbolMatrix, Vector2 worldPos, Symbol symbol, Camera? camera)
         {
             if (SymbolMatrix.WorldToSymbolMatrixPosition(ref worldPos, camera))
-                symbolMatrix.Draw(symbol, worldPos);
+                SymbolMatrix.Draw(symbol, worldPos, symbolMatrix);
         }
     }
 }

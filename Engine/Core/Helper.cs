@@ -59,6 +59,7 @@ namespace Engine.Core
         public static float RadToDegFloat => (float) (180.0 / Math.PI);
         
         public static Vector2 Normal(Vector2 a, Vector2 b) => new Vector2(-(b.Y - a.Y), b.X - a.X);
+        public static Vector2 Abs(this Vector2 a) => new Vector2(MathF.Abs(a.X), MathF.Abs(a.Y));
         public static Vector2 Floor(this Vector2 a) => new Vector2(MathF.Floor(a.X), MathF.Floor(a.Y));
         public static Vector2 Round(this Vector2 a) => new Vector2(MathF.Round(a.X), MathF.Round(a.Y));
         public static Vector2 Ceiling(this Vector2 a) => new Vector2(MathF.Ceiling(a.X), MathF.Ceiling(a.Y));

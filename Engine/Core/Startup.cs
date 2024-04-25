@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Engine.Components;
 using Engine.Render.Symbols;
 using Engine.Scene;
+
+[assembly: InternalsVisibleTo("Editor")]
+[assembly: InternalsVisibleTo("EditorPreview")]
 
 namespace Engine.Core
 {
@@ -41,6 +45,8 @@ namespace Engine.Core
                 }
             }
 
+            Input.ConsoleFontUpdate();
+
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
@@ -50,7 +56,7 @@ namespace Engine.Core
                 Logger.Stop();
             };
             Input.IsUpdatingWork = true;
-            
+
             try
             {
                 GameConfig.GetData();
@@ -146,8 +152,7 @@ namespace Engine.Core
                 //Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
                 DrawLoopWorking = true;
 
-                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy))
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy).OrderBy(c => c.gameObject.layer))
                 {
                     try
                     {

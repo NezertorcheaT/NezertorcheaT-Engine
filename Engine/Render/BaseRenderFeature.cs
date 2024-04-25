@@ -15,7 +15,7 @@ namespace Engine.Render
             {
                 for (var x = 0; x < GameConfig.Data.WIDTH; x++)
                 {
-                    var character = matrix.Read(matrix.IFromPos(x, y)).Character;
+                    var character = SymbolMatrix.Read(SymbolMatrix.IFromPos(x, y, matrix), matrix).Character;
                     switch (character)
                     {
                         case '\n':
@@ -52,7 +52,7 @@ namespace Engine.Render
                 {
                     Console.SetCursorPosition(x, y);
 
-                    var c = matrix.Read(matrix.IFromPos(x, y));
+                    var c = SymbolMatrix.Read(SymbolMatrix.IFromPos(x, y, matrix), matrix);
                     Console.ForegroundColor = c.Color;
                     Console.Write(c.Character);
                 }

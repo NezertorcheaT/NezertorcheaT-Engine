@@ -7,16 +7,17 @@ namespace GameProject
     public class HierSwich : Behavior
     {
         public GameObject pix;
-        private Camera cam;
+        public Camera cam;
 
         protected override void Start()
         {
-            cam = GameObject.FindObjectOfType<Camera>(GameConfig.SceneManager.CurrentHierarchy);
+            cam = GameObject.FindObjectOfType<Camera>(gameObject.hierarchy);
+            Logger.Log(cam);
         }
 
         protected override void Update()
         {
-            var v = Input.ConsoleToWorldPosition(Input.ScreenToConsolePosition(Input.GetCursorPosition()), cam);
+            var v = Input.ScreenToWorldPosition(Input.GetCursorPosition(), cam);
             pix.transform.LocalPosition = v;
 
             if (Input.GetKey(Input.Keys.NumPad0))

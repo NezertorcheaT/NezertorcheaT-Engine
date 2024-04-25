@@ -37,15 +37,15 @@ namespace Engine.Components.ConsoleRenderers
             if (!SymbolMatrix.WorldToSymbolMatrixPosition(ref pos1, camera, true)) return;
             if (!SymbolMatrix.WorldToSymbolMatrixPosition(ref pos2, camera, true)) return;
 
-            symbolMatrix.Draw(symbol, pos1);
-            symbolMatrix.Draw(symbol, pos2);
+            SymbolMatrix.Draw(symbol, pos1, symbolMatrix);
+            SymbolMatrix.Draw(symbol, pos2, symbolMatrix);
 
             var delay = Vector2.Distance(pos1, pos2) / GameConfig.Data.CONSOLE_LINE_RENDERER_DELAY;
             var dir = Vector2.Normalize(pos2 - pos1);
 
             for (var i = pos1; Vector2.Distance(i, pos2) > delay; i += dir * delay)
             {
-                symbolMatrix.Draw(symbol, i);
+                SymbolMatrix.Draw(symbol, i, symbolMatrix);
             }
         }
     }

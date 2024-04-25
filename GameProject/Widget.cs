@@ -36,7 +36,7 @@ namespace GameProject
             {
                 for (var y = pos.Y; y < pos.Y + scale.Y; y += delay)
                 {
-                    symbolMatrix.Draw(symbol, SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y)*delay, camera));
+                    SymbolMatrix.Draw(symbol, SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y)*delay, camera),symbolMatrix);
                 }
             }
         }
