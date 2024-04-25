@@ -22,7 +22,7 @@
           },
           {
             "name": "Parent",
-            "value": "null"
+            "value": ["null",0]
           }
         ]
       },
@@ -37,7 +37,7 @@
         "data": [
           {
             "name": "pix",
-            "value": "pixel"
+            "value": ["pixel",-1]
           }
         ]
       },
@@ -76,7 +76,7 @@
           },
           {
             "name": "Parent",
-            "value": "null"
+            "value": ["null",0]
           }
         ]
       },

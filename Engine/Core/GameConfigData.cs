@@ -28,6 +28,7 @@ namespace Engine.Core
         public bool START_RESIZE_WINDOW { get; set; }
         public bool DRAW_PRIOIRITY { get; set; }
         public bool USE_AABB { get; set; }
+        public string TITLE { get; set; }
 
         private static readonly string AsString = "NezertorcheatIsGandonAndUebok";
 

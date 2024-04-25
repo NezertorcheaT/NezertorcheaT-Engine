@@ -2,8 +2,8 @@
   "HEIGHT": 15,
   "WIDTH": 36,
   "MAPS": [
-    "maps\\game.json",
-    "maps\\mainMenu.json"
+    "maps\\mainMenu.json",
+    "maps\\game.json"
   ],
   "RENDER_FEATURE": "BaseFastRenderFeature",
   "COLLISION_SUBSTEPS": 1,
@@ -15,5 +15,6 @@
   "RESIZE_WINDOW": true,
   "START_RESIZE_WINDOW": true,
   "DRAW_PRIOIRITY": false,
-  "USE_AABB": true
+  "USE_AABB": true,
+  "TITLE": "GAAAAAAAAAAAAME!!!!!!!!!!!!!"
 }

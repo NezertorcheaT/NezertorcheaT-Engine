@@ -36,8 +36,7 @@ namespace Engine.Components
             {
                 if (par == null) return loc;
 
-                loc= Vector2.Transform(loc, par.LocalRotationMatrix)+par.LocalPosition;
-                //loc += par.LocalPosition;
+                loc = Vector2.Transform(loc, par.LocalRotationMatrix) + par.LocalPosition;
                 par = par.Parent;
             }
         }

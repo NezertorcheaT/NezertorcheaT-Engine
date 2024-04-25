@@ -45,10 +45,12 @@ namespace Engine.Core
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
                 IsWork = false;
+                Input.IsUpdatingWork = false;
                 Logger.Log(sender ?? "null", "closing event sender");
                 Logger.Stop();
             };
-
+            Input.IsUpdatingWork = true;
+            
             try
             {
                 GameConfig.GetData();
@@ -61,6 +63,8 @@ namespace Engine.Core
                 Stop();
                 return;
             }
+
+            Console.Title = GameConfig.Data.TITLE.Replace("\n", "");
 
             //Logger.Log(GameConfig.Data.ToString(), "Current Config");
             //Logger.Log(GameConfig.DefaultConfig, "Default Config");
@@ -91,7 +95,7 @@ namespace Engine.Core
                     Logger.Log(e, "start error");
                 }
             }
-            
+
             foreach (var hierarchy in (GameConfig.SceneManager as IGameConfigSceneManager).Hierarchies)
             {
                 try
@@ -123,6 +127,7 @@ namespace Engine.Core
         /// </summary>
         public static void DrawCycle()
         {
+            //return;
             if (GameConfig.Data.START_RESIZE_WINDOW)
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
             while (IsWork)
@@ -137,8 +142,8 @@ namespace Engine.Core
 
                 var matrix = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
 
-                Logger.Assert(GameConfig.SceneManager.CurrentHierarchy != null, "GameConfig.GameHierarchy != null");
-                Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
+                //Logger.Assert(GameConfig.SceneManager.CurrentHierarchy != null, "GameConfig.GameHierarchy != null");
+                //Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
                 DrawLoopWorking = true;
 
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
@@ -185,6 +190,7 @@ namespace Engine.Core
             while (IsWork)
             {
                 Thread.Yield();
+                Input.ConsoleFontUpdate();
                 MainLoopWorking = false;
 
                 if (GameConfig.Data.DRAW_PRIOIRITY && DrawLoopWorking) continue;

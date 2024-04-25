@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Engine.Components;
 using Engine.Render.Symbols;
 
@@ -37,7 +38,7 @@ namespace Engine.Core
             consolePosition -= camera.Offset;
             consolePosition.Multiply(new Vector2(1, -1));
             consolePosition += camera.transform.Position.Multiply(new Vector2(1, -1));
-            
+
             return consolePosition.Multiply(new Vector2(1, -1));
         }
 
@@ -45,8 +46,17 @@ namespace Engine.Core
         {
             consolePosition.X /= Symbol.Aspect;
             consolePosition.Multiply(new Vector2(1, -1));
-            
+
             return consolePosition.Multiply(new Vector2(1, -1));
+        }
+
+        private static _CONSOLE_FONT_INFOEX _consoleFont;
+        internal static bool IsUpdatingWork;
+
+        internal static void ConsoleFontUpdate()
+        {
+            if (!GetCurrentConsoleFontEx(GetStdHandle(-11), false, _consoleFont))
+            Logger.Log(Marshal.GetLastWin32Error(), "Last Win32 error");
         }
 
         /// <summary>
@@ -55,15 +65,9 @@ namespace Engine.Core
         /// <returns></returns>
         public static ConsoleFont GetConsoleFont()
         {
-            var t = new _CONSOLE_FONT_INFOEX();
-            if (GetCurrentConsoleFontEx(GetStdHandle(-11), false, t))
-            {
-                return new ConsoleFont(t.FontIndex, new Vector2(t.dwFontSize.X, t.dwFontSize.Y), t.FontFamily,
-                    t.FontWeight, t.FaceName);
-            }
-
-            Logger.Log(Marshal.GetLastWin32Error(), "Last Win32 error");
-            return null;
+            return new ConsoleFont(_consoleFont.FontIndex,
+                new Vector2(_consoleFont.dwFontSize.X, _consoleFont.dwFontSize.Y), _consoleFont.FontFamily,
+                _consoleFont.FontWeight, _consoleFont.FaceName);
         }
 
         public class ConsoleFont

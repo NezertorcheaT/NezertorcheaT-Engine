@@ -72,7 +72,8 @@ namespace Engine.Core
     ""RESIZE_WINDOW"": true,
     ""START_RESIZE_WINDOW"": true,
     ""DRAW_PRIOIRITY"": false,
-    ""USE_AABB"": true
+    ""USE_AABB"": true,
+    ""TITLE"": ""GAAAAAAAAAAAAME!!!!!!!!!!!!!""
 }
 ";
 

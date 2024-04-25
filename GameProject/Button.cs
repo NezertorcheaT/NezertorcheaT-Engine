@@ -14,6 +14,7 @@ namespace GameProject
         public string Text = "Button";
         public int Color = 14;
         public Vector2 Scale = new Vector2(5, 5);
+        public event Action OnClick;
         private Camera? _camera;
 
         void IComponentStart.Start()
@@ -23,10 +24,11 @@ namespace GameProject
 
         void IComponentUpdate.Update()
         {
+            if(!ActiveAndEnabled) return;
             var v = Input.ConsoleToWorldPosition(Input.ScreenToConsolePosition(Input.GetCursorPosition()), _camera);
             var b = new Bounds(transform.Position + Scale / 2f, Scale);
             if (b.Contains(v) && Input.GetKey(Input.Keys.E))
-                Logger.Log("fire in ze hole");
+                OnClick?.Invoke();
         }
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
@@ -35,7 +37,7 @@ namespace GameProject
             if (_camera is null) return;
             var pos = transform.Position;
             var scale = new Vector2(Math.Abs(Scale.X), Math.Abs(Scale.Y));
-            var delay = 1f/Symbol.Aspect;
+            var delay = 1f / Symbol.Aspect;
 
 
             for (var x = 0f; x < scale.X; x += delay)
@@ -53,7 +55,7 @@ namespace GameProject
                 {
                     if (
                         Math.Abs(x - pos.X / delay) < delay / 2f ||
-                        Math.Abs(x - (pos.X + scale.X) / delay) < delay  ||
+                        Math.Abs(x - (pos.X + scale.X) / delay) < delay ||
                         Math.Abs(y - pos.Y / delay) < delay / 2f ||
                         Math.Abs(y - (pos.Y + scale.Y) / delay) < delay / 2f
                     )

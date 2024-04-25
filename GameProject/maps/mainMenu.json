@@ -22,7 +22,7 @@
           },
           {
             "name": "Parent",
-            "value": "player"
+            "value": ["null",0]
           }
         ]
       },
@@ -30,19 +30,139 @@
         "name": "Camera",
         "enabled": true,
         "data": []
-      },
+      }
+    ]
+  },
+  {
+    "name": "butEn",
+    "tag": "",
+    "layer": 0,
+    "active": true,
+    "components": [
       {
-        "name": "HierSwich",
-        "enabled": true,
-        "data": []
-      },
-      {
-        "name": "ConsoleRenderer",
+        "name": "Transform",
         "enabled": true,
         "data": [
           {
-            "name": "Character",
-            "value": "1"
+            "name": "LocalPosition",
+            "value": [
+              2,
+              0
+            ]
+          },
+          {
+            "name": "Rotation",
+            "value": 0
+          },
+          {
+            "name": "Parent",
+            "value": ["null",0]
+          }
+        ]
+      },
+      {
+        "name": "Button",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Text",
+            "value": "goood"
+          },
+          {
+            "name": "Scale",
+            "value": [
+              7,
+              5
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "butEx",
+    "tag": "",
+    "layer": 0,
+    "active": true,
+    "components": [
+      {
+        "name": "Transform",
+        "enabled": true,
+        "data": [
+          {
+            "name": "LocalPosition",
+            "value": [
+              2,
+              5
+            ]
+          },
+          {
+            "name": "Rotation",
+            "value": 0
+          },
+          {
+            "name": "Parent",
+            "value": ["null",0]
+          }
+        ]
+      },
+      {
+        "name": "Button",
+        "enabled": true,
+        "data": [
+          {
+            "name": "Text",
+            "value": "exit"
+          },
+          {
+            "name": "Scale",
+            "value": [
+              7,
+              5
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "munu",
+    "tag": "",
+    "layer": 0,
+    "active": true,
+    "components": [
+      {
+        "name": "Transform",
+        "enabled": true,
+        "data": [
+          {
+            "name": "LocalPosition",
+            "value": [
+              2,
+              5
+            ]
+          },
+          {
+            "name": "Rotation",
+            "value": 0
+          },
+          {
+            "name": "Parent",
+            "value": ["null",0]
+          }
+        ]
+      },
+      {
+        "name": "MainMenu",
+        "enabled": true,
+        "data": [
+          {
+            "name": "enter",
+            "value": ["butEn",1]
+          },
+          {
+            "name": "exit",
+            "value": ["butEx",1]
           }
         ]
       }

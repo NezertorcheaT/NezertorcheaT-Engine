@@ -59,6 +59,14 @@ namespace Engine.Scene
                                 SerializingHelper.PremadeSerializationFunctions[field.FieldType.Name](
                                     field.GetValue(component)));
                         }
+                        else if (field.FieldType.IsSubclassOf(typeof(Component)))
+                        {
+                            Logger.Log(
+                                $"PremadeSerializationFunctions contains ({nameof(Component)}){field.FieldType.Name}");
+                            fieldData.Add(ComponentDataValueLiteral,
+                                SerializingHelper.PremadeSerializationFunctions[nameof(Component)](
+                                    field.GetValue(component)));
+                        }
                         else
                         {
                             Logger.Log(
@@ -181,7 +189,7 @@ namespace Engine.Scene
                                 fieldInfo.SetValue(comp,
                                     varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             }
-                            
+
                             if (debug) Logger.Log(fieldInfo.GetValue(comp), "fieldInfo.GetValue(comp)", 4);
 
                             break;
