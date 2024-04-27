@@ -1,13 +1,34 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Engine.Core
 {
+    public static class Taber
+    {
+        private static readonly string FirstLines = "+--";
+        private static readonly string MidLines = "---";
+        private static readonly string LastLines = "-->";
+        private static readonly string FullLines = "+->";
+
+        public static string Tabs(int n)
+        {
+            if (n <= 0) return string.Empty;
+            if (n == 1) return FullLines;
+            var str = new StringBuilder();
+            str.Append(FirstLines);
+            str.Append(MidLines.Multiply(n - 2));
+            str.Append(LastLines);
+            return str.ToString();
+        }
+    }
+
     public static class Logger
     {
         private static readonly string Lines = "   ";
-        private static string TempNow => $"logs\\temp({CurrentProcessId}).now";
+        private static string TempNow => $"{Logs}\\temp({CurrentProcessId}).now";
+        private static string Logs => "logs";
         private static string CurrentProcessId => Environment.ProcessId.ToString();
         private static DateTime StartTime => Process.GetCurrentProcess().StartTime;
 
@@ -16,14 +37,14 @@ namespace Engine.Core
         /// </summary>
         public static void Stop(string message = "logging over")
         {
-            if (!Directory.Exists("logs")) return;
+            if (!Directory.Exists(Logs)) return;
 
             Log(message, "stop");
 
             var s = File.ReadAllText(TempNow);
 
             File.AppendAllText(
-                $"logs\\{StartTime.ToString().Replace(':', '.')} - {DateTime.Now.ToString().Replace(':', '.')} [{CurrentProcessId}].log",
+                $"{Logs}\\{StartTime.ToString().Replace(':', '.')} - {DateTime.Now.ToString().Replace(':', '.')} [{CurrentProcessId}].log",
                 s);
             File.Delete(TempNow);
         }
@@ -34,15 +55,14 @@ namespace Engine.Core
         /// </summary>
         public static void Initialise()
         {
-            if (!Directory.Exists("logs"))
-                Directory.CreateDirectory("logs");
-            if (File.Exists(TempNow))
+            if (!Directory.Exists(Logs))
+                Directory.CreateDirectory(Logs);
+            if (IsSessionExist)
             {
                 Log("temp.now file was not deleted", "logger error");
                 Stop();
             }
 
-            Directory.CreateDirectory("logs");
             File.CreateText(TempNow).Close();
             Log("initialising", "init");
         }
@@ -53,14 +73,14 @@ namespace Engine.Core
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
         /// <exception cref="Exception">Initialise before logging</exception>
-        public static void Log(object? message, string logType = "info", int tabs = 0)
+        public static void Log(object? message, string logType = "info", int tabs = 0, int firstTabs = 0)
         {
-            if (File.Exists(TempNow))
+            if (IsSessionExist)
             {
                 try
                 {
                     File.AppendAllText(TempNow,
-                        $"\n{Lines.Multiply(Math.Max(tabs, 0))}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
+                        $"\n{Lines.Multiply(firstTabs)}{Taber.Tabs(tabs - firstTabs)}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
                 }
                 catch (Exception e)
                 {
@@ -81,7 +101,7 @@ namespace Engine.Core
         }
 
         public static void Assert<T>(Func<T> condition, T consequent, object falseMessage,
-            string logType = "log message")
+            string logType = "assert message")
         {
             T operand;
             try
@@ -101,6 +121,6 @@ namespace Engine.Core
         /// <summary>
         /// Show existence of session in current time
         /// </summary>
-        public static bool IsSessionExist => Directory.Exists("logs") && File.Exists(TempNow);
+        public static bool IsSessionExist => Directory.Exists(Logs) && File.Exists(TempNow);
     }
 }
