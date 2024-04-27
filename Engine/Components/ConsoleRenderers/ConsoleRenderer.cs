@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Engine.Render.Symbols;
 using Engine.Scene;
 
@@ -8,7 +7,7 @@ namespace Engine.Components.ConsoleRenderers
     public class ConsoleRenderer : Component, IRenderer
     {
         public char Character = ' ';
-        public int Color = 14;
+        public ConsoleColor Color = ConsoleColor.White;
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
         {
@@ -17,7 +16,7 @@ namespace Engine.Components.ConsoleRenderers
             var worldPos = transform.Position;
 
             if (SymbolMatrix.WorldToSymbolMatrixPosition(ref worldPos, cam))
-                SymbolMatrix.Draw(new Symbol {Character = Character, Color = (ConsoleColor) Color}, worldPos, matrix);
+                SymbolMatrix.Draw(new Symbol {Character = Character, Color = Color}, worldPos, matrix);
         }
     }
 }

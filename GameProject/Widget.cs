@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using Engine.Components;
-using Engine.Core;
 using Engine.Render.Symbols;
 using Engine.Scene;
 
@@ -10,7 +9,7 @@ namespace GameProject
     public class Fill : Component, IRenderer, IComponentStart
     {
         public char Character = ' ';
-        public int Color = 14;
+        public ConsoleColor Color = ConsoleColor.White;
         public Vector2 Scale;
         private Camera? _camera;
 
@@ -34,7 +33,7 @@ namespace GameProject
                 {
                     var v = pos + new Vector2(x, y) - scale / 2f;
                     if (SymbolMatrix.WorldToSymbolMatrixPosition(ref v, _camera, true))
-                        SymbolMatrix.Draw(new Symbol(Character, (ConsoleColor) Color), v, matrix);
+                        SymbolMatrix.Draw(new Symbol(Character, Color), v, matrix);
                 }
             }
         }

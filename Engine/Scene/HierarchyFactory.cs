@@ -125,7 +125,7 @@ namespace Engine.Scene
                     if (componentNode[ComponentNameLiteral].ToString() == nameof(Behavior) ||
                         componentNode[ComponentNameLiteral].ToString() == nameof(Component)) continue;
 
-                    if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name", 2);
+                    if (debug) Logger.Log(componentNode[ComponentNameLiteral].ToString(), "component name", 2, 1, "");
 
                     var comp = Activator.CreateInstance(
                         Helper.GetEnumerableOfType<Component>().FirstOrDefault(component =>
@@ -134,22 +134,25 @@ namespace Engine.Scene
                     if (comp == null) continue;
                     comp.enabled = componentNode[ComponentEnabledLiteral].Deserialize<bool>();
 
-                    if (debug) Logger.Log(comp, "component to initialize", 2);
+                    if (debug) Logger.Log(comp, "component to initialize", 2, 1, "");
 
                     foreach (var varNode in componentNode[ComponentDataLiteral].AsArray())
                     {
-                        if (debug) Logger.Log(varNode[ComponentDataValueLiteral], "component field to initialize", 3);
+                        if (debug)
+                            Logger.Log(
+                                varNode[ComponentDataValueLiteral].ToJsonString(new JsonSerializerOptions
+                                    {WriteIndented = false}), "component field to initialize", 3, 2, "");
                         foreach (var fieldInfo in comp.GetType()
                             .GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
                         {
                             if (fieldInfo.Name != varNode[ComponentDataNameLiteral].ToString()) continue;
-                            if (debug) Logger.Log(fieldInfo.FieldType.Name, tabs: 4);
-                            if (debug) Logger.Log(fieldInfo.Name, tabs: 4);
+                            if (debug) Logger.Log(fieldInfo.FieldType.Name, tabs: 4, firstTabs: 3);
+                            if (debug) Logger.Log(fieldInfo.Name, tabs: 4, firstTabs: 3);
                             if (SerializingHelper.PremadeDeserializationFunctions.ContainsKey(fieldInfo.FieldType.Name))
                             {
                                 if (debug)
                                     Logger.Log($"PremadeDeserializationFunctions contains {fieldInfo.FieldType.Name}",
-                                        tabs: 4);
+                                        tabs: 4, firstTabs: 3);
                                 fieldInfo.SetValue(comp,
                                     SerializingHelper.PremadeDeserializationFunctions[fieldInfo.FieldType.Name](
                                         varNode[ComponentDataValueLiteral]));
@@ -185,12 +188,12 @@ namespace Engine.Scene
                                 if (debug)
                                     Logger.Log(
                                         $"PremadeDeserializationFunctions not contains {fieldInfo.FieldType.Name}",
-                                        tabs: 4);
+                                        tabs: 4, firstTabs: 3);
                                 fieldInfo.SetValue(comp,
                                     varNode[ComponentDataValueLiteral].Deserialize(fieldInfo.FieldType));
                             }
 
-                            if (debug) Logger.Log(fieldInfo.GetValue(comp), "fieldInfo.GetValue(comp)", 4);
+                            if (debug) Logger.Log(fieldInfo.GetValue(comp), "fieldInfo.GetValue(comp)", 4, 3, "");
 
                             break;
                         }
@@ -211,20 +214,21 @@ namespace Engine.Scene
                 if (gObject is null) continue;
                 if (gObject.Item4.Item1 == NullLiteral) continue;
                 var orgObj = GameObject.FindObjectByName(gObject.Item1, hierarchy);
-                if (debug) Logger.Log(orgObj.name, "gameobject fields initializer", tabs: 2);
+                if (debug) Logger.Log(orgObj.name, "gameobject fields initializer", tabs: 2, firstTabs: 1);
                 Component comObj = orgObj.GetComponentAt(gObject.Item2);
 
                 if (comObj is null) continue;
-                if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer", tabs: 2);
+                if (debug) Logger.Log(comObj.GetType().Name, "gameobject fields initializer", tabs: 2, firstTabs: 1);
 
                 foreach (var fieldInfo in comObj.GetType().GetFields())
                 {
                     if (fieldInfo.Name == gObject.Item3)
                     {
-                        if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer", tabs: 3);
+                        if (debug) Logger.Log(fieldInfo.Name, "gameobject fields initializer", tabs: 3, firstTabs: 2);
                         var gg = GameObject.FindObjectByName(gObject.Item4.Item1, hierarchy);
-                        if (debug) Logger.Log(gg?.name, "gameobject fields initializer", tabs: 3);
-                        if (debug) Logger.Log(gObject.Item4.Item2, "gameobject fields initializer", tabs: 3);
+                        if (debug) Logger.Log(gg?.name, "gameobject fields initializer", tabs: 3, firstTabs: 2);
+                        if (debug)
+                            Logger.Log(gObject.Item4.Item2, "gameobject fields initializer", tabs: 3, firstTabs: 2);
                         if (gObject.Item4.Item2 < 0)
                             fieldInfo.SetValue(comObj, gg);
                         else

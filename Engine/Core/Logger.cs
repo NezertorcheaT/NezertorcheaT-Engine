@@ -7,10 +7,10 @@ namespace Engine.Core
 {
     public static class Taber
     {
-        private static readonly string FirstLines = "+--";
-        private static readonly string MidLines = "---";
-        private static readonly string LastLines = "-->";
-        private static readonly string FullLines = "+->";
+        private static readonly string FirstLines = "└──";
+        private static readonly string MidLines = "───";
+        private static readonly string LastLines = "──>";
+        private static readonly string FullLines = "└─>";
 
         public static string Tabs(int n)
         {
@@ -27,7 +27,7 @@ namespace Engine.Core
     public static class Logger
     {
         private static readonly string Lines = "   ";
-        private static string TempNow => $"{Logs}\\temp({CurrentProcessId}).now";
+        private static string TempNow => $"{Logs}\\temp{CurrentProcessId}.now";
         private static string Logs => "logs";
         private static string CurrentProcessId => Environment.ProcessId.ToString();
         private static DateTime StartTime => Process.GetCurrentProcess().StartTime;
@@ -72,15 +72,17 @@ namespace Engine.Core
         /// </summary>
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
+        /// <param name="replaceNewLine"></param>
         /// <exception cref="Exception">Initialise before logging</exception>
-        public static void Log(object? message, string logType = "info", int tabs = 0, int firstTabs = 0)
+        public static void Log(object? message, string logType = "info", int tabs = 0, int firstTabs = 0,
+            string replaceNewLine = "\n")
         {
             if (IsSessionExist)
             {
                 try
                 {
                     File.AppendAllText(TempNow,
-                        $"\n{Lines.Multiply(firstTabs)}{Taber.Tabs(tabs - firstTabs)}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
+                        $"\n{Lines.Multiply(firstTabs)}{Taber.Tabs(tabs - firstTabs)}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message?.ToString()?.Replace("\n", replaceNewLine)}");
                 }
                 catch (Exception e)
                 {

@@ -10,7 +10,7 @@ namespace Engine.Components.ConsoleRenderers
     public class ConsoleLineRenderer : Component, IRenderer
     {
         public char Character = ' ';
-        public int Color = 14;
+        public ConsoleColor Color = ConsoleColor.White;
         public List<double[]> Positions;
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
@@ -25,7 +25,7 @@ namespace Engine.Components.ConsoleRenderers
                     matrix,
                     transform.Position + Positions[i].Da2V2(),
                     transform.Position + Positions[i + 1].Da2V2(),
-                    new Symbol {Character = Character, Color = (ConsoleColor) Color},
+                    new Symbol {Character = Character, Color = Color},
                     cam
                 );
             }

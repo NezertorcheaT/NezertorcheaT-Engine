@@ -85,6 +85,9 @@ namespace Engine.Scene.Serializing
                         return ar;
                     }
                 },
+                {
+                    "ConsoleColor", obj => JsonSerializer.SerializeToNode((int)(obj ?? 14))
+                },
             };
 
         public static Dictionary<string, Func<JsonNode, object>> PremadeDeserializationFunctions =
@@ -114,6 +117,10 @@ namespace Engine.Scene.Serializing
                         (Vector2) PremadeDeserializationFunctions["Vector2"](node["Size"]),
                         (Vector2) PremadeDeserializationFunctions["Vector2"](node["Position"])
                     )
+                },
+                {
+                    "ConsoleColor",
+                    node => (ConsoleColor)node.Deserialize<int>()
                 },
             };
     }

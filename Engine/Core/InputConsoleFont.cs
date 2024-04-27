@@ -53,7 +53,6 @@ namespace Engine.Core
         }
 
         private static _CONSOLE_FONT_INFOEX _consoleFont;
-        internal static bool IsUpdatingWork;
 
         internal static void ConsoleFontUpdate()
         {

@@ -12,7 +12,7 @@ namespace GameProject
         public char CharacterFill = ' ';
         public char CharacterBorders = '#';
         public string Text = "Button";
-        public int Color = 14;
+        public ConsoleColor Color = ConsoleColor.White;
         public Vector2 Scale = new Vector2(5, 5);
         public event Action OnClick;
         private Camera? _camera;
@@ -46,7 +46,7 @@ namespace GameProject
                 {
                     var v = pos + new Vector2(x, y);
                     if (SymbolMatrix.WorldToSymbolMatrixPosition(ref v, _camera, true))
-                        SymbolMatrix.Draw(new Symbol(CharacterFill, (ConsoleColor) Color), v, matrix);
+                        SymbolMatrix.Draw(new Symbol(CharacterFill, Color), v, matrix);
                 }
             }
 
@@ -61,7 +61,7 @@ namespace GameProject
                         Math.Abs(y - (pos.Y + scale.Y) / delay) < delay / 2f
                     )
                     {
-                        SymbolMatrix.Draw(new Symbol(CharacterBorders, (ConsoleColor) Color),
+                        SymbolMatrix.Draw(new Symbol(CharacterBorders, Color),
                             SymbolMatrix.WorldToSymbolMatrixPosition(new Vector2(x, y) * delay, _camera, true), matrix);
                     }
                 }

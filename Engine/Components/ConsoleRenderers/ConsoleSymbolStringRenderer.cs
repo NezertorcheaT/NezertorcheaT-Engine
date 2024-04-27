@@ -7,7 +7,7 @@ namespace Engine.Components.ConsoleRenderers
     public class ConsoleSymbolStringRenderer : Component, IRenderer
     {
         public string Path = "";
-        public int Color = 14;
+        public ConsoleColor Color = ConsoleColor.White;
 
         void IRenderer.OnDraw(SymbolMatrix matrix)
         {
@@ -16,12 +16,10 @@ namespace Engine.Components.ConsoleRenderers
 
             var pos = transform.Position;
             var symbolString = SymbolStringFactory.GetFromPath(Path);
-            symbolString.Color = (ConsoleColor) Color;
+            symbolString.Color = Color;
 
             if (SymbolMatrix.WorldToSymbolMatrixPosition(ref pos, cam, true))
-            {
                 SymbolString.PlaceAt(matrix, symbolString, pos);
-            }
         }
     }
 }

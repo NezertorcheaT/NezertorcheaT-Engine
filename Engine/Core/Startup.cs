@@ -50,12 +50,9 @@ namespace Engine.Core
             Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
-                IsWork = false;
-                Input.IsUpdatingWork = false;
-                Logger.Log(sender ?? "null", "closing event sender");
-                Logger.Stop();
+                Logger.Log($"{sender ?? "null"}({e})", "closing event sender");
+                Stop();
             };
-            Input.IsUpdatingWork = true;
 
             try
             {
@@ -213,8 +210,6 @@ namespace Engine.Core
                 Time.SetDeltaTime(watch.Elapsed.TotalSeconds);
                 watch.Restart();
             }
-
-            Stop();
         }
 
         /// <summary>
@@ -246,8 +241,6 @@ namespace Engine.Core
 
                 watch.Restart();
             }
-
-            Stop();
         }
     }
 }
