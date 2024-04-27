@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Engine.Core
@@ -6,6 +7,9 @@ namespace Engine.Core
     public static class Logger
     {
         private static readonly string Lines = "   ";
+        private static string TempNow => $"logs\\temp({CurrentProcessId}).now";
+        private static string CurrentProcessId => Environment.ProcessId.ToString();
+        private static DateTime StartTime => Process.GetCurrentProcess().StartTime;
 
         /// <summary>
         /// Stopping current logger session
@@ -16,10 +20,12 @@ namespace Engine.Core
 
             Log(message, "stop");
 
-            var s = File.ReadAllText("logs\\.now");
+            var s = File.ReadAllText(TempNow);
 
-            File.AppendAllText($"logs\\{DateTime.Now.ToString().Replace(':', '.')}.log", s);
-            File.Delete("logs\\.now");
+            File.AppendAllText(
+                $"logs\\{StartTime.ToString().Replace(':', '.')} - {DateTime.Now.ToString().Replace(':', '.')} [{CurrentProcessId}].log",
+                s);
+            File.Delete(TempNow);
         }
 
         /// <summary>
@@ -30,14 +36,14 @@ namespace Engine.Core
         {
             if (!Directory.Exists("logs"))
                 Directory.CreateDirectory("logs");
-            if (File.Exists("logs\\.now"))
+            if (File.Exists(TempNow))
             {
-                Log(".now file was not deleted", "logger error");
+                Log("temp.now file was not deleted", "logger error");
                 Stop();
             }
 
             Directory.CreateDirectory("logs");
-            File.CreateText("logs\\.now").Close();
+            File.CreateText(TempNow).Close();
             Log("initialising", "init");
         }
 
@@ -49,11 +55,11 @@ namespace Engine.Core
         /// <exception cref="Exception">Initialise before logging</exception>
         public static void Log(object? message, string logType = "info", int tabs = 0)
         {
-            if (File.Exists("logs\\.now"))
+            if (File.Exists(TempNow))
             {
                 try
                 {
-                    File.AppendAllText("logs\\.now",
+                    File.AppendAllText(TempNow,
                         $"\n{Lines.Multiply(Math.Max(tabs, 0))}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message}");
                 }
                 catch (Exception e)
@@ -62,11 +68,11 @@ namespace Engine.Core
                     Console.ReadKey();
                     throw;
                 }
-            } /*
-            else
-            {
-                throw new Exception("Initialise before logging");
-            }*/
+
+                return;
+            }
+
+            throw new Exception("Initialise before logging");
         }
 
         public static void Assert(bool condition, object falseMessage, string logType = "assert message")
@@ -95,6 +101,6 @@ namespace Engine.Core
         /// <summary>
         /// Show existence of session in current time
         /// </summary>
-        public static bool IsSessionExist => Directory.Exists("logs") && File.Exists("logs\\.now");
+        public static bool IsSessionExist => Directory.Exists("logs") && File.Exists(TempNow);
     }
 }
