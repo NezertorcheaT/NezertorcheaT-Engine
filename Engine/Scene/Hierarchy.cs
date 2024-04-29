@@ -9,6 +9,7 @@ namespace Engine.Scene
 
     public class Hierarchy : ISetHierarchyName
     {
+        internal bool Started;
         public List<GameObject> Objects { get; }
 
         public Hierarchy()

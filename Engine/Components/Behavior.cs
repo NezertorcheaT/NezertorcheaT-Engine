@@ -4,7 +4,7 @@ using Engine.Components.Physics;
 namespace Engine.Components
 {
     [SuppressMessage("ReSharper", "UnusedType.Global")]
-    public abstract class Behavior : Component, IComponentStart, IComponentUpdate, ICollidable,IComponentFixedUpdate
+    public abstract class Behavior : Component, IComponentStart, IComponentUpdate, ICollidable, IComponentFixedUpdate
     {
         void IComponentStart.Start()
         {
@@ -20,6 +20,7 @@ namespace Engine.Components
             if (!ActiveAndEnabled) return;
             Update();
         }
+
         void IComponentFixedUpdate.FixedUpdate()
         {
             if (!ActiveAndEnabled) return;

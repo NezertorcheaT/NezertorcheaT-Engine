@@ -6,7 +6,7 @@ public static class Program
     public static void Main(string[] args)
     {    
         Startup.Start();
-        if (GameConfig.SceneManager.CurrentHierarchy == null) return;
+        if (GameConfig.SceneManager.CurrentHierarchy is null) return;
             
         Thread drawLoop = new Thread(Startup.DrawCycle);
         Thread mainLoop = new Thread(Startup.MainLoop);

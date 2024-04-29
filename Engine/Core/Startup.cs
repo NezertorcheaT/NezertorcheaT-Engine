@@ -87,19 +87,9 @@ namespace Engine.Core
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
 
-            foreach (IGameObjectStartable obj in GameConfig.SceneManager.CurrentHierarchy.Objects)
-            {
-                try
-                {
-                    obj.Start();
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e, "start error");
-                }
-            }
+            SceneManager.StartHierarchy(GameConfig.SceneManager.CurrentHierarchy);
 
-            foreach (var hierarchy in (GameConfig.SceneManager as IGameConfigSceneManager).Hierarchies)
+            foreach (var hierarchy in GameConfig.SceneManager.Hierarchies)
             {
                 try
                 {
@@ -130,14 +120,25 @@ namespace Engine.Core
         /// </summary>
         public static void DrawCycle()
         {
+            Logger.Log("Starting Draw Cycle");
             //return;
             if (GameConfig.Data.START_RESIZE_WINDOW)
                 Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            watch.Start();
+
             while (IsWork)
             {
                 Input.ConsoleFontUpdate();
-                if (GameConfig.Data.FPS > 0)
-                    Thread.Sleep((int) (1000.0 / GameConfig.Data.FPS));
+
+                var sleepDelay = (int) (1000.0 / GameConfig.Data.FPS) - (int) watch.ElapsedMilliseconds;
+                if (GameConfig.Data.FPS > 0 && sleepDelay > 0)
+                    Thread.Sleep(sleepDelay);
+                else
+                    Thread.Yield();
+
+                watch.Restart();
 
                 if (GameConfig.Data.RESIZE_WINDOW)
                     Console.SetWindowSize((int) GameConfig.Data.WIDTH + 2, (int) GameConfig.Data.HEIGHT + 2);
@@ -150,7 +151,8 @@ namespace Engine.Core
                 //Logger.Assert(GameConfig.RenderFeature != null, "GameConfig.RenderFeature != null");
                 DrawLoopWorking = true;
 
-                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy).OrderBy(c => c.gameObject.layer))
+                foreach (IRenderer obj in GameObject.FindAllTypes<IRenderer>(GameConfig.SceneManager.CurrentHierarchy)
+                    .OrderBy(c => c.gameObject.layer))
                 {
                     try
                     {
@@ -173,6 +175,8 @@ namespace Engine.Core
 
                 DrawLoopWorking = false;
             }
+
+            watch.Stop();
         }
 
         public static bool DrawLoopWorking { get; private set; }
@@ -210,6 +214,8 @@ namespace Engine.Core
                 Time.SetDeltaTime(watch.Elapsed.TotalSeconds);
                 watch.Restart();
             }
+
+            watch.Stop();
         }
 
         /// <summary>
@@ -241,6 +247,8 @@ namespace Engine.Core
 
                 watch.Restart();
             }
+
+            watch.Stop();
         }
     }
 }

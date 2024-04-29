@@ -27,7 +27,7 @@ namespace Engine.Core
         public static void SetupHierarchy(Func<IEnumerable<Hierarchy>> factory)
         {
             SceneManager = new SceneManager();
-            (SceneManager as IGameConfigSceneManager).InitializeHierarchies(factory.Invoke().ToArray());
+            SceneManager.InitializeHierarchies(factory.Invoke().ToArray());
         }
 
         public static void SetupRenderFeature()
@@ -91,27 +91,41 @@ namespace Engine.Core
         }
     }
 
-    public class SceneManager : IGameConfigSceneManager
+    public class SceneManager
     {
         private Hierarchy[] _hierarchies = new Hierarchy[1];
         public Hierarchy CurrentHierarchy => _hierarchies[CurrentHierarchyNumber];
-        IEnumerable<Hierarchy> IGameConfigSceneManager.Hierarchies => _hierarchies;
         public int CurrentHierarchyNumber { get; private set; }
+        internal IEnumerable<Hierarchy> Hierarchies => _hierarchies;
 
         public void SetScene(int sceneNumber)
         {
             CurrentHierarchyNumber = sceneNumber;
+            if (!CurrentHierarchy.Started)
+                StartHierarchy(CurrentHierarchy);
         }
 
-        void IGameConfigSceneManager.InitializeHierarchies(Hierarchy[] hierarchies)
+        internal void InitializeHierarchies(Hierarchy[] hierarchies)
         {
             _hierarchies = hierarchies;
         }
-    }
 
-    internal interface IGameConfigSceneManager
-    {
-        void InitializeHierarchies(Hierarchy[] hierarchies);
-        IEnumerable<Hierarchy> Hierarchies { get; }
+
+        internal static void StartHierarchy(Hierarchy hierarchy)
+        {
+            foreach (IGameObjectStartable obj in hierarchy.Objects)
+            {
+                try
+                {
+                    obj.Start();
+                }
+                catch (Exception e)
+                {
+                    Logger.Log($"{(obj as GameObject)?.name}\n in {hierarchy}{e}", "start error");
+                }
+            }
+
+            hierarchy.Started = true;
+        }
     }
 }
