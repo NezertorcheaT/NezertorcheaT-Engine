@@ -21,7 +21,7 @@ namespace Editor
             {
                 foreach (var map in GameConfig.Data.MAPS)
                 {
-                    yield return HierarchyFactory.CreateHierarchy(map, false);
+                    yield return GameConfig.HierarchyFactory.CreateHierarchy(map, false);
                 }
             }
             Input.ConsoleFontUpdate();

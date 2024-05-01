@@ -16,7 +16,7 @@ namespace EditorPreview
 
         private static IEnumerable<Hierarchy> SetupHierarchies(string MAP)
         {
-            yield return HierarchyFactory.CreateHierarchy(MAP, false);
+            yield return GameConfig.HierarchyFactory.CreateHierarchy(MAP, false);
         }
 
         public static void BuildMap(string MAP)

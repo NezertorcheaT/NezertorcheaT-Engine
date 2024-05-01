@@ -11,7 +11,7 @@ using Engine.Scene.Serializing;
 
 namespace Engine.Scene
 {
-    public static class HierarchyFactory
+    public class DevHierarchyFactory : IHierarchyFactory
     {
         private static readonly string GameObjectNameLiteral = "name";
         private static readonly string GameObjectTagLiteral = "tag";
@@ -25,7 +25,7 @@ namespace Engine.Scene
         private static readonly string ComponentEnabledLiteral = "enabled";
         private static readonly string NullLiteral = "null";
 
-        public static string SaveHierarchy(Hierarchy hierarchy)
+        public string SaveHierarchy(Hierarchy hierarchy)
         {
             var node = new JsonArray();
             foreach (var gameObject in hierarchy.Objects)
@@ -93,7 +93,7 @@ namespace Engine.Scene
             return node.ToJsonString(options);
         }
 
-        public static Hierarchy CreateHierarchy(string path, bool debug = true)
+        public Hierarchy CreateHierarchy(string path, bool debug = true)
         {
             var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};

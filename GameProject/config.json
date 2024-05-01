@@ -2,12 +2,12 @@
   "HEIGHT": 15,
   "WIDTH": 36,
   "MAPS": [
-    "maps\\mainMenu.json",
-    "maps\\game.json"
+    "maps\\game.json",
+    "maps\\mainMenu.json"
   ],
   "RENDER_FEATURE": "BaseFastRenderFeature",
   "COLLISION_SUBSTEPS": 1,
-  "FPS": 256,
+  "FPS": 128,
   "FIXED_REPETITIONS": 0.02,
   "LOG_DRAWCALLS": false,
   "DRAW_BUFFER_SIZE": 1,
@@ -16,5 +16,6 @@
   "START_RESIZE_WINDOW": true,
   "DRAW_PRIOIRITY": false,
   "USE_AABB": true,
-  "TITLE": "GAAAAAAAAAAAAME!!!!!!!"
+  "TITLE": "GAAAAAAAAAAAAME!!!!!!!",
+  "DEV_BUILD": true
 }

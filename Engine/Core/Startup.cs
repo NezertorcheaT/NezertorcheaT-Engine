@@ -28,7 +28,7 @@ namespace Engine.Core
             {
                 foreach (var map in GameConfig.Data.MAPS)
                 {
-                    var her = HierarchyFactory.CreateHierarchy(map, true);
+                    var her = GameConfig.HierarchyFactory.CreateHierarchy(map, true);
                     try
                     {
                         StaticContainersFactory.CreateStaticContainers(her);
@@ -86,6 +86,9 @@ namespace Engine.Core
 
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
+            
+            GameConfig.SetupHierarchyFactory();
+            Logger.Log(GameConfig.HierarchyFactory.GetType().FullName, "Hierarchy Factory");
 
             SceneManager.StartHierarchy(GameConfig.SceneManager.CurrentHierarchy);
 
@@ -93,7 +96,7 @@ namespace Engine.Core
             {
                 try
                 {
-                    Logger.Log($"\n{HierarchyFactory.SaveHierarchy(hierarchy)}", "Export Hierarchy");
+                    Logger.Log($"\n{GameConfig.HierarchyFactory.SaveHierarchy(hierarchy)}", "Export Hierarchy");
                 }
                 catch (Exception e)
                 {

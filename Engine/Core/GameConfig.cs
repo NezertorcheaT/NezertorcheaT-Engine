@@ -22,6 +22,7 @@ namespace Engine.Core
         public static readonly string StaticContainersPath = "staticContainers.txt";
 
         public static SceneManager SceneManager;
+        internal static IHierarchyFactory HierarchyFactory;
         public static IRenderFeature RenderFeature { get; private set; }
 
         public static void SetupHierarchy(Func<IEnumerable<Hierarchy>> factory)
@@ -73,7 +74,8 @@ namespace Engine.Core
     ""START_RESIZE_WINDOW"": true,
     ""DRAW_PRIOIRITY"": false,
     ""USE_AABB"": true,
-    ""TITLE"": ""GAAAAAAAAAAAAME!!!!!!!!!!!!!""
+    ""TITLE"": ""GAAAAAAAAAAAAME!!!!!!!!!!!!!"",
+    ""DEV_BUILD"": true
 }
 ";
 
@@ -89,43 +91,8 @@ namespace Engine.Core
             Data = node.Deserialize<GameConfigData>()!;
             return Data;
         }
-    }
 
-    public class SceneManager
-    {
-        private Hierarchy[] _hierarchies = new Hierarchy[1];
-        public Hierarchy CurrentHierarchy => _hierarchies[CurrentHierarchyNumber];
-        public int CurrentHierarchyNumber { get; private set; }
-        internal IEnumerable<Hierarchy> Hierarchies => _hierarchies;
-
-        public void SetScene(int sceneNumber)
-        {
-            CurrentHierarchyNumber = sceneNumber;
-            if (!CurrentHierarchy.Started)
-                StartHierarchy(CurrentHierarchy);
-        }
-
-        internal void InitializeHierarchies(Hierarchy[] hierarchies)
-        {
-            _hierarchies = hierarchies;
-        }
-
-
-        internal static void StartHierarchy(Hierarchy hierarchy)
-        {
-            foreach (IGameObjectStartable obj in hierarchy.Objects)
-            {
-                try
-                {
-                    obj.Start();
-                }
-                catch (Exception e)
-                {
-                    Logger.Log($"{(obj as GameObject)?.name}\n in {hierarchy}{e}", "start error");
-                }
-            }
-
-            hierarchy.Started = true;
-        }
+        public static void SetupHierarchyFactory() => HierarchyFactory =
+            Data.DEV_BUILD ? new DevHierarchyFactory() : new ReleaseHierarchyFactory();
     }
 }
