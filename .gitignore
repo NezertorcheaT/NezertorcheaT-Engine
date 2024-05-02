@@ -39,6 +39,10 @@ GameProject/[Bb]in/
 GameProject/[Oo]bj/
 GameProject/_UpgradeReport_Files/
 GameProject/[Pp]ackages/
+EngineTests/[Bb]in/
+EngineTests/[Oo]bj/
+EngineTests/_UpgradeReport_Files/
+EngineTests/[Pp]ackages/
 
 Thumbs.db
 **/Desktop.ini
