@@ -9,6 +9,7 @@ using Engine.Scene;
 
 [assembly: InternalsVisibleTo("Editor")]
 [assembly: InternalsVisibleTo("EditorPreview")]
+[assembly: InternalsVisibleTo("EngineTests")]
 
 namespace Engine.Core
 {
@@ -68,6 +69,9 @@ namespace Engine.Core
             }
 
             Console.Title = GameConfig.Data.TITLE.Replace("\n", "");
+            
+            GameConfig.SetupHierarchyFactory();
+            Logger.Log(GameConfig.HierarchyFactory.GetType().FullName, "Hierarchy Factory");
 
             //Logger.Log(GameConfig.Data.ToString(), "Current Config");
             //Logger.Log(GameConfig.DefaultConfig, "Default Config");
@@ -86,9 +90,6 @@ namespace Engine.Core
 
             GameConfig.SetupRenderFeature();
             Logger.Log(GameConfig.RenderFeature.GetType().FullName, "render feature");
-            
-            GameConfig.SetupHierarchyFactory();
-            Logger.Log(GameConfig.HierarchyFactory.GetType().FullName, "Hierarchy Factory");
 
             SceneManager.StartHierarchy(GameConfig.SceneManager.CurrentHierarchy);
 
