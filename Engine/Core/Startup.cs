@@ -99,10 +99,8 @@ namespace Engine.Core
             {
                 try
                 {
-                    Logger.Log($"\n{(new DevHierarchyFactory() as IHierarchyFactory).SaveHierarchy(hierarchy)}",
-                        "Export Dev Hierarchy");
-                    Logger.Log($"\n{(new ReleaseHierarchyFactory() as IHierarchyFactory).SaveHierarchy(hierarchy)}",
-                        "Export Release Hierarchy");
+                    Logger.Log($"\n{GameConfig.HierarchyFactory.SaveHierarchy(hierarchy)}",
+                        "Export Hierarchy");
                 }
                 catch (Exception e)
                 {
