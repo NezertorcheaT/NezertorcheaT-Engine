@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -29,7 +30,8 @@ namespace Engine.Core
             {
                 foreach (var map in GameConfig.Data.MAPS)
                 {
-                    var her = GameConfig.HierarchyFactory.CreateHierarchy(map, true);
+                    var her = GameConfig.HierarchyFactory.CreateHierarchy(File.ReadAllText(map), Path.GetFileName(map),
+                        true);
                     try
                     {
                         StaticContainersFactory.CreateStaticContainers(her);
@@ -69,7 +71,7 @@ namespace Engine.Core
             }
 
             Console.Title = GameConfig.Data.TITLE.Replace("\n", "");
-            
+
             GameConfig.SetupHierarchyFactory();
             Logger.Log(GameConfig.HierarchyFactory.GetType().FullName, "Hierarchy Factory");
 
@@ -97,7 +99,10 @@ namespace Engine.Core
             {
                 try
                 {
-                    Logger.Log($"\n{GameConfig.HierarchyFactory.SaveHierarchy(hierarchy)}", "Export Hierarchy");
+                    Logger.Log($"\n{(new DevHierarchyFactory() as IHierarchyFactory).SaveHierarchy(hierarchy)}",
+                        "Export Dev Hierarchy");
+                    Logger.Log($"\n{(new ReleaseHierarchyFactory() as IHierarchyFactory).SaveHierarchy(hierarchy)}",
+                        "Export Release Hierarchy");
                 }
                 catch (Exception e)
                 {

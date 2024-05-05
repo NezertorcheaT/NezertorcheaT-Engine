@@ -93,6 +93,8 @@ namespace Engine.Core
         }
 
         public static void SetupHierarchyFactory() => HierarchyFactory =
-            Data.DEV_BUILD ? new DevHierarchyFactory() : new ReleaseHierarchyFactory();
+            Data.DEV_BUILD
+                ? (IHierarchyFactory) new DevHierarchyFactory()
+                : (IHierarchyFactory) new ReleaseHierarchyFactory();
     }
 }

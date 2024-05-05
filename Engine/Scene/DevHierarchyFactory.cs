@@ -93,15 +93,13 @@ namespace Engine.Scene
             return node.ToJsonString(options);
         }
 
-        public Hierarchy CreateHierarchy(string path, bool debug = true)
+        public Hierarchy CreateHierarchy(string content, string mapName, bool debug = true)
         {
-            var jsonString = File.ReadAllText(path);
             var options = new JsonSerializerOptions {WriteIndented = true};
-            var node = JsonNode.Parse(jsonString, new JsonNodeOptions {PropertyNameCaseInsensitive = false})!;
+            var node = JsonNode.Parse(content, new JsonNodeOptions {PropertyNameCaseInsensitive = false})!;
             var hierarchy = new Hierarchy();
-            (hierarchy as ISetHierarchyName).MapName = Path.GetFileName(path);
+            (hierarchy as ISetHierarchyName).MapName = mapName;
 
-            if (debug) Logger.Log(path, "map path");
             if (debug) Logger.Log(hierarchy.MapName, "map name");
             if (debug) Logger.Log(options, "map json options");
 

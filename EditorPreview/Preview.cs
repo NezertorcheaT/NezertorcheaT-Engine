@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Engine.Components;
 using Engine.Core;
 using Engine.Render.Symbols;
@@ -16,7 +17,8 @@ namespace EditorPreview
 
         private static IEnumerable<Hierarchy> SetupHierarchies(string MAP)
         {
-            yield return GameConfig.HierarchyFactory.CreateHierarchy(MAP, false);
+            yield return GameConfig.HierarchyFactory.CreateHierarchy(File.ReadAllText(MAP), Path.GetFileName(MAP),
+                false);
         }
 
         public static void BuildMap(string MAP)

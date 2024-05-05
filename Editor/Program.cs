@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Engine.Components;
 using Engine.Core;
@@ -21,9 +21,11 @@ namespace Editor
             {
                 foreach (var map in GameConfig.Data.MAPS)
                 {
-                    yield return GameConfig.HierarchyFactory.CreateHierarchy(map, false);
+                    yield return GameConfig.HierarchyFactory.CreateHierarchy(File.ReadAllText(map),
+                        Path.GetFileName(map), false);
                 }
             }
+
             Input.ConsoleFontUpdate();
 
             try
@@ -63,7 +65,7 @@ namespace Editor
             Logger.Stop();
         }
     }
-    
+
     public abstract class Widget
     {
         public uint Wight { get; set; }
