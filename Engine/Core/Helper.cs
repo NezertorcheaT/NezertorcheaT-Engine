@@ -103,42 +103,5 @@ namespace Engine.Core
 
             return str.Split('\n').TakeWhile((t, j) => j != (int) pos.Y).Sum(t => t.Length + 1) + (int) pos.X;
         }
-
-        public static string Insert(this string s1, string s2, Vector2 offset)
-        {
-            var sb = new StringBuilder();
-            var s1Wight = s1.Wight();
-            var s2Wight = s2.Wight();
-            var s1Lines = s1.Lines();
-            var s2Lines = s2.Lines();
-
-            return sb.ToString();
-        }
-
-        public static string Offset(this string str, Vector2 offset)
-        {
-            var sb = new StringBuilder();
-            var wight = str.Wight();
-            var lines = str.Lines();
-
-            for (var x = 0; x < offset.X + wight; x++)
-            {
-                for (var y = 0; y < offset.Y + lines; y++)
-                {
-                    if (x <= offset.X || y <= offset.Y)
-                    {
-                        sb.Append(' ');
-                    }
-                    else
-                    {
-                        sb.Append(str.At(x, y));
-                    }
-                }
-
-                sb.Append('\n');
-            }
-
-            return sb.ToString();
-        }
     }
 }

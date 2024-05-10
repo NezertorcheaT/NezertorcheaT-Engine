@@ -53,13 +53,6 @@ namespace Editor
                 iv.GameObject = gameObject;
                 Logger.Log(iv.Draw(), "drawing");
             }*/
-            var pipp = "iv.Draw()\npipidastr";
-            Logger.Log(pipp.Wight(), "Wight");
-            Logger.Log(pipp.Lines(), "Lines");
-            Logger.Log(pipp.At(new Vector2(4, 1)), "drawing");
-            Logger.Log(pipp.PosToInd(new Vector2(4, 1)), "drawing");
-            Logger.Log('\n' + pipp.Insert("penis", new Vector2(5, 2)), "drawing");
-            Logger.Log('\n' + pipp.Offset(new Vector2(5, 2)), "drawing");
 
             Console.ReadKey();
             Logger.Stop();
@@ -147,7 +140,7 @@ namespace Editor
             var str = "";
             for (var i = 0; i < Siblings.Length; i++)
             {
-                str = str.Insert(Siblings[i].Draw(), new Vector2(0, i * w));
+                //str = str.Insert(Siblings[i].Draw(), new Vector2(0, i * w));
             }
 
             return str;
