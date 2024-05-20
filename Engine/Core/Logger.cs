@@ -73,28 +73,32 @@ namespace Engine.Core
         /// <param name="message">Message to log</param>
         /// <param name="logType">Type of message, like tag</param>
         /// <param name="replaceNewLine"></param>
+        /// <param name="recursiveCallDepth">i dont know how to privatize argument, pls do not use</param>
         /// <exception cref="Exception">Initialise before logging</exception>
         public static void Log(object? message, string logType = "info", int tabs = 0, int firstTabs = 0,
-            string replaceNewLine = "\n")
+            string replaceNewLine = "\n", int recursiveCallDepth = 0)
         {
-            if (IsSessionExist)
+            if (!IsSessionExist) throw new Exception("Initialise before logging");
+
+            var newMessage = message?.ToString()?.Replace("\n", replaceNewLine);
+            try
             {
-                try
-                {
-                    File.AppendAllText(TempNow,
-                        $"\n{Lines.Multiply(firstTabs)}{Taber.Tabs(tabs - firstTabs)}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {message?.ToString()?.Replace("\n", replaceNewLine)}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    Console.ReadKey();
-                    throw;
-                }
-
-                return;
+                File.AppendAllText(TempNow,
+                    $"\n{Lines.Multiply(firstTabs)}{Taber.Tabs(tabs - firstTabs)}[{logType.ToUpper()}][{DateTime.Now.ToString().Replace(':', '.')}]: {newMessage}");
             }
-
-            throw new Exception("Initialise before logging");
+            catch (Exception e)
+            {
+                if (recursiveCallDepth >= 100)
+                {
+                    Console.Clear();
+                    Console.WriteLine(e);
+                    Console.ReadLine();
+                    return;
+                }
+                Log($"\n{e}\nRequested message:\n{newMessage}",
+                    $"message request Exception(type: {logType}, recursive_depth: {recursiveCallDepth + 1})", tabs,
+                    firstTabs, recursiveCallDepth: recursiveCallDepth + 1);
+            }
         }
 
         public static void Assert(bool condition, object falseMessage, string logType = "assert message")

@@ -47,10 +47,11 @@ namespace Engine.Core
                     yield return her;
                 }
             }
+            
+            Logger.Initialise();
 
             Input.ConsoleFontUpdate();
 
-            Logger.Initialise();
             AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
             {
                 Logger.Log($"{sender ?? "null"}({e})", "closing event sender");
@@ -60,7 +61,6 @@ namespace Engine.Core
             try
             {
                 GameConfig.GetData();
-                var m = new SymbolMatrix(GameConfig.Data.WIDTH, GameConfig.Data.HEIGHT);
             }
             catch (Exception e)
             {
