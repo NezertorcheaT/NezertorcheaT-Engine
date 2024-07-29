@@ -27,22 +27,27 @@ Engine/[Bb]in/
 Engine/[Oo]bj/
 Engine/_UpgradeReport_Files/
 Engine/[Pp]ackages/
+Engine/[Ll]ogs/
 Editor/[Bb]in/
 Editor/[Oo]bj/
 Editor/_UpgradeReport_Files/
 Editor/[Pp]ackages/
+Editor/[Ll]ogs/
 EditorPreview/[Bb]in/
 EditorPreview/[Oo]bj/
 EditorPreview/_UpgradeReport_Files/
 EditorPreview/[Pp]ackages/
+EditorPreview/[Ll]ogs/
 GameProject/[Bb]in/
 GameProject/[Oo]bj/
 GameProject/_UpgradeReport_Files/
 GameProject/[Pp]ackages/
+GameProject/[Ll]ogs/
 EngineTests/[Bb]in/
 EngineTests/[Oo]bj/
 EngineTests/_UpgradeReport_Files/
 EngineTests/[Pp]ackages/
+EngineTests/[Ll]ogs/
 
 Thumbs.db
 **/Desktop.ini

@@ -1,4 +1,4 @@
-﻿using Engine.Core;
+using Engine.Core;
 
 namespace Engine.Scene
 {

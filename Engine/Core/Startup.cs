@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace Engine.Core
                     yield return her;
                 }
             }
-            
+
             Logger.Initialise();
 
             Input.ConsoleFontUpdate();
